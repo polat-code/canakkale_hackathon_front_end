@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../../../styles/Navbar/Navbar.css";
 import { useLocation, useNavigate } from "react-router";
+import iytechli_logo from "../../../assets/navbarImages/iytechli.svg";
 
 const Navbar = () => {
   const navigation = useNavigate();
@@ -26,7 +27,11 @@ const Navbar = () => {
     <nav className="navbar navbar-expand-lg navbar-light bg-light ">
       <div className="container">
         <a className="navbar-brand" href="#">
-          Navbar
+          <img
+            src={iytechli_logo}
+            alt="iytechli logo"
+            className="navbar-logo"
+          />
         </a>
         <button
           className="navbar-toggler"
@@ -46,7 +51,7 @@ const Navbar = () => {
           <ul className="navbar-nav">
             <li className="nav-item mx-lg-2 py-lg-2">
               <a
-                className={`nav-link nav-item-size ${
+                className={`nav-link nav-item-size text-center ${
                   currentPath.startsWith("/anonims") ? "active" : ""
                 }`}
                 aria-current="page"
@@ -62,7 +67,7 @@ const Navbar = () => {
             </li>
             <li className="nav-item mx-lg-2 py-lg-2">
               <a
-                className={`nav-link nav-item-size ${
+                className={`nav-link nav-item-size text-center ${
                   currentPath.startsWith("/iyte-car") ? "active" : ""
                 }`}
                 href="#"
@@ -77,7 +82,7 @@ const Navbar = () => {
             </li>
             <li className="nav-item mx-lg-2 py-lg-2">
               <a
-                className={`nav-link nav-item-size ${
+                className={`nav-link nav-item-size text-center ${
                   currentPath.startsWith("/places") ? "active" : ""
                 }`}
                 href="#"
@@ -92,7 +97,7 @@ const Navbar = () => {
             </li>
             <li className="nav-item mx-lg-2 py-lg-2">
               <a
-                className={`nav-link nav-item-size ${
+                className={`nav-link nav-item-size text-center ${
                   currentPath.startsWith("/sports") ? "active" : ""
                 }`}
                 href="#"
