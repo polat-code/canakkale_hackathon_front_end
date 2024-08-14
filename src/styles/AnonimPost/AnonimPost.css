@@ -1,0 +1,15 @@
+.compliment-link {
+    text-decoration: none;
+    color: black;
+}
+.compliment-link:hover {
+    text-decoration: underline;
+
+}
+.like-icon {
+    transition: opacity 0.3s ease;
+  }
+
+.cursor-pointer {
+    cursor: pointer;
+}
