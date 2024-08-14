@@ -1,40 +1,25 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "../../../styles/Navbar/Navbar.css";
+import { useLocation, useNavigate } from "react-router";
 
 const Navbar = () => {
+  const navigation = useNavigate();
+  const location = useLocation();
+  const [currentPath, setCurrentPath] = useState(location.pathname);
   useEffect(() => {
-    const anonimElement = document.querySelector("#anonim");
-    anonimElement.classList.add("active");
+    setCurrentPath(location.pathname);
   });
-  const disabledOtherNavs = () => {
-    const anonimElement = document.querySelector("#anonim");
-    anonimElement.classList.remove("active");
-    const iyteCarElement = document.querySelector("#iyte_car");
-    iyteCarElement.classList.remove("active");
-    const placeElement = document.querySelector("#place");
-    placeElement.classList.remove("active");
-    const sportElement = document.querySelector("#sport");
-    sportElement.classList.remove("active");
-  };
   const handleAnonim = () => {
-    disabledOtherNavs();
-    const anonimElement = document.querySelector("#anonim");
-    anonimElement.classList.add("active");
+    navigation("/anonims");
   };
   const handleIyteCar = () => {
-    disabledOtherNavs();
-    const iyteCarElement = document.querySelector("#iyte_car");
-    iyteCarElement.classList.add("active");
+    navigation("/iyte-car");
   };
   const handlePlace = () => {
-    disabledOtherNavs();
-    const placeElement = document.querySelector("#place");
-    placeElement.classList.add("active");
+    navigation("/places");
   };
   const handleSport = () => {
-    disabledOtherNavs();
-    const sportElement = document.querySelector("#sport");
-    sportElement.classList.remove("active");
+    navigation("/sports");
   };
 
   return (
@@ -61,7 +46,9 @@ const Navbar = () => {
           <ul className="navbar-nav">
             <li className="nav-item mx-lg-2 py-lg-2">
               <a
-                className="nav-link nav-item-size"
+                className={`nav-link nav-item-size ${
+                  currentPath.startsWith("/anonims") ? "active" : ""
+                }`}
                 aria-current="page"
                 href="#"
                 id="anonim"
@@ -75,7 +62,9 @@ const Navbar = () => {
             </li>
             <li className="nav-item mx-lg-2 py-lg-2">
               <a
-                className="nav-link nav-item-size"
+                className={`nav-link nav-item-size ${
+                  currentPath.startsWith("/iyte-car") ? "active" : ""
+                }`}
                 href="#"
                 id="iyte_car"
                 onClick={(e) => {
@@ -88,7 +77,9 @@ const Navbar = () => {
             </li>
             <li className="nav-item mx-lg-2 py-lg-2">
               <a
-                className="nav-link nav-item-size"
+                className={`nav-link nav-item-size ${
+                  currentPath.startsWith("/places") ? "active" : ""
+                }`}
                 href="#"
                 id="place"
                 onClick={(e) => {
@@ -101,7 +92,9 @@ const Navbar = () => {
             </li>
             <li className="nav-item mx-lg-2 py-lg-2">
               <a
-                className="nav-link nav-item-size"
+                className={`nav-link nav-item-size ${
+                  currentPath.startsWith("/sports") ? "active" : ""
+                }`}
                 href="#"
                 id="sport"
                 onClick={(e) => {
