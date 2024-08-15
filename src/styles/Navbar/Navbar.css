@@ -12,3 +12,7 @@
         margin-left: 10px;
     }
 }
+.navbar-container .active {
+    color: black !important;
+    text-decoration: underline;
+}
