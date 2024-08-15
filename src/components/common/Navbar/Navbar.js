@@ -22,6 +22,9 @@ const Navbar = () => {
   const handleSport = () => {
     navigation("/sports");
   };
+  const handleLogin = () => {
+    navigation("/login");
+  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light ">
@@ -108,6 +111,21 @@ const Navbar = () => {
                 }}
               >
                 Spor
+              </a>
+            </li>
+            <li className="nav-item nav-link nav-item-size mx-lg-2 py-lg-2">
+              <a
+                className={`nav-link nav-item-size text-center text-primary ${
+                  currentPath.startsWith("/login") ? "active" : ""
+                }`}
+                href="#"
+                id="sport"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleLogin();
+                }}
+              >
+                Giriş Yap
               </a>
             </li>
           </ul>
