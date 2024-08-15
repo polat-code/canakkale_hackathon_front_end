@@ -8,6 +8,7 @@ import LoginContainer from "./pages/LoginContainer/LoginContainer";
 import MyMessagesContainer from "./pages/MyMessagesContainer/MyMessagesContainer";
 import ProfileContainer from "./pages/ProfileContainer/ProfileContainer";
 import PostsAndAdvertsContainer from "./pages/PostsAndAdvertsContainer/PostsAndAdvertsContainer";
+import NewAnonymousContainer from "./pages/NewAnonymousPostContainer/NewAnonymousContainer";
 const RouteApp = () => {
   return (
     <Routes>
@@ -21,6 +22,10 @@ const RouteApp = () => {
       <Route
         path="/profile/posts-and-advert"
         element={<PostsAndAdvertsContainer />}
+      />
+      <Route
+        path="/anonims/new-anonymous-post"
+        element={<NewAnonymousContainer />}
       />
     </Routes>
   );
