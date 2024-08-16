@@ -1,0 +1,8 @@
+.modal-link {
+    text-decoration: none;
+    color: black;
+}
+
+.user-like-container:hover {
+   text-decoration: underline;
+}

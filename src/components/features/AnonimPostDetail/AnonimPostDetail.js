@@ -10,6 +10,7 @@ import anonimLogo from "../../../assets/anonimImages/anonim_logo.svg";
 import AnonimPostComment from "../AnonimPostComment/AnonimPostComment";
 import CommentInput from "../CommentInput/CommentInput";
 import PostComplimentModal from "../../common/PostComplimentModal/PostComplimentModal";
+import LikeCountModal from "../LikeCountModal/LikeCountModal";
 
 const AnonimPostDetail = () => {
   const [isLiked, setIsLiked] = useState(true);
@@ -143,6 +144,9 @@ const AnonimPostDetail = () => {
           {/* Interactions END */}
 
           <CommentInput />
+          {/* Like Count Module START*/}
+          <LikeCountModal />
+          {/* Like Count Module END*/}
 
           <AnonimPostComment />
           <AnonimPostComment />
