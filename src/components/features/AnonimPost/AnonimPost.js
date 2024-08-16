@@ -5,12 +5,19 @@ import anonimLogo from "../../../assets/anonimImages/anonim_logo.svg";
 import complimentIconPhoto from "../../../assets/anonimImages/sikayet_et.svg";
 import likeIcon from "../../../assets/anonimImages/like_post_icon.svg";
 import commentPostIcon from "../../../assets/anonimImages/comment_post_icon.svg";
+import { useNavigate } from "react-router";
 
-const AnonimPost = ({ content, date }) => {
+const AnonimPost = ({ post }) => {
   const [isLiked, setIsLiked] = useState(true);
   const [showPhoto, setShowPhoto] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [numberOfLike, setNumberOfLike] = useState(10);
+  const navigation = useNavigate();
+
+  const handleAnonimPostDetail = () => {
+    navigation("/anonim/detail");
+  };
+
   return (
     <div className="container">
       <section className="mx-auto my-5 w-lg-75 w-100">
@@ -26,7 +33,8 @@ const AnonimPost = ({ content, date }) => {
             <div>
               <h6 className="card-title font-weight-bold mb-2">Anonim Post</h6>
               <p className="card-text fs-6">
-                <i className="far fa-clock pe-1"></i>07/24/2018
+                <i className="far fa-clock pe-1"></i>
+                {post.date}
               </p>
             </div>
           </div>
@@ -42,22 +50,26 @@ const AnonimPost = ({ content, date }) => {
             </a>
           </div>
           <div className="card-body">
-            <p className="card-text">
-              Recently, we added several exotic new dishes to our restaurant
-              menu. They come from countries such as Mexico, Argentina, and
-              Spain. Come to us, have some wine and enjoy our juicy meals from
-              around the world.Recently, we added several exotic new dishes to
-              our restaurant menu. They come from countries such as Mexico,
-              Argentina, and Spain. Come to us, have some wine and enjoy our
-              juicy meals from around the world.Recently, we added several
-              exotic new dishes to our restaurant menu. They come from countries
-              such as Mexico, Argentina, and Spain. Come to us, have some wine
-              and enjoy our juicy meals from around the world.Recently, we added
-              several exotic new dishes to our restaurant menu. They come from
-              countries such as Mexico, Argentina, and Spain. Come to us, have
-              some wine and enjoy our juicy meals from around the world.
-            </p>
+            <p className="card-text">{post.content}</p>
           </div>
+          {/* Images START */}
+          {post.photos && (
+            <div className="d-flex flex-column flex-sm-row align-items-center justify-content-around mb-4">
+              {post.photos.map((image) => {
+                return (
+                  <img
+                    src={image}
+                    alt="post photo"
+                    className="rounded img-fluid my-lg-0 my-2"
+                    style={{ maxWidth: "280px", maxHeight: "200px" }}
+                    //onClick={() => handlePhotoShow(image.image)}
+                  />
+                );
+              })}
+            </div>
+          )}
+          {/* Images END */}
+
           {/* Interactions */}
           <div className="d-flex flex-row justify-content-around mb-3">
             {/* Like */}
@@ -68,7 +80,7 @@ const AnonimPost = ({ content, date }) => {
             >
               <img src={likeIcon} alt="like-icon" className="like-icon" />
 
-              <span className="ms-2">10</span>
+              <span className="ms-2">{post.numberOfLike}</span>
             </div>
 
             {/* Like END */}
@@ -77,11 +89,11 @@ const AnonimPost = ({ content, date }) => {
             <div
               href=""
               className="compliment-link cursor-pointer"
-              //onClick={handlePostDetail}
+              onClick={handleAnonimPostDetail}
             >
               <div className="d-flex justify-content-center">
                 <img src={commentPostIcon} alt="" />
-                <span className="ms-2">10</span>
+                <span className="ms-2">{post.numberOfComment}</span>
               </div>
             </div>
             {/* Comment END */}

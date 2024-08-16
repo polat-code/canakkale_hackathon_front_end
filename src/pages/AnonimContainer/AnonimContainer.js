@@ -2,16 +2,16 @@ import React from "react";
 import Navbar from "../../components/common/Navbar/Navbar";
 import AnonimPost from "../../components/features/AnonimPost/AnonimPost";
 import NewAnonimPostButton from "../../components/features/NewAnonimPostButton/NewAnonimPostButton";
+import { posts } from "../../utils/fakeData/anonimPosts";
 
 const AnonimContainer = () => {
   return (
     <div>
       <Navbar />
       <NewAnonimPostButton />
-      <AnonimPost />
-      <AnonimPost />
-      <AnonimPost />
-      <AnonimPost />
+      {posts.map((post, index) => {
+        return <AnonimPost key={index} post={post} />;
+      })}
     </div>
   );
 };

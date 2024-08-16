@@ -27,6 +27,7 @@ const RouteApp = () => {
         path="/anonims/new-anonymous-post"
         element={<NewAnonymousContainer />}
       />
+      <Route path="/anonims/details" element={<NewAnonymousContainer />} />
     </Routes>
   );
 };
