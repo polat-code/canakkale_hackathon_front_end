@@ -3,19 +3,23 @@ import "../../../styles/AnonimPost/AnonimPost.css";
 import anonimLogo from "../../../assets/anonimImages/anonim_logo.svg";
 
 import complimentIconPhoto from "../../../assets/anonimImages/sikayet_et.svg";
-import likeIcon from "../../../assets/anonimImages/like_post_icon.svg";
+
+import likePostIcon from "../../../assets/anonimImages/like_post_icon.svg";
+import likePostIconActive from "../../../assets/anonimImages/heard_red.svg";
+
 import commentPostIcon from "../../../assets/anonimImages/comment_post_icon.svg";
 import { useNavigate } from "react-router";
 
 const AnonimPost = ({ post }) => {
   const [isLiked, setIsLiked] = useState(true);
-  const [showPhoto, setShowPhoto] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [numberOfLike, setNumberOfLike] = useState(10);
   const navigation = useNavigate();
 
   const handleAnonimPostDetail = () => {
     navigation("/anonims/detail?postId=" + post.postId);
+  };
+
+  const handleLikeButton = () => {
+    setIsLiked(!isLiked);
   };
 
   return (
@@ -50,7 +54,10 @@ const AnonimPost = ({ post }) => {
             </a>
           </div>
           <div className="card-body">
-            <p className="card-text" onClick={handleAnonimPostDetail}>
+            <p
+              className="card-text cursor-pointer"
+              onClick={handleAnonimPostDetail}
+            >
               {post.content}
             </p>
           </div>
@@ -78,9 +85,13 @@ const AnonimPost = ({ post }) => {
 
             <div
               className="d-flex justify-content-center cursor-pointer"
-              //onClick={handleLikeButton}
+              onClick={handleLikeButton}
             >
-              <img src={likeIcon} alt="like-icon" className="like-icon" />
+              <img
+                src={isLiked ? likePostIconActive : likePostIcon}
+                alt="like-icon"
+                className="like-icon"
+              />
 
               <span className="ms-2">{post.numberOfLike}</span>
             </div>

@@ -1,13 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import image from "../../../assets/anonimImages/post_photo.svg";
 
 import complimentIconPhoto from "../../../assets/anonimImages/sikayet_et.svg";
-import likeIcon from "../../../assets/anonimImages/like_post_icon.svg";
+import likePostIcon from "../../../assets/anonimImages/like_post_icon.svg";
+import likePostIconActive from "../../../assets/anonimImages/heard_red.svg";
+
 import commentPostIcon from "../../../assets/anonimImages/comment_post_icon.svg";
 import anonimLogo from "../../../assets/anonimImages/anonim_logo.svg";
-import AnonimComment from "../AnonimComment/AnonimComment";
+import AnonimComment from "../AnonimPostComment/AnonimPostComment";
+import CommentInput from "../CommentInput/CommentInput";
 
 const AnonimPostDetail = () => {
+  const [isLiked, setIsLiked] = useState(true);
+
+  const handleLikeButton = () => {
+    setIsLiked(!isLiked);
+  };
+
   return (
     <div className="container">
       <section className="mx-auto my-5 w-lg-75 w-100">
@@ -90,9 +99,9 @@ const AnonimPostDetail = () => {
 
             <div
               className="d-flex justify-content-center cursor-pointer"
-              //onClick={handleLikeButton}
+              onClick={handleLikeButton}
             >
-              <img src={likeIcon} alt="like-icon" className="like-icon" />
+              <img alt="" src={isLiked ? likePostIconActive : likePostIcon} />
 
               <span className="ms-2">11</span>
             </div>
@@ -131,6 +140,9 @@ const AnonimPostDetail = () => {
             {/* Compliment Module END*/}
           </div>
           {/* Interactions END */}
+
+          <CommentInput />
+
           <AnonimComment />
           <AnonimComment />
           <AnonimComment />

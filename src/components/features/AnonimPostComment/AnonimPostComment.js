@@ -1,11 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import userIconPhoto from "../../../assets/anonimImages/user_icon.svg";
 import commentLikeIconPhoto from "../../../assets/anonimImages/comment_like_icon.svg";
+import commentLikeIconPhotoActive from "../../../assets/anonimImages/comment_like_icon_active.svg";
+
 import commentDislikeIconPhoto from "../../../assets/anonimImages/comment_dislike_icon.svg";
+import commentDislikeIconPhotoActive from "../../../assets/anonimImages/comment_dislike_icon_active.svg";
+
 import complimentIconPhoto from "../../../assets/anonimImages/sikayet_et.svg";
 import "../../../styles/AnonimPostDetail/AnonimPostDetail.css";
 
-const AnonimComment = () => {
+const AnonimPostComment = () => {
+  const [isLiked, setIsLiked] = useState(true);
+  const [isDisliked, setIsDisliked] = useState(false);
+  const handleCommentDislikeIcon = () => {
+    setIsDisliked(!isDisliked);
+  };
+  const handleCommentLikeIcon = () => {
+    setIsLiked(!isLiked);
+  };
+
   return (
     <div>
       <div className="border-bottom border-top rounded">
@@ -27,17 +40,28 @@ const AnonimComment = () => {
         <div className="d-flex flex-row justify-content-around mb-3">
           <div
             className="d-flex justify-content-center custom-cursor"
-            //onClick={handleCommentLikeIcon}
+            onClick={handleCommentLikeIcon}
           >
-            <img src={commentLikeIconPhoto} alt="" />
+            <img
+              src={isLiked ? commentLikeIconPhotoActive : commentLikeIconPhoto}
+              alt=""
+            />
             <span className="ms-2">20</span>
           </div>
 
           <div
             className="d-flex justify-content-center custom-cursor"
-            //onClick={handleCommentDislikeIcon}
+            onClick={handleCommentDislikeIcon}
           >
-            <img src={commentDislikeIconPhoto} alt="" className="like-icon" />
+            <img
+              src={
+                isDisliked
+                  ? commentDislikeIconPhotoActive
+                  : commentDislikeIconPhoto
+              }
+              alt=""
+              className="like-icon"
+            />
             <span className="ms-2">10</span>
           </div>
 
@@ -57,4 +81,4 @@ const AnonimComment = () => {
   );
 };
 
-export default AnonimComment;
+export default AnonimPostComment;
