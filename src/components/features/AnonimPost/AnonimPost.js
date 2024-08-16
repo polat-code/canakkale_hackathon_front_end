@@ -15,7 +15,7 @@ const AnonimPost = ({ post }) => {
   const navigation = useNavigate();
 
   const handleAnonimPostDetail = () => {
-    navigation("/anonim/detail");
+    navigation("/anonims/detail?postId=" + post.postId);
   };
 
   return (
@@ -50,7 +50,9 @@ const AnonimPost = ({ post }) => {
             </a>
           </div>
           <div className="card-body">
-            <p className="card-text">{post.content}</p>
+            <p className="card-text" onClick={handleAnonimPostDetail}>
+              {post.content}
+            </p>
           </div>
           {/* Images START */}
           {post.photos && (

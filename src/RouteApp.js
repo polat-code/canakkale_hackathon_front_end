@@ -9,6 +9,7 @@ import MyMessagesContainer from "./pages/MyMessagesContainer/MyMessagesContainer
 import ProfileContainer from "./pages/ProfileContainer/ProfileContainer";
 import PostsAndAdvertsContainer from "./pages/PostsAndAdvertsContainer/PostsAndAdvertsContainer";
 import NewAnonymousContainer from "./pages/NewAnonymousPostContainer/NewAnonymousContainer";
+import AnonimPostDetailContainer from "./pages/AnonimPostDetailContainer/AnonimPostDetailContainer";
 const RouteApp = () => {
   return (
     <Routes>
@@ -27,7 +28,7 @@ const RouteApp = () => {
         path="/anonims/new-anonymous-post"
         element={<NewAnonymousContainer />}
       />
-      <Route path="/anonims/details" element={<NewAnonymousContainer />} />
+      <Route path="/anonims/detail" element={<AnonimPostDetailContainer />} />
     </Routes>
   );
 };
