@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import "../../../styles/Register/Register.css";
 
 const Register = () => {
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
+  const [telephone, setTelephone] = useState("");
   const [password, setPassword] = useState("");
+  const [repeatPassword, setRepeatPassword] = useState("");
 
   const handleRegister = (e) => {
     e.preventDefault();
-    console.log("Register:", { username, email, password });
     // Implement registration logic here
   };
 
@@ -25,30 +27,30 @@ const Register = () => {
         </div>
 
         <h2 className="text-center mb-4">Kayıt Ol</h2>
-        <form onSubmit={handleRegister}>
+        <form>
           <div className="mb-3">
-            <label htmlFor="username" className="form-label">
+            <label htmlFor="name" className="form-label">
               İsim
             </label>
             <input
               type="text"
               className="form-control"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               required
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="username" className="form-label">
+            <label htmlFor="surname" className="form-label">
               Soyisim
             </label>
             <input
               type="text"
               className="form-control"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="surname"
+              value={surname}
+              onChange={(e) => setSurname(e.target.value)}
               required
             />
           </div>
@@ -67,15 +69,15 @@ const Register = () => {
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="username" className="form-label">
+            <label htmlFor="telephone" className="form-label">
               Telefon (alan koduyla birlikte)
             </label>
             <input
-              type="text"
+              type="telephone"
               className="form-control"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="telephone"
+              value={telephone}
+              onChange={(e) => setTelephone(e.target.value)}
               required
             />
           </div>
@@ -94,19 +96,19 @@ const Register = () => {
           </div>
 
           <div className="mb-3">
-            <label htmlFor="password" className="form-label">
+            <label htmlFor="repeatpassword" className="form-label">
               Şifre Tekrar
             </label>
             <input
               type="password"
               className="form-control"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              id="repeatpassword"
+              value={repeatPassword}
+              onChange={(e) => setRepeatPassword(e.target.value)}
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary w-100">
+          <button className="btn btn-primary w-100" onClick={handleRegister}>
             Register
           </button>
         </form>

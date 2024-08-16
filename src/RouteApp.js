@@ -11,6 +11,9 @@ import PostsAndAdvertsContainer from "./pages/PostsAndAdvertsContainer/PostsAndA
 import NewAnonymousContainer from "./pages/NewAnonymousPostContainer/NewAnonymousContainer";
 import AnonimPostDetailContainer from "./pages/AnonimPostDetailContainer/AnonimPostDetailContainer";
 import RegisterContainer from "./pages/RegisterContainer/RegisterContainer";
+import ForgotPasswordContainer from "./pages/ForgotPasswordContainer/ForgotPasswordContainer";
+import OTPCodeEntryContainer from "./pages/OTPCodeEntryContainer/OTPCodeEntryContainer";
+import NewPasswordEntryContainer from "./pages/NewPasswordEntryContainer/NewPasswordEntryContainer";
 const RouteApp = () => {
   return (
     <Routes>
@@ -20,6 +23,13 @@ const RouteApp = () => {
       <Route path="/sports" element={<SportsContainer />} />
       <Route path="/login" element={<LoginContainer />} />
       <Route path="/register" element={<RegisterContainer />} />
+      <Route path="/forgot-password" element={<ForgotPasswordContainer />} />
+      <Route path="/forgot-password/otp" element={<OTPCodeEntryContainer />} />
+      <Route
+        path="/forgot-password/new-password"
+        element={<NewPasswordEntryContainer />}
+      />
+
       <Route path="/profile/my-messages" element={<MyMessagesContainer />} />
       <Route path="/profile" element={<ProfileContainer />} />
       <Route
