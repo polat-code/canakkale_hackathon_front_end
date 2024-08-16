@@ -8,6 +8,7 @@ import commentDislikeIconPhotoActive from "../../../assets/anonimImages/comment_
 
 import complimentIconPhoto from "../../../assets/anonimImages/sikayet_et.svg";
 import "../../../styles/AnonimPostDetail/AnonimPostDetail.css";
+import CommentComplimentModal from "../../common/CommentComplimentModal/CommentComplimentModal";
 
 const AnonimPostComment = () => {
   const [isLiked, setIsLiked] = useState(true);
@@ -77,6 +78,9 @@ const AnonimPostComment = () => {
           </div>
         </div>
       </div>
+      {/* Comment Compliment Modal START */}
+      <CommentComplimentModal />
+      {/* Comment Compliment Modal END */}
     </div>
   );
 };

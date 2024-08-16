@@ -7,8 +7,9 @@ import likePostIconActive from "../../../assets/anonimImages/heard_red.svg";
 
 import commentPostIcon from "../../../assets/anonimImages/comment_post_icon.svg";
 import anonimLogo from "../../../assets/anonimImages/anonim_logo.svg";
-import AnonimComment from "../AnonimPostComment/AnonimPostComment";
+import AnonimPostComment from "../AnonimPostComment/AnonimPostComment";
 import CommentInput from "../CommentInput/CommentInput";
+import PostComplimentModal from "../../common/PostComplimentModal/PostComplimentModal";
 
 const AnonimPostDetail = () => {
   const [isLiked, setIsLiked] = useState(true);
@@ -136,16 +137,16 @@ const AnonimPostDetail = () => {
             {/* Compliment END */}
 
             {/* Compliment Module*/}
-            {/* <PostComplimentModal userId={user.userId} postId={postId} /> */}
+            <PostComplimentModal />
             {/* Compliment Module END*/}
           </div>
           {/* Interactions END */}
 
           <CommentInput />
 
-          <AnonimComment />
-          <AnonimComment />
-          <AnonimComment />
+          <AnonimPostComment />
+          <AnonimPostComment />
+          <AnonimPostComment />
         </div>
       </section>
     </div>

@@ -9,6 +9,7 @@ import likePostIconActive from "../../../assets/anonimImages/heard_red.svg";
 
 import commentPostIcon from "../../../assets/anonimImages/comment_post_icon.svg";
 import { useNavigate } from "react-router";
+import PostComplimentModal from "../../common/PostComplimentModal/PostComplimentModal";
 
 const AnonimPost = ({ post }) => {
   const [isLiked, setIsLiked] = useState(true);
@@ -56,7 +57,7 @@ const AnonimPost = ({ post }) => {
           <div className="card-body">
             <p
               className="card-text cursor-pointer"
-              onClick={handleAnonimPostDetail}
+              //onClick={handleAnonimPostDetail}
             >
               {post.content}
             </p>
@@ -126,7 +127,7 @@ const AnonimPost = ({ post }) => {
             {/* Compliment END */}
 
             {/* Compliment Module*/}
-            {/* <PostComplimentModal userId={user.userId} postId={postId} /> */}
+            <PostComplimentModal />
             {/* Compliment Module END*/}
           </div>
           {/* Interactions END */}
