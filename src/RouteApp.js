@@ -10,6 +10,7 @@ import ProfileContainer from "./pages/ProfileContainer/ProfileContainer";
 import PostsAndAdvertsContainer from "./pages/PostsAndAdvertsContainer/PostsAndAdvertsContainer";
 import NewAnonymousContainer from "./pages/NewAnonymousPostContainer/NewAnonymousContainer";
 import AnonimPostDetailContainer from "./pages/AnonimPostDetailContainer/AnonimPostDetailContainer";
+import RegisterContainer from "./pages/RegisterContainer/RegisterContainer";
 const RouteApp = () => {
   return (
     <Routes>
@@ -18,6 +19,7 @@ const RouteApp = () => {
       <Route path="/places" element={<PlacesContainer />} />
       <Route path="/sports" element={<SportsContainer />} />
       <Route path="/login" element={<LoginContainer />} />
+      <Route path="/register" element={<RegisterContainer />} />
       <Route path="/profile/my-messages" element={<MyMessagesContainer />} />
       <Route path="/profile" element={<ProfileContainer />} />
       <Route
