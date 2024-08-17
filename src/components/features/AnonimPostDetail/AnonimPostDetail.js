@@ -11,9 +11,16 @@ import AnonimPostComment from "../AnonimPostComment/AnonimPostComment";
 import CommentInput from "../CommentInput/CommentInput";
 import PostComplimentModal from "../../common/PostComplimentModal/PostComplimentModal";
 import LikeCountModal from "../LikeCountModal/LikeCountModal";
+import { Modal } from "react-bootstrap";
 
 const AnonimPostDetail = () => {
   const [isLiked, setIsLiked] = useState(true);
+  const [showPhoto, setShowPhoto] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const handlePhotoShow = (image) => {
+    setSelectedImage(image);
+    setShowPhoto(true);
+  };
 
   const handleLikeButton = () => {
     setIsLiked(!isLiked);
@@ -68,18 +75,36 @@ const AnonimPostDetail = () => {
               alt="post photo"
               className="rounded img-fluid my-lg-0 my-2"
               style={{ maxWidth: "280px", maxHeight: "200px" }}
-              //onClick={() => handlePhotoShow(image.image)}
+              onClick={() => handlePhotoShow(image)}
             />
             <img
               src={image}
               alt="post photo"
               className="rounded img-fluid my-lg-0 my-2"
               style={{ maxWidth: "280px", maxHeight: "200px" }}
-              //onClick={() => handlePhotoShow(image.image)}
+              onClick={() => handlePhotoShow(image)}
             />
           </div>
 
           {/* Images END */}
+          {/* Photo Modal */}
+          <Modal show={showPhoto} onHide={() => setShowPhoto(false)} centered>
+            <Modal.Header closeButton className="no-border-header">
+              <span className="text-danger fw-bold">Fotoğraf Detayı</span>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="d-flex justify-content-center">
+                <img
+                  src={selectedImage}
+                  alt=""
+                  className="img-fluid w-100 rounded"
+                  centered
+                />
+              </div>
+            </Modal.Body>
+          </Modal>
+
+          {/* Photo Modal END */}
 
           {/* Like count */}
           <a

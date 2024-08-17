@@ -10,9 +10,17 @@ import likePostIconActive from "../../../assets/anonimImages/heard_red.svg";
 import commentPostIcon from "../../../assets/anonimImages/comment_post_icon.svg";
 import { useNavigate } from "react-router";
 import PostComplimentModal from "../../common/PostComplimentModal/PostComplimentModal";
+import { Modal } from "react-bootstrap";
 
 const AnonimPost = ({ post }) => {
   const [isLiked, setIsLiked] = useState(true);
+
+  const [showPhoto, setShowPhoto] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const handlePhotoShow = (image) => {
+    setSelectedImage(image);
+    setShowPhoto(true);
+  };
   const navigation = useNavigate();
 
   const handleAnonimPostDetail = () => {
@@ -72,13 +80,31 @@ const AnonimPost = ({ post }) => {
                     alt="post photo"
                     className="rounded img-fluid my-lg-0 my-2"
                     style={{ maxWidth: "280px", maxHeight: "200px" }}
-                    //onClick={() => handlePhotoShow(image.image)}
+                    onClick={() => handlePhotoShow(image)}
                   />
                 );
               })}
             </div>
           )}
           {/* Images END */}
+          {/* Photo Modal */}
+          <Modal show={showPhoto} onHide={() => setShowPhoto(false)} centered>
+            <Modal.Header closeButton className="no-border-header">
+              <span className="text-danger fw-bold">Fotoğraf Detayı</span>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="d-flex justify-content-center">
+                <img
+                  src={selectedImage}
+                  alt=""
+                  className="img-fluid w-100 rounded"
+                  centered
+                />
+              </div>
+            </Modal.Body>
+          </Modal>
+
+          {/* Photo Modal END */}
 
           {/* Interactions */}
           <div className="d-flex flex-row justify-content-around mb-3">

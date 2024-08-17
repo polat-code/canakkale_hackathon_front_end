@@ -13,3 +13,9 @@
 .cursor-pointer {
     cursor: pointer;
 }
+.no-border-header {
+    border-bottom: none;
+    padding-bottom:0px;
+    padding-top: 12px;
+  }
+  
