@@ -14,6 +14,7 @@ import RegisterContainer from "./pages/RegisterContainer/RegisterContainer";
 import ForgotPasswordContainer from "./pages/ForgotPasswordContainer/ForgotPasswordContainer";
 import OTPCodeEntryContainer from "./pages/OTPCodeEntryContainer/OTPCodeEntryContainer";
 import NewPasswordEntryContainer from "./pages/NewPasswordEntryContainer/NewPasswordEntryContainer";
+import IyteCarCreateRideContainer from "./pages/IyteCarCreateRideContainer/IyteCarCreateRideContainer";
 const RouteApp = () => {
   return (
     <Routes>
@@ -41,6 +42,10 @@ const RouteApp = () => {
         element={<NewAnonymousContainer />}
       />
       <Route path="/anonims/detail" element={<AnonimPostDetailContainer />} />
+      <Route
+        path="/iyte-car/create-ride"
+        element={<IyteCarCreateRideContainer />}
+      />
     </Routes>
   );
 };
