@@ -10,6 +10,7 @@ const IyteCarRideList = () => {
       date: "2024-08-18",
       seats: 3,
       price: "50 TL",
+      telephone: "+905531521381",
     },
     {
       id: 2,
@@ -19,6 +20,7 @@ const IyteCarRideList = () => {
       date: "2024-08-19",
       seats: 2,
       price: "60 TL",
+      telephone: "+905531521381",
     },
   ];
 
@@ -32,10 +34,21 @@ const IyteCarRideList = () => {
                 <i className="bi bi-arrow-right-circle"></i> {ride.departure} to{" "}
                 {ride.destination}
               </h5>
-              <p className="card-text">Driver: {ride.driver}</p>
-              <p className="card-text">Date: {ride.date}</p>
-              <p className="card-text">Seats Available: {ride.seats}</p>
-              <p className="card-text">Price: {ride.price}</p>
+              <p className="card-text">
+                <span className="fw-bold">Driver:</span> {ride.driver}
+              </p>
+              <p className="card-text">
+                <span className="fw-bold">Date: </span> {ride.date}
+              </p>
+              <p className="card-text">
+                <span className="fw-bold">Seats Available: </span> {ride.seats}
+              </p>
+              <p className="card-text">
+                <span className="fw-bold">Price: </span> {ride.price}
+              </p>
+              <p className="card-text">
+                <span className="fw-bold">Telephone: </span> {ride.telephone}
+              </p>
             </div>
             <div className="col-md-4 d-flex align-items-center justify-content-center p-3">
               <button className="btn btn-success rounded-pill">

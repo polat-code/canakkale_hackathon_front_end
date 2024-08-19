@@ -15,6 +15,7 @@ import ForgotPasswordContainer from "./pages/ForgotPasswordContainer/ForgotPassw
 import OTPCodeEntryContainer from "./pages/OTPCodeEntryContainer/OTPCodeEntryContainer";
 import NewPasswordEntryContainer from "./pages/NewPasswordEntryContainer/NewPasswordEntryContainer";
 import IyteCarCreateRideContainer from "./pages/IyteCarCreateRideContainer/IyteCarCreateRideContainer";
+import CreateMatchContainer from "./pages/CreatMatchContainer/CreateMatchContainer";
 const RouteApp = () => {
   return (
     <Routes>
@@ -46,6 +47,7 @@ const RouteApp = () => {
         path="/iyte-car/create-ride"
         element={<IyteCarCreateRideContainer />}
       />
+      <Route path="sports/new-match" element={<CreateMatchContainer />} />
     </Routes>
   );
 };

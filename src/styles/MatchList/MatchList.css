@@ -1,0 +1,39 @@
+.match-list-container .match-card {
+    border: none;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.match-list-container .match-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.match-list-container .card-title {
+    color: #007bff;
+}
+
+.match-list-container .card-text {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.match-list-container .btn-outline-primary {
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.match-list-container .btn-outline-primary:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.match-list-container h2 {
+    font-weight: 600;
+    color: #333;
+}
+
+.match-list-container .badge {
+    font-size: 0.8rem;
+}

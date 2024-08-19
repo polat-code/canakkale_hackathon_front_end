@@ -1,15 +1,14 @@
 import React from "react";
 import Navbar from "../../components/common/Navbar/Navbar";
 import CreateMatch from "../../components/features/CreateMatch/CreateMatch";
-import MatchList from "../../components/features/MatchList/MatchList";
 
-const SportsContainer = () => {
+const CreateMatchContainer = () => {
   return (
     <div>
       <Navbar />
-      <MatchList />1
+      <CreateMatch />
     </div>
   );
 };
 
-export default SportsContainer;
+export default CreateMatchContainer;
