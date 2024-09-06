@@ -9,7 +9,7 @@ const IyteCarRideList = () => {
       destination: "Istanbul",
       date: "2024-08-18",
       seats: 3,
-      price: "50 TL",
+      price: 60,
       telephone: "+905531521381",
     },
     {
@@ -19,7 +19,17 @@ const IyteCarRideList = () => {
       destination: "Bursa",
       date: "2024-08-19",
       seats: 2,
-      price: "60 TL",
+      price: 50,
+      telephone: "+905531521381",
+    },
+    {
+      id: 3,
+      driver: "Jane Smith",
+      departure: "Ankara",
+      destination: "Bursa",
+      date: "2024-08-19",
+      seats: 2,
+      price: 20,
       telephone: "+905531521381",
     },
   ];
@@ -31,29 +41,26 @@ const IyteCarRideList = () => {
           <div className="row g-0">
             <div className="col-md-8 p-3">
               <h5 className="card-title">
-                <i className="bi bi-arrow-right-circle"></i> {ride.departure} to{" "}
-                {ride.destination}
+                <i className="bi bi-arrow-right-circle"></i>{" "}
+                <span className="text-primary">{ride.departure}</span> ➡{" "}
+                <span className="text-success">{ride.destination}</span>
               </h5>
               <p className="card-text">
-                <span className="fw-bold">Driver:</span> {ride.driver}
+                <span className="fw-bold">Sürücü :</span> {ride.driver}
               </p>
               <p className="card-text">
-                <span className="fw-bold">Date: </span> {ride.date}
+                <span className="fw-bold">Tarih : </span> {ride.date}
               </p>
               <p className="card-text">
-                <span className="fw-bold">Seats Available: </span> {ride.seats}
+                <span className="fw-bold">Boş Koltuk Sayısı : </span>{" "}
+                {ride.seats}
               </p>
               <p className="card-text">
-                <span className="fw-bold">Price: </span> {ride.price}
+                <span className="fw-bold">Fiyat : </span> {ride.price} TL
               </p>
               <p className="card-text">
-                <span className="fw-bold">Telephone: </span> {ride.telephone}
+                <span className="fw-bold">Telefon : </span> {ride.telephone}
               </p>
-            </div>
-            <div className="col-md-4 d-flex align-items-center justify-content-center p-3">
-              <button className="btn btn-success rounded-pill">
-                <i className="bi bi-check-circle"></i> Book Now
-              </button>
             </div>
           </div>
         </div>
