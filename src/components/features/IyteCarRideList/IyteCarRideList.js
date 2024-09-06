@@ -8,9 +8,11 @@ const IyteCarRideList = () => {
       departure: "Izmir",
       destination: "Istanbul",
       date: "2024-08-18",
+      hour: "12:45",
       seats: 3,
       price: 60,
       telephone: "+905531521381",
+      description: "Anonim Description is like that",
     },
     {
       id: 2,
@@ -18,9 +20,11 @@ const IyteCarRideList = () => {
       departure: "Ankara",
       destination: "Bursa",
       date: "2024-08-19",
+      hour: "13:45",
       seats: 2,
       price: 50,
       telephone: "+905531521381",
+      description: "Anonim Description is like that",
     },
     {
       id: 3,
@@ -28,9 +32,11 @@ const IyteCarRideList = () => {
       departure: "Ankara",
       destination: "Bursa",
       date: "2024-08-19",
+      hour: "07:45",
       seats: 2,
       price: 20,
       telephone: "+905531521381",
+      description: "Anonim Description is like that",
     },
   ];
 
@@ -52,6 +58,9 @@ const IyteCarRideList = () => {
                 <span className="fw-bold">Tarih : </span> {ride.date}
               </p>
               <p className="card-text">
+                <span className="fw-bold">Saat : </span> {ride.hour}
+              </p>
+              <p className="card-text">
                 <span className="fw-bold">Boş Koltuk Sayısı : </span>{" "}
                 {ride.seats}
               </p>
@@ -60,6 +69,9 @@ const IyteCarRideList = () => {
               </p>
               <p className="card-text">
                 <span className="fw-bold">Telefon : </span> {ride.telephone}
+              </p>
+              <p className="card-text">
+                <span className="fw-bold">Açıklama : </span> {ride.description}
               </p>
             </div>
           </div>
