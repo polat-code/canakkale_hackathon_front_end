@@ -23,7 +23,7 @@ const RouteApp = () => {
       <Route path="/iyte-car" element={<IyteCarContainer />} />
       <Route path="/places" element={<PlacesContainer />} />
       <Route path="/sports" element={<SportsContainer />} />
-      <Route path="/login" element={<LoginContainer />} />
+      <Route path="/" element={<LoginContainer />} />
       <Route path="/register" element={<RegisterContainer />} />
       <Route path="/forgot-password" element={<ForgotPasswordContainer />} />
       <Route path="/forgot-password/otp" element={<OTPCodeEntryContainer />} />
