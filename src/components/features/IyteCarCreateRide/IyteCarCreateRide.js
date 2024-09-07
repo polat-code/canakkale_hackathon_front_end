@@ -123,7 +123,6 @@ const IyteCarCreateRide = () => {
               //Don't forget the restriction of the number of character
             />
           </div>
-
           <button type="submit" className="btn btn-primary w-100 rounded-pill">
             <i className="bi bi-plus-circle"></i> Create Ride
           </button>

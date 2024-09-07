@@ -14,53 +14,68 @@ const MatchList = () => {
   const [matches, setMatches] = useState([
     {
       id: 1,
+      name: "Özgürhan Polat",
       sport: "Football",
       time: "14:00",
+      date: "12-09-2024",
       location: "Field A",
       playersNeeded: 2,
       level: "Intermediate",
       gender: "Any",
+      telephone: "+905531521381",
       description:
         "Looking for players with decent skills for a friendly match.",
     },
     {
       id: 2,
+      name: "Özgürhan Polat",
       sport: "Basketball",
       time: "16:00",
+      date: "15-09-2024",
       location: "Court 1",
       playersNeeded: 1,
       level: "Advanced",
       gender: "Male",
+      telephone: "+905531521381",
       description: "Competitive game, need one more player.",
     },
     {
-      id: 3,
+      id: 4,
+      name: "Özgürhan Polat",
       sport: "Volleyball",
       time: "18:00",
+      date: "12-12-2024",
       location: "Court 2",
       playersNeeded: 3,
       level: "Beginner",
       gender: "Female",
+      telephone: "+905531521381",
       description: "Casual game for beginners.",
     },
     {
-      id: 3,
+      id: 5,
+      name: "Özgürhan Polat",
       sport: "Volleyball",
       time: "18:00",
+      date: "12-09-2024",
       location: "Court 2",
       playersNeeded: 3,
       level: "Beginner",
       gender: "Female",
+      telephone: "+905531521381",
       description: "Casual game for beginners.",
     },
     {
-      id: 3,
+      id: 6,
+      name: "Özgürhan Polat",
       sport: "Volleyball",
       time: "18:00",
+      date: "12-09-2024",
       location: "Court 2",
       playersNeeded: 3,
       level: "Beginner",
       gender: "Female",
+      telephone: "+905531521381",
       description: "Casual game for beginners.",
     },
   ]);
@@ -87,7 +102,15 @@ const MatchList = () => {
                   <span className="badge bg-primary">{match.level}</span>
                 </div>
                 <p className="card-text">
-                  <i className="bi bi-clock"></i> <strong>Time:</strong>{" "}
+                  <i className="bi bi-clock"></i> <strong>İlan Sahibi :</strong>{" "}
+                  {match.name}
+                </p>
+                <p className="card-text">
+                  <i className="bi bi-clock"></i> <strong>Tarih:</strong>{" "}
+                  {match.date}
+                </p>
+                <p className="card-text">
+                  <i className="bi bi-clock"></i> <strong>Saat:</strong>{" "}
                   {match.time}
                 </p>
                 <p className="card-text">
@@ -103,12 +126,17 @@ const MatchList = () => {
                   <strong>Gender Preference:</strong> {match.gender}
                 </p>
                 <p className="card-text">
+                  <i className="bi bi-chat-dots"></i> <strong>Telefon:</strong>{" "}
+                  {match.telephone}
+                </p>
+                <p className="card-text">
                   <i className="bi bi-chat-dots"></i>{" "}
                   <strong>Description:</strong> {match.description}
                 </p>
+                {/* 
                 <button className="btn btn-outline-primary w-100 mt-3">
                   Join
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
