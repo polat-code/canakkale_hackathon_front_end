@@ -25,7 +25,7 @@ const IyteCarSearchBar = () => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-4">
       <div className="card shadow-sm p-4">
         <div className="row g-3 align-items-center">
           <div className="col-md-3">

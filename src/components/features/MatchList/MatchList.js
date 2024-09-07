@@ -85,7 +85,7 @@ const MatchList = () => {
       <div className="d-flex justify-content-end">
         <button className="btn btn-success" onClick={handleNewMatch}>
           <img src={plusIcon} alt="" className="icon-green" />
-          Create A Match
+          Maç İlanı Ver
         </button>
       </div>
 
