@@ -81,7 +81,7 @@ const MatchList = () => {
   ]);
 
   return (
-    <div className="container mt-5 match-list-container">
+    <div className="container mt-3 match-list-container">
       <div className="d-flex justify-content-end">
         <button className="btn btn-success" onClick={handleNewMatch}>
           <img src={plusIcon} alt="" className="icon-green" />
@@ -89,7 +89,7 @@ const MatchList = () => {
         </button>
       </div>
 
-      <h2 className="text-center mb-4">Find a Match</h2>
+      <h2 className="text-center mb-lg-4 my-3">Find a Match</h2>
 
       <MatchSearch matches={matches} setMatches={setMatches} />
       <div className="row">

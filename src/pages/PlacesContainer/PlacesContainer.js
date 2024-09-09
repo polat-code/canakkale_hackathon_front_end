@@ -1,11 +1,12 @@
 import React from "react";
 import Navbar from "../../components/common/Navbar/Navbar";
+import PlacesList from "../../components/features/PlacesList/PlacesList";
 
 const PlacesContainer = () => {
   return (
     <div>
       <Navbar />
-      <h1>Places Container</h1>
+      <PlacesList />
     </div>
   );
 };
