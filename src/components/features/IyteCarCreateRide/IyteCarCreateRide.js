@@ -59,6 +59,34 @@ const IyteCarCreateRide = () => {
             </select>
           </div>
           <div className="mb-3">
+            <label className="form-label">Uğrayabileceğin Durak 1</label>
+            <select className="form-select" id="departureCity">
+              <option value={"NONE"}>{"Yok"}</option>;
+              {departurePlace.map((district) => {
+                return <option value={district}>{district}</option>;
+              })}
+            </select>
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Uğrayabileceğin Durak 2</label>
+            <select className="form-select" id="departureCity">
+              <option value={"NONE"}>{"Yok"}</option>;
+              {departurePlace.map((district) => {
+                return <option value={district}>{district}</option>;
+              })}
+            </select>
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Uğrayabileceğin Durak 3</label>
+            <select className="form-select" id="departureCity">
+              <option value={"NONE"}>{"Yok"}</option>;
+              {departurePlace.map((district) => {
+                return <option value={district}>{district}</option>;
+              })}
+            </select>
+          </div>
+
+          <div className="mb-3">
             <label className="form-label">Varış</label>
             <select className="form-select" id="departureCity">
               {departurePlace.map((district) => {
