@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import PlaceDetail from "../PlaceDetail/PlaceDetail";
+import { useNavigate } from "react-router";
 
 const PlacesList = () => {
   // Fake data for restaurants
@@ -35,6 +37,7 @@ const PlacesList = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredRestaurants, setFilteredRestaurants] = useState(restaurants);
+  const navigate = useNavigate();
 
   // Handle search input change
   const handleSearchChange = (e) => {
@@ -111,6 +114,7 @@ const PlacesList = () => {
                     borderRadius: "20px", // Rounded button
                     fontWeight: "bold",
                   }}
+                  onClick={() => navigate("/places/detail")}
                 >
                   View Details
                 </button>

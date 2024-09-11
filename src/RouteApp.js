@@ -16,12 +16,14 @@ import OTPCodeEntryContainer from "./pages/OTPCodeEntryContainer/OTPCodeEntryCon
 import NewPasswordEntryContainer from "./pages/NewPasswordEntryContainer/NewPasswordEntryContainer";
 import IyteCarCreateRideContainer from "./pages/IyteCarCreateRideContainer/IyteCarCreateRideContainer";
 import CreateMatchContainer from "./pages/CreatMatchContainer/CreateMatchContainer";
+import PlaceDetailContainer from "./pages/PlaceDetailContainer/PlaceDetailContainer";
 const RouteApp = () => {
   return (
     <Routes>
       <Route path="/anonims" element={<AnonimContainer />} />
       <Route path="/iyte-car" element={<IyteCarContainer />} />
       <Route path="/places" element={<PlacesContainer />} />
+      <Route path="/places/detail" element={<PlaceDetailContainer />} />
       <Route path="/sports" element={<SportsContainer />} />
       <Route path="/" element={<LoginContainer />} />
       <Route path="/register" element={<RegisterContainer />} />
