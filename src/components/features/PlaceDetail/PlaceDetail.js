@@ -1,19 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import PlaceCommentComplimentModal from "../PlaceCommentComplimentModal/PlaceCommentComplimentModal";
 import PlaceComment from "../PlaceComment/PlaceComment";
 import { useNavigate } from "react-router";
 import plusIcon from "../../../assets/anonimImages/plus_icon.svg";
+import PlaceNewComment from "../PlaceNewComment/PlaceNewComment";
 
 const PlaceDetail = () => {
   const navigate = useNavigate();
+  const [isAllowedForComment, setIsAllowedForComment] = useState(false);
+
   return (
-    <div className="container mt-5">
+    <div className="container mt-5 mb-4">
       <h2>Restaurant 1 - Details</h2>
       <div className="container mt-3 match-list-container">
         <div className="d-flex justify-content-end">
           <button
             className="btn btn-success"
-            //onClick={() => navigate("/iyte-car/create-ride")}
+            onClick={() => setIsAllowedForComment(true)}
           >
             <img src={plusIcon} alt="" className="icon-green" />
             Yeni Yorum Yap
@@ -26,15 +29,13 @@ const PlaceDetail = () => {
       <p>
         <strong>Phone Number:</strong> +905531521391
       </p>
-
       <h3>Comments</h3>
-
+      {isAllowedForComment ? <PlaceNewComment /> : ""}
       <div className="container">
         <PlaceComment />
         <PlaceComment />
         <PlaceComment />
       </div>
-
       <PlaceCommentComplimentModal />
       {/* restaurant.placeComments && restaurant.placeComments.length > 0 ? (
         <ul className="list-group">
