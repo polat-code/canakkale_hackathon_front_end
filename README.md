@@ -10,6 +10,10 @@ Yapılacaklar
 
 5. Shop sayfası ekle.(Sonraya bırakıldı.)
 
-6. Anonim Postlarım ve İlanlarımı düzenle.
+6. Anonim Postlarım ve İlanlarımı düzenle. ✅
 
-7. Profilim Sayfasını Düzenle.
+7. Profilim Sayfasını Düzenle. ✅
+
+8. İyteCar ilan detayını gösteren bir sayfa yap.
+
+9. Spor ilanı detayını gösteren bir sayfa yap.
