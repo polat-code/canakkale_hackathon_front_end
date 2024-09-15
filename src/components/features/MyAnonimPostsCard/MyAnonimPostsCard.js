@@ -1,7 +1,7 @@
 import React from "react";
 import clientImage from "../../../assets/messageImages/comment_photo.svg";
 
-const MessagePreview = ({ fullname, lastMessage, numberOfIsNotRead, time }) => {
+const MyAnonimPostsCard = () => {
   return (
     <div>
       <li
@@ -20,15 +20,12 @@ const MessagePreview = ({ fullname, lastMessage, numberOfIsNotRead, time }) => {
               width="60"
             />
             <div className="pt-1">
-              <p className="fw-bold mb-0">{fullname}</p>
-              <p className="small text-muted">{lastMessage}</p>
+              <p className="fw-bold mb-0">Anonim Post</p>
+              <p className="small text-muted">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              </p>
             </div>
-          </div>
-          <div className="pt-1">
-            <p className="small text-muted mb-1">{time}</p>
-            <span className="badge bg-danger float-end">
-              {numberOfIsNotRead}
-            </span>
           </div>
         </a>
       </li>
@@ -36,4 +33,4 @@ const MessagePreview = ({ fullname, lastMessage, numberOfIsNotRead, time }) => {
   );
 };
 
-export default MessagePreview;
+export default MyAnonimPostsCard;
