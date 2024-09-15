@@ -1,6 +1,7 @@
 import React from "react";
 import MyAnonimPosts from "../MyAnonimPosts/MyAnonimPosts";
 import MyIyteCarPosts from "../MyIyteCarPosts/MyIyteCarPosts";
+import MyMatches from "../MyMatches/MyMatches";
 
 const PostsAndAdverts = () => {
   return (
@@ -11,6 +12,7 @@ const PostsAndAdverts = () => {
       <div className="row">
         <MyAnonimPosts />
         <MyIyteCarPosts />
+        <MyMatches />
       </div>
     </div>
   );
