@@ -1,5 +1,6 @@
 import React from "react";
 import MyAnonimPosts from "../MyAnonimPosts/MyAnonimPosts";
+import MyIyteCarPosts from "../MyIyteCarPosts/MyIyteCarPosts";
 
 const PostsAndAdverts = () => {
   return (
@@ -9,6 +10,7 @@ const PostsAndAdverts = () => {
     >
       <div className="row">
         <MyAnonimPosts />
+        <MyIyteCarPosts />
       </div>
     </div>
   );
