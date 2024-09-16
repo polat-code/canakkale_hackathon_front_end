@@ -3,7 +3,10 @@ import React from "react";
 const MyMatchesCard = () => {
   return (
     <li>
-      <div className="card shadow-sm match-card h-100">
+      <div
+        className="card shadow-sm match-card h-100"
+        style={{ cursor: "pointer" }}
+      >
         <div className="card-body">
           <div className="d-flex justify-content-between align-items-center mb-2">
             <h5 className="card-title text-uppercase">{"Futbol"}</h5>
