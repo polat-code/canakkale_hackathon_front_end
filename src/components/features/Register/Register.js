@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import "../../../styles/Register/Register.css";
+import { ToastContainer } from "react-toastify";
+import {
+  toastError,
+  toastSuccess,
+} from "../../../utils/toastNotification/toastNotifications";
 
-const Register = () => {
+const Register = ({ handleRegisterToDB, isLoading, setUser }) => {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
@@ -9,9 +14,37 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
 
+  function isValidEmail(email) {
+    // A commonly used email validation regex pattern (though not perfect)
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  }
   const handleRegister = (e) => {
     e.preventDefault();
-    // Implement registration logic here
+    if (!name.trim()) {
+      toastError("Lütfen İsmi Doldurunuz!");
+    } else if (!surname.trim()) {
+      toastError("Lütfen Soyismi Doldurunuz!");
+    } else if (!email.trim() || !isValidEmail(email)) {
+      toastError("Lütfen Geçerli bir Email giriniz!");
+    } else if (!telephone.trim() || telephone.length <= 10) {
+      toastError("Lütfen Geçerli bir telefon numarası giriniz!");
+    } else if (password.includes(" ")) {
+      toastError("Şifrede boşluk olamaz");
+    } else if (password.trim().length < 8) {
+      toastError("Şifre uzunluğu en az 8 karakter olmalı");
+    } else if (password !== repeatPassword) {
+      toastError("Şifreler Aynı Değil");
+    } else {
+      setUser({
+        name: name,
+        surname: surname,
+        email: email,
+        password: password,
+        phoneNumber: telephone,
+      });
+      handleRegisterToDB();
+    }
   };
 
   return (
@@ -35,6 +68,7 @@ const Register = () => {
             <input
               type="text"
               className="form-control"
+              placeholder="İsim"
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -48,6 +82,7 @@ const Register = () => {
             <input
               type="text"
               className="form-control"
+              placeholder="Soyisim"
               id="surname"
               value={surname}
               onChange={(e) => setSurname(e.target.value)}
@@ -62,6 +97,7 @@ const Register = () => {
             <input
               type="email"
               className="form-control"
+              placeholder="Email"
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -75,6 +111,7 @@ const Register = () => {
             <input
               type="telephone"
               className="form-control"
+              placeholder="+905531234567"
               id="telephone"
               value={telephone}
               onChange={(e) => setTelephone(e.target.value)}
@@ -88,6 +125,7 @@ const Register = () => {
             <input
               type="password"
               className="form-control"
+              placeholder="Şifre"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -103,16 +141,29 @@ const Register = () => {
               type="password"
               className="form-control"
               id="repeatpassword"
+              placeholder="Şifre Tekrar"
               value={repeatPassword}
               onChange={(e) => setRepeatPassword(e.target.value)}
               required
             />
           </div>
           <button className="btn btn-primary w-100" onClick={handleRegister}>
-            Register
+            {isLoading ? (
+              <>
+                <span
+                  className="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                Yükleniyor...
+              </>
+            ) : (
+              "Kayıt Ol"
+            )}
           </button>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 };

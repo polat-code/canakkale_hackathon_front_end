@@ -6,7 +6,7 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log("Login:", { email, password });
+
     // Implement login logic here
   };
 
@@ -17,7 +17,7 @@ const Login = () => {
         style={{ maxWidth: "400px", width: "100%" }}
       >
         <h2 className="text-center mb-4">Login</h2>
-        <form onSubmit={handleLogin}>
+        <form>
           <div className="mb-3">
             <label htmlFor="email" className="form-label">
               Email address
@@ -44,7 +44,11 @@ const Login = () => {
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary w-100 mb-3">
+          <button
+            type="button"
+            className="btn btn-primary w-100 mb-3"
+            onClick={handleLogin}
+          >
             Login
           </button>
         </form>
