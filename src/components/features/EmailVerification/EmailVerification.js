@@ -9,13 +9,14 @@ const EmailVerification = ({ email }) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigate();
 
-  const handleEmailVerification = (e) => {
+  const handleEmailVerification = async (e) => {
     e.preventDefault();
     if (!otp.trim() || otp.length < 6) {
       toastError("Lütfen Email'e gelen kodu giriniz.");
     } else {
       setIsLoading(true);
-      const response = validateEmail(otp, email);
+      const response = await validateEmail({ otp, email });
+      console.log(response);
       if (response.statusCode === 200) {
         navigation("/");
       } else if (response.statusCode === 406) {

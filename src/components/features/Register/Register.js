@@ -5,8 +5,12 @@ import {
   toastError,
   toastSuccess,
 } from "../../../utils/toastNotification/toastNotifications";
+import { useDispatch } from "react-redux";
+import { putUserInfo } from "../../../redux/userSlice";
 
-const Register = ({ handleRegisterToDB, isLoading, setUser }) => {
+const Register = ({ handleRegisterToDB, isLoading }) => {
+  const dispatch = useDispatch();
+
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
@@ -36,14 +40,15 @@ const Register = ({ handleRegisterToDB, isLoading, setUser }) => {
     } else if (password !== repeatPassword) {
       toastError("Şifreler Aynı Değil");
     } else {
-      setUser({
+      const user = {
         name: name,
         surname: surname,
         email: email,
         password: password,
         phoneNumber: telephone,
-      });
-      handleRegisterToDB();
+      };
+      dispatch(putUserInfo(user));
+      handleRegisterToDB(user);
     }
   };
 

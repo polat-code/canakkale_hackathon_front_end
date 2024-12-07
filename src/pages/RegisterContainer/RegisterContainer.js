@@ -8,12 +8,14 @@ import {
 } from "../../utils/toastNotification/toastNotifications";
 import { useNavigate } from "react-router";
 import EmailVerification from "../../components/features/EmailVerification/EmailVerification";
+import { useSelector } from "react-redux";
 
 const RegisterContainer = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isVerification, setIsVerification] = useState(true);
+  const [isVerification, setIsVerification] = useState(false);
   const [user, setUser] = useState({});
   const navigation = useNavigate();
+  const addedUser = useSelector((state) => state.user.user);
 
   const handleRegisterToDB = async (user) => {
     setIsLoading(true);
@@ -35,7 +37,7 @@ const RegisterContainer = () => {
     <div>
       <Navbar />
       {isVerification ? (
-        <EmailVerification email={user.email} />
+        <EmailVerification email={addedUser.email} />
       ) : (
         <Register
           handleRegisterToDB={handleRegisterToDB}
