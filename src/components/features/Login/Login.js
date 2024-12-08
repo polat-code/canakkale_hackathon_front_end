@@ -5,7 +5,7 @@ import { toastError } from "../../../utils/toastNotification/toastNotifications"
 const Login = ({ handleLoginContainer }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  // TODO Apply for isLoading to button
   const handleLogin = (e) => {
     e.preventDefault();
     if (!email.trim() || !password) {

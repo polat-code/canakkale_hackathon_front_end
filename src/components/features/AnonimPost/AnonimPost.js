@@ -13,7 +13,7 @@ import PostComplimentModal from "../../common/PostComplimentModal/PostCompliment
 import { Modal } from "react-bootstrap";
 
 const AnonimPost = ({ post }) => {
-  const [isLiked, setIsLiked] = useState(true);
+  const [isLiked, setIsLiked] = useState(post.isCurrentUserLikePost);
 
   const [showPhoto, setShowPhoto] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -44,10 +44,12 @@ const AnonimPost = ({ post }) => {
               alt="avatar"
             />
             <div>
-              <h6 className="card-title font-weight-bold mb-2">Anonim Post</h6>
+              <h6 className="card-title font-weight-bold mb-2">
+                {post.postOwnerFullName}
+              </h6>
               <p className="card-text fs-6">
                 <i className="far fa-clock pe-1"></i>
-                {post.date}
+                {post.createdAt}
               </p>
             </div>
           </div>
@@ -120,7 +122,7 @@ const AnonimPost = ({ post }) => {
                 className="like-icon"
               />
 
-              <span className="ms-2">{post.numberOfLike}</span>
+              <span className="ms-2">{post.numberOfLikes}</span>
             </div>
 
             {/* Like END */}
@@ -133,7 +135,7 @@ const AnonimPost = ({ post }) => {
             >
               <div className="d-flex justify-content-center">
                 <img src={commentPostIcon} alt="" />
-                <span className="ms-2">{post.numberOfComment}</span>
+                <span className="ms-2">{post.numberOfComments}</span>
               </div>
             </div>
             {/* Comment END */}
