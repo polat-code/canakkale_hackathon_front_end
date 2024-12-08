@@ -187,7 +187,7 @@ const Navbar = () => {
                   {/* Main Navigation 6 SubNavigation 1 START */}
                   <li>
                     <a
-                      class="dropdown-item"
+                      className="dropdown-item"
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();
@@ -202,7 +202,7 @@ const Navbar = () => {
                   {/* Main Navigation 6 SubNavigation 2 START */}
                   <li>
                     <a
-                      class="dropdown-item"
+                      className="dropdown-item"
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();
@@ -217,7 +217,7 @@ const Navbar = () => {
                   {/* Main Navigation 6 SubNavigation 3 START */}
                   <li>
                     <a
-                      class="dropdown-item"
+                      className="dropdown-item"
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();
@@ -232,7 +232,7 @@ const Navbar = () => {
                   {/* Main Navigation 6 SubNavigation 4 START */}
                   <li>
                     <a
-                      class="dropdown-item"
+                      className="dropdown-item"
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();

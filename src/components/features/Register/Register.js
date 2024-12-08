@@ -1,16 +1,9 @@
 import React, { useState } from "react";
 import "../../../styles/Register/Register.css";
 import { ToastContainer } from "react-toastify";
-import {
-  toastError,
-  toastSuccess,
-} from "../../../utils/toastNotification/toastNotifications";
-import { useDispatch } from "react-redux";
-import { putUserInfo } from "../../../redux/userSlice";
+import { toastError } from "../../../utils/toastNotification/toastNotifications";
 
 const Register = ({ handleRegisterToDB, isLoading }) => {
-  const dispatch = useDispatch();
-
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
@@ -47,7 +40,6 @@ const Register = ({ handleRegisterToDB, isLoading }) => {
         password: password,
         phoneNumber: telephone,
       };
-      dispatch(putUserInfo(user));
       handleRegisterToDB(user);
     }
   };

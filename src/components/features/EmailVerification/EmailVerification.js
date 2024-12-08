@@ -1,36 +1,20 @@
 import React, { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { toastError } from "../../../utils/toastNotification/toastNotifications";
-import { validateEmail } from "../../../services/AuthenticationService";
-import { useNavigate } from "react-router";
 
-const EmailVerification = ({ email }) => {
+const EmailVerification = ({
+  email,
+  isLoading,
+  handleEmailVerificationContainer,
+}) => {
   const [otp, setOtp] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const navigation = useNavigate();
 
   const handleEmailVerification = async (e) => {
     e.preventDefault();
     if (!otp.trim() || otp.length < 6) {
       toastError("Lütfen Email'e gelen kodu giriniz.");
     } else {
-      setIsLoading(true);
-      const response = await validateEmail({ otp, email });
-      console.log(response);
-      if (response.statusCode === 200) {
-        navigation("/");
-      } else if (response.statusCode === 406) {
-        toastError("Hatalı İşlem! Tekrar giriş yapmaya çalışın lütfen.");
-      } else if (response.statusCode === 411) {
-        toastError("Onay Kodu Yanlış!");
-      } else if (response.statusCode === 498) {
-        toastError(
-          "Onay Kodu'nun süresi bitmiştir.Tekrar Onay Kodu gönderildi!"
-        );
-      } else {
-        toastError("Bir hata ile karşılaşıldı!");
-      }
-      setIsLoading(false);
+      handleEmailVerificationContainer(otp);
     }
   };
 

@@ -1,13 +1,18 @@
 import React, { useState } from "react";
+import { ToastContainer } from "react-toastify";
+import { toastError } from "../../../utils/toastNotification/toastNotifications";
 
-const Login = () => {
+const Login = ({ handleLoginContainer }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
-
-    // Implement login logic here
+    if (!email.trim() || !password) {
+      toastError("Lütfen Kullanıcı Adını ve Şifreyi giriniz.");
+    } else {
+      handleLoginContainer(email, password);
+    }
   };
 
   return (
@@ -67,6 +72,7 @@ const Login = () => {
           </button>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

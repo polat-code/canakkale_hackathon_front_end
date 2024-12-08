@@ -28,3 +28,12 @@ export const validateEmail = async (validationData) => {
     console.log(err);
   }
 };
+
+export const login = async (email, password) => {
+  try {
+    const response = await api().post("/auth/login", { email, password });
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
