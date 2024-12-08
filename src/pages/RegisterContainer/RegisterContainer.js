@@ -22,8 +22,9 @@ const RegisterContainer = () => {
     if (resp.statusCode === 200) {
       toastSuccess("Kayıt Başarılı,Yönlendiriliyor...");
       dispatch(putUserInfo(user));
-      setTimeout(() => {}, 1000);
-      navigation("/login/email-verification");
+      setTimeout(() => {
+        navigation("/login/email-verification");
+      }, 1500);
     } else if (resp.statusCode === 409) {
       toastError("Önceden Kayıtlı Email");
     } else {

@@ -18,8 +18,9 @@ const EmailVerificationContainer = () => {
     const response = await validateEmail({ otp, email });
     if (response.statusCode === 200) {
       toastSuccess("Email Onaylandı...");
-      setTimeout(() => {}, 1800);
-      navigation("/");
+      setTimeout(() => {
+        navigation("/");
+      }, 1800);
     } else if (response.statusCode === 406) {
       toastError("Hatalı İşlem! Tekrar giriş yapmaya çalışın lütfen.");
     } else if (response.statusCode === 411) {

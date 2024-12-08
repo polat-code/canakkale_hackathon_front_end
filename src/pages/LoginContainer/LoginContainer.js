@@ -6,6 +6,7 @@ import { login } from "../../services/AuthenticationService";
 import {
   toastError,
   toastInfo,
+  toastSuccess,
 } from "../../utils/toastNotification/toastNotifications";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
@@ -29,7 +30,10 @@ const LoginContainer = () => {
         secure: true,
         sameSite: "strict",
       });
-      navigation("/anonims");
+      toastSuccess("Başarılı! Yönlendiriliyorsun...");
+      setTimeout(() => {
+        navigation("/anonims");
+      }, 1800);
     } else if (resp && resp.statusCode === 404) {
       toastError("Böyle bir kullanıcı bulunamadı!");
     } else if (resp && resp.statusCode === 411) {
@@ -38,9 +42,10 @@ const LoginContainer = () => {
       toastError("Bu hesap Banlanmıştır.");
     } else if (resp && resp.statusCode === 410) {
       toastInfo("Email Onaylama! Yönlendiriliyorsun...");
-      setTimeout(() => {}, 1500);
+      setTimeout(() => {
+        navigation("/login/email-verification");
+      }, 1500);
       dispatch(putUserInfo({ email }));
-      navigation("/");
     } else {
       toastError("Bilinmeyen bir hata oluştu.");
     }
