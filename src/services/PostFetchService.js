@@ -35,26 +35,24 @@ export const getPosts = async (pageNo, pageSize) => {
           refreshToken: Cookies.get("refresh_token"),
           accessToken: accessToken,
         });
-        console.log("refreshTokenResponse : " + refreshTokenresponse);
+        console.log(
+          "refreshTokenResponse : " + JSON.stringify(refreshTokenresponse)
+        );
         if (refreshTokenresponse.data.statusCode === 200) {
-          Cookies.set("access_token", refreshTokenresponse.data.access_token, {
+          Cookies.set("access_token", refreshTokenresponse.data.accessToken, {
             expires: 30,
             secure: true,
             sameSite: "strict",
           });
-          Cookies.set(
-            "refresh_token",
-            refreshTokenresponse.data.refresh_token,
-            {
-              expires: 30,
-              secure: true,
-              sameSite: "strict",
-            }
-          );
+          Cookies.set("refresh_token", refreshTokenresponse.data.refreshToken, {
+            expires: 30,
+            secure: true,
+            sameSite: "strict",
+          });
           let postResponse = await api().get(
             `/post/all/${pageNo}/${pageSize}`,
             {
-              Authorization: `Bearer ${refreshTokenresponse.data.access_token}`,
+              Authorization: `Bearer ${refreshTokenresponse.data.accessToken}`,
             }
           );
           return postResponse.data;

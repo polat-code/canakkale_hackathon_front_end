@@ -15,7 +15,7 @@ const AnonimContainer = () => {
       try {
         const postResponse = await getPosts(1, 10);
         //console.log("postResponse in container : ", postResponse);
-        //setPosts(postResponse.data); // Data'yı state'e setle
+        setPosts(postResponse.data); // Data'yı state'e setle
       } catch (error) {
         console.error(error);
       } finally {
