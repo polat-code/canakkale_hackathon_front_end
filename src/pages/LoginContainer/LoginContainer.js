@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../../components/common/Navbar/Navbar";
 import Login from "../../components/features/Login/Login";
 import Cookies from "js-cookie";
@@ -11,12 +11,16 @@ import {
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { putUserInfo } from "../../redux/userSlice";
+import EmailVerificationContainer from "../EmailVerificationContainer/EmailVerificationContainer";
 
 const LoginContainer = () => {
   const navigation = useNavigate();
   const dispatch = useDispatch();
+  const [isEmailVerification, setIsEmailVerification] = useState(false);
+  const [isLoginButtonDisabled, setIsLoginButtonDisabled] = useState(false);
 
   const handleLoginContainer = async (email, password) => {
+    setIsLoginButtonDisabled(true);
     const resp = await login(email, password);
     if (resp && resp.statusCode === 200) {
       const { access_token, refresh_token } = resp.data;
@@ -31,6 +35,7 @@ const LoginContainer = () => {
         sameSite: "strict",
       });
       toastSuccess("Başarılı! Yönlendiriliyorsun...");
+
       setTimeout(() => {
         navigation("/anonims");
       }, 1800);
@@ -43,17 +48,28 @@ const LoginContainer = () => {
     } else if (resp && resp.statusCode === 410) {
       toastInfo("Email Onaylama! Yönlendiriliyorsun...");
       setTimeout(() => {
-        navigation("/login/email-verification");
+        setIsEmailVerification(true);
+        setIsLoginButtonDisabled(true);
       }, 1500);
       dispatch(putUserInfo({ email }));
     } else {
       toastError("Bilinmeyen bir hata oluştu.");
     }
+    setIsLoginButtonDisabled(false);
   };
   return (
     <div>
       <Navbar />
-      <Login handleLoginContainer={handleLoginContainer} />
+      {isEmailVerification ? (
+        <EmailVerificationContainer
+          setIsEmailVerification={setIsEmailVerification}
+        />
+      ) : (
+        <Login
+          handleLoginContainer={handleLoginContainer}
+          isLoginButtonDisabled={isLoginButtonDisabled}
+        />
+      )}
     </div>
   );
 };

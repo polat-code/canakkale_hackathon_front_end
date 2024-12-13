@@ -9,11 +9,15 @@ import {
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { putUserInfo } from "../../redux/userSlice";
+import EmailVerificationContainer from "../EmailVerificationContainer/EmailVerificationContainer";
 
 const RegisterContainer = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigate();
   const dispatch = useDispatch();
+  const [isVerification, setIsVerification] = useState(false);
+  const [isRegisterButtonDisabled, setIsRegisterButtonDisabled] =
+    useState(false);
 
   const handleRegisterToDB = async (user) => {
     setIsLoading(true);
@@ -23,7 +27,8 @@ const RegisterContainer = () => {
       toastSuccess("Kayıt Başarılı,Yönlendiriliyor...");
       dispatch(putUserInfo(user));
       setTimeout(() => {
-        navigation("/login/email-verification");
+        setIsVerification(true);
+        setIsRegisterButtonDisabled(true);
       }, 1500);
     } else if (resp.statusCode === 409) {
       toastError("Önceden Kayıtlı Email");
@@ -36,7 +41,17 @@ const RegisterContainer = () => {
   return (
     <div>
       <Navbar />
-      <Register handleRegisterToDB={handleRegisterToDB} isLoading={isLoading} />
+      {isVerification ? (
+        <EmailVerificationContainer
+          setIsEmailVerification={setIsVerification}
+        />
+      ) : (
+        <Register
+          handleRegisterToDB={handleRegisterToDB}
+          isRegisterButtonDisabled={isRegisterButtonDisabled}
+          isLoading={isLoading}
+        />
+      )}
     </div>
   );
 };

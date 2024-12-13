@@ -1,6 +1,7 @@
 import axios from "axios";
 import { baseURL } from "./ApiConstants";
 import Cookies from "js-cookie";
+import { json } from "react-router";
 
 const api = () => {
   return axios.create({
@@ -35,20 +36,25 @@ export const getPosts = async (pageNo, pageSize) => {
           refreshToken: Cookies.get("refresh_token"),
           accessToken: accessToken,
         });
-        console.log(
-          "refreshTokenResponse : " + JSON.stringify(refreshTokenresponse)
-        );
         if (refreshTokenresponse.data.statusCode === 200) {
-          Cookies.set("access_token", refreshTokenresponse.data.accessToken, {
-            expires: 30,
-            secure: true,
-            sameSite: "strict",
-          });
-          Cookies.set("refresh_token", refreshTokenresponse.data.refreshToken, {
-            expires: 30,
-            secure: true,
-            sameSite: "strict",
-          });
+          Cookies.set(
+            "access_token",
+            refreshTokenresponse.data.data.access_token,
+            {
+              expires: 30,
+              secure: true,
+              sameSite: "strict",
+            }
+          );
+          Cookies.set(
+            "refresh_token",
+            refreshTokenresponse.data.data.refresh_token,
+            {
+              expires: 30,
+              secure: true,
+              sameSite: "strict",
+            }
+          );
           let postResponse = await api().get(
             `/post/all/${pageNo}/${pageSize}`,
             {

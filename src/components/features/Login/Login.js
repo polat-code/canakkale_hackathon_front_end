@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { toastError } from "../../../utils/toastNotification/toastNotifications";
 
-const Login = ({ handleLoginContainer }) => {
+const Login = ({ handleLoginContainer, isLoginButtonDisabled }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   // TODO Apply for isLoading to button
@@ -67,6 +67,7 @@ const Login = ({ handleLoginContainer }) => {
           <button
             className="btn btn-outline-success"
             onClick={() => (window.location.href = "/register")}
+            disabled={isLoginButtonDisabled}
           >
             Register
           </button>

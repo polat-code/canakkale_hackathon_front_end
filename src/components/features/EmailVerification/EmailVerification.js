@@ -2,11 +2,7 @@ import React, { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { toastError } from "../../../utils/toastNotification/toastNotifications";
 
-const EmailVerification = ({
-  email,
-  isLoading,
-  handleEmailVerificationContainer,
-}) => {
+const EmailVerification = ({ isLoading, handleEmailVerificationContainer }) => {
   const [otp, setOtp] = useState("");
 
   const handleEmailVerification = async (e) => {
@@ -15,6 +11,7 @@ const EmailVerification = ({
       toastError("Lütfen Email'e gelen kodu giriniz.");
     } else {
       handleEmailVerificationContainer(otp);
+      setOtp("");
     }
   };
 

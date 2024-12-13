@@ -3,7 +3,11 @@ import "../../../styles/Register/Register.css";
 import { ToastContainer } from "react-toastify";
 import { toastError } from "../../../utils/toastNotification/toastNotifications";
 
-const Register = ({ handleRegisterToDB, isLoading }) => {
+const Register = ({
+  handleRegisterToDB,
+  isLoading,
+  isRegisterButtonDisabled,
+}) => {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
@@ -144,7 +148,11 @@ const Register = ({ handleRegisterToDB, isLoading }) => {
               required
             />
           </div>
-          <button className="btn btn-primary w-100" onClick={handleRegister}>
+          <button
+            className="btn btn-primary w-100"
+            onClick={handleRegister}
+            disabled={isRegisterButtonDisabled}
+          >
             {isLoading ? (
               <>
                 <span

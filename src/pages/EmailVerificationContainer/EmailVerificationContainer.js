@@ -8,7 +8,7 @@ import {
   toastSuccess,
 } from "../../utils/toastNotification/toastNotifications";
 
-const EmailVerificationContainer = () => {
+const EmailVerificationContainer = ({ setIsEmailVerification }) => {
   const { email } = useSelector((state) => state.user.user);
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigate();
@@ -17,8 +17,9 @@ const EmailVerificationContainer = () => {
     setIsLoading(true);
     const response = await validateEmail({ otp, email });
     if (response.statusCode === 200) {
-      toastSuccess("Email Onaylandı...");
+      toastSuccess("Email Onaylandı Yönlendiriliyor...");
       setTimeout(() => {
+        setIsEmailVerification(false);
         navigation("/");
       }, 1800);
     } else if (response.statusCode === 406) {
@@ -37,6 +38,7 @@ const EmailVerificationContainer = () => {
       <EmailVerification
         email={email}
         handleEmailVerificationContainer={handleEmailVerificationContainer}
+        isLoading={isLoading}
       />
     </>
   );

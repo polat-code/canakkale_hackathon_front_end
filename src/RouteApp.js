@@ -51,10 +51,6 @@ const RouteApp = () => {
         element={<IyteCarCreateRideContainer />}
       />
       <Route path="sports/new-match" element={<CreateMatchContainer />} />
-      <Route
-        path="/login/email-verification"
-        element={<EmailVerificationContainer />}
-      />
     </Routes>
   );
 };
