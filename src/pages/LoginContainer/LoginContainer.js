@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/common/Navbar/Navbar";
 import Login from "../../components/features/Login/Login";
 import Cookies from "js-cookie";
-import { login } from "../../services/AuthenticationService";
+import {
+  isValidAccessToken,
+  login,
+} from "../../services/AuthenticationService";
 import {
   toastError,
   toastInfo,
@@ -57,6 +60,20 @@ const LoginContainer = () => {
     }
     setIsLoginButtonDisabled(false);
   };
+
+  useEffect(() => {
+    const validateLogin = async () => {
+      const accessToken = Cookies.get("access_token");
+      if (accessToken) {
+        const isValidUser = await isValidAccessToken();
+        if (isValidUser) {
+          window.location.assign("/anonims");
+        }
+      }
+    };
+
+    validateLogin();
+  }, []);
   return (
     <div>
       <Navbar />

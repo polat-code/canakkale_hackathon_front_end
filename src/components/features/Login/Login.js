@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { toastError } from "../../../utils/toastNotification/toastNotifications";
 
@@ -14,7 +14,6 @@ const Login = ({ handleLoginContainer, isLoginButtonDisabled }) => {
       handleLoginContainer(email, password);
     }
   };
-  useEffect(() => {}, []);
 
   return (
     <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
