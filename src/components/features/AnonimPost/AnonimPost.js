@@ -22,6 +22,7 @@ const AnonimPost = ({ post }) => {
     setShowPhoto(true);
   };
   const navigation = useNavigate();
+  console.log(JSON.stringify(post));
 
   const handleAnonimPostDetail = () => {
     navigation("/anonims/detail?postId=" + post.postId);
@@ -73,16 +74,16 @@ const AnonimPost = ({ post }) => {
             </p>
           </div>
           {/* Images START */}
-          {post.photos && (
+          {post.photoList && (
             <div className="d-flex flex-column flex-sm-row align-items-center justify-content-around mb-4">
-              {post.photos.map((image) => {
+              {post.photoList.map((image) => {
                 return (
                   <img
-                    src={image}
+                    src={image.data}
                     alt="post photo"
                     className="rounded img-fluid my-lg-0 my-2"
                     style={{ maxWidth: "280px", maxHeight: "200px" }}
-                    onClick={() => handlePhotoShow(image)}
+                    onClick={() => handlePhotoShow(image.data)}
                   />
                 );
               })}
@@ -98,9 +99,8 @@ const AnonimPost = ({ post }) => {
               <div className="d-flex justify-content-center">
                 <img
                   src={selectedImage}
-                  alt=""
+                  alt="Fotoğraf"
                   className="img-fluid w-100 rounded"
-                  centered
                 />
               </div>
             </Modal.Body>
@@ -117,7 +117,9 @@ const AnonimPost = ({ post }) => {
               onClick={handleLikeButton}
             >
               <img
-                src={isLiked ? likePostIconActive : likePostIcon}
+                src={
+                  post.isCurrentUserLikePost ? likePostIconActive : likePostIcon
+                }
                 alt="like-icon"
                 className="like-icon"
               />

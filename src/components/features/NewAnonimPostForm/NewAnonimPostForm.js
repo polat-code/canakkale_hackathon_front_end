@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const NewAnonimPostForm = () => {
+const NewAnonimPostForm = ({ handleSubmitNewPost }) => {
   const [postDescription, setPostDescription] = useState("");
   const [photos, setPhotos] = useState([]);
   const [adminNote, setAdminNote] = useState("");
@@ -15,7 +15,10 @@ const NewAnonimPostForm = () => {
     files.forEach((file) => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPhotos((prevPhotos) => [...prevPhotos, reader.result]);
+        setPhotos((prevPhotos) => [
+          ...prevPhotos,
+          { fileName: file.name, data: reader.result },
+        ]);
       };
       reader.onerror = () => {
         alert("Failed to read file!");
@@ -37,6 +40,11 @@ const NewAnonimPostForm = () => {
     console.log("Post Description:", postDescription);
     console.log("Photos (Base64):", photos);
     console.log("Admin Note:", adminNote);
+    handleSubmitNewPost({
+      content: postDescription,
+      photos,
+      noteToAdmin: adminNote,
+    });
 
     // Example: You can send the data to your backend as follows:
     // const formData = {
@@ -102,7 +110,7 @@ const NewAnonimPostForm = () => {
               {photos.map((photo, index) => (
                 <div key={index} className="me-2 position-relative">
                   <img
-                    src={photo}
+                    src={photo.data}
                     alt={`Preview ${index + 1}`}
                     style={{
                       width: "75px",

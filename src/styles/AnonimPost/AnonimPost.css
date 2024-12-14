@@ -1,21 +1,19 @@
 .compliment-link {
-    text-decoration: none;
-    color: black;
+  text-decoration: none;
+  color: black;
 }
 .compliment-link:hover {
-    text-decoration: underline;
-
+  text-decoration: underline;
 }
 .like-icon {
-    transition: opacity 0.3s ease;
-  }
+  transition: opacity 0.3s ease;
+}
 
 .cursor-pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 .no-border-header {
-    border-bottom: none;
-    padding-bottom:0px;
-    padding-top: 12px;
-  }
-  
+  border-bottom: none;
+  padding-bottom: 0px;
+  padding-top: 12px;
+}

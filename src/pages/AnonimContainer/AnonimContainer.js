@@ -32,10 +32,8 @@ const AnonimContainer = () => {
 
   const handleNewAnonymousPost = async () => {
     const response = await getPostPermission();
-    console.log(JSON.stringify(response));
     if (response.statusCode === 451) {
       toastError("std uzantılı mail ile giriş yapın");
-      console.log("wdawd");
     } else if (response.statusCode === 200) {
       setIsValidPostAddition(true);
     } else {
@@ -48,7 +46,9 @@ const AnonimContainer = () => {
       <Navbar />
       <ToastContainer />
       {isValidPostAddition ? (
-        <NewAnonymousContainer />
+        <NewAnonymousContainer
+          setIsValidPostAddition={setIsValidPostAddition}
+        />
       ) : (
         <>
           <NewAnonimPostButton

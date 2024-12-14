@@ -83,6 +83,76 @@ export const getPosts = async (pageNo, pageSize) => {
   }
 };
 
+export const createPost = async (post) => {
+  try {
+    const accessToken = Cookies.get("access_token");
+    const headers = {};
+    if (accessToken) {
+      headers["Authorization"] = `Bearer ${accessToken}`;
+    } else {
+      window.location.assign("/");
+    }
+
+    const postResponse = await api().post("/post/create", post, {
+      headers,
+    });
+
+    if (
+      postResponse.data.statusCode === 200 ||
+      postResponse.data.statusCode === 451
+    ) {
+      return postResponse.data;
+    } else if (postResponse.data.statusCode === 498) {
+      // Expired JWT
+      try {
+        const refreshTokenresponse = await api().post("/auth/refresh-token", {
+          refreshToken: Cookies.get("refresh_token"),
+          accessToken: accessToken,
+        });
+        if (refreshTokenresponse.data.statusCode === 200) {
+          Cookies.set(
+            "access_token",
+            refreshTokenresponse.data.data.access_token,
+            {
+              expires: 30,
+              secure: true,
+              sameSite: "strict",
+            }
+          );
+          Cookies.set(
+            "refresh_token",
+            refreshTokenresponse.data.data.refresh_token,
+            {
+              expires: 30,
+              secure: true,
+              sameSite: "strict",
+            }
+          );
+          let permissionResponse = await api().post("/post/create", post, {
+            Authorization: `Bearer ${refreshTokenresponse.data.accessToken}`,
+          });
+          return permissionResponse.data;
+        } else if (refreshTokenresponse.data.statusCode === 411) {
+          // Invalid Refresh Token
+          Cookies.remove("access_token");
+          Cookies.remove("refresh_token");
+          window.location.assign("/");
+        } else if (refreshTokenresponse.data.statusCode === 404) {
+          console.log("User not found");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    } else if (postResponse.data.statusCode === 401) {
+      Cookies.remove("access_token");
+      Cookies.remove("refresh_token");
+      window.location.assign("/");
+    }
+  } catch (err) {
+    console.log("Create Post Error");
+  }
+};
+
 export const getPostPermission = async () => {
   try {
     const accessToken = Cookies.get("access_token");
