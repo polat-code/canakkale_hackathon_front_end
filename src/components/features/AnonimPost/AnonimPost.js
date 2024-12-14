@@ -10,7 +10,7 @@ import likePostIconActive from "../../../assets/anonimImages/heard_red.svg";
 import commentPostIcon from "../../../assets/anonimImages/comment_post_icon.svg";
 import { useNavigate } from "react-router";
 import PostComplimentModal from "../../common/PostComplimentModal/PostComplimentModal";
-import { Button, Modal } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import { likePostAPI } from "../../../services/PostFetchService";
 import { ToastContainer } from "react-toastify";
 import { toastError } from "../../../utils/toastNotification/toastNotifications";
