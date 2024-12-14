@@ -10,7 +10,7 @@ import likePostIconActive from "../../../assets/anonimImages/heard_red.svg";
 import commentPostIcon from "../../../assets/anonimImages/comment_post_icon.svg";
 import { useNavigate } from "react-router";
 import PostComplimentModal from "../../common/PostComplimentModal/PostComplimentModal";
-import { Modal } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import { likePostAPI } from "../../../services/PostFetchService";
 import { ToastContainer } from "react-toastify";
 import { toastError } from "../../../utils/toastNotification/toastNotifications";
@@ -18,6 +18,16 @@ import { toastError } from "../../../utils/toastNotification/toastNotifications"
 const AnonimPost = ({ post }) => {
   const [isLiked, setIsLiked] = useState(post.isCurrentUserLikePost);
   const [numOfLikes, setNumOfLikes] = useState(post.numberOfLikes);
+  const [showCompModal, setShowCompModal] = useState(false);
+
+  const [showModal, setShowModal] = useState(false);
+
+  const handleOpenModal = (e) => {
+    e.preventDefault(); // Sayfanın yeniden yüklenmesini engeller
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => setShowModal(false);
 
   const [showPhoto, setShowPhoto] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -156,21 +166,24 @@ const AnonimPost = ({ post }) => {
             {/* Comment END */}
 
             {/* Compliment */}
-            <a
-              href=""
-              className="compliment-link"
-              data-bs-toggle="modal"
-              data-bs-target="#post_compliment_modal"
+            <span
+              variant="link"
+              className="compliment-link cursor-pointer"
+              onClick={handleOpenModal}
             >
               <div className="d-flex justify-content-center">
-                <img src={complimentIconPhoto} alt="" />
+                <img src={complimentIconPhoto} alt="Compliment Icon" />
                 <span className="ms-2">Şikayet Et</span>
               </div>
-            </a>
+            </span>
             {/* Compliment END */}
 
             {/* Compliment Module*/}
-            <PostComplimentModal />
+            <PostComplimentModal
+              postId={post.postId}
+              show={showModal}
+              handleClose={handleCloseModal}
+            />
             {/* Compliment Module END*/}
           </div>
           {/* Interactions END */}
