@@ -13,7 +13,7 @@ import PostComplimentModal from "../../common/PostComplimentModal/PostCompliment
 import LikeCountModal from "../LikeCountModal/LikeCountModal";
 import { Modal } from "react-bootstrap";
 
-const AnonimPostDetail = () => {
+const AnonimPostDetail = ({ post }) => {
   const [isLiked, setIsLiked] = useState(true);
   const [showPhoto, setShowPhoto] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -25,6 +25,7 @@ const AnonimPostDetail = () => {
   const handleLikeButton = () => {
     setIsLiked(!isLiked);
   };
+  console.log(post);
 
   return (
     <div className="container">
@@ -41,8 +42,9 @@ const AnonimPostDetail = () => {
             <div>
               <h6 className="card-title font-weight-bold mb-2">Anonim Post</h6>
               <p className="card-text fs-6">
-                <i className="far fa-clock pe-1"></i>
-                2024-08-10T14:35:00Z
+                <span className="far fa-clock pe-1">
+                  {post.postResponse.createdAt}
+                </span>
               </p>
             </div>
           </div>
@@ -70,20 +72,16 @@ const AnonimPostDetail = () => {
           {/* Images START */}
 
           <div className="d-flex flex-column flex-sm-row align-items-center justify-content-around mb-4">
-            <img
-              src={image}
-              alt="post photo"
-              className="rounded img-fluid my-lg-0 my-2"
-              style={{ maxWidth: "280px", maxHeight: "200px" }}
-              onClick={() => handlePhotoShow(image)}
-            />
-            <img
-              src={image}
-              alt="post photo"
-              className="rounded img-fluid my-lg-0 my-2"
-              style={{ maxWidth: "280px", maxHeight: "200px" }}
-              onClick={() => handlePhotoShow(image)}
-            />
+            {post.postResponse.photoList.map((photo, index) => (
+              <img
+                src={photo}
+                alt="post photo"
+                className="rounded img-fluid my-lg-0 my-2"
+                style={{ maxWidth: "280px", maxHeight: "200px" }}
+                onClick={() => handlePhotoShow(image)}
+                key={index}
+              />
+            ))}
           </div>
 
           {/* Images END */}

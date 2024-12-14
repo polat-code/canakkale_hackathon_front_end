@@ -297,3 +297,74 @@ export const likePostAPI = async (postId) => {
     console.log("Post Permission Error");
   }
 };
+
+export const getPostDetailAPI = async (postId) => {
+  try {
+    const accessToken = Cookies.get("access_token");
+    const headers = {};
+    if (accessToken) {
+      headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+    let postResponse = await api().get(`/post/post-detail/${postId}`, {
+      headers,
+    });
+
+    //JSON.parse(postResponse);
+    //console.log("postResponse in postfetchservice : " + postResponse);
+    //console.log("postResponse in postfetchservice : " + JSON.stringify(postResponse.data));
+    const postResponseData = postResponse.data;
+
+    if (postResponseData.statusCode === 200) {
+      return postResponse.data;
+    } else if (postResponseData.statusCode === 498) {
+      try {
+        const refreshTokenresponse = await api().post("/auth/refresh-token", {
+          refreshToken: Cookies.get("refresh_token"),
+          accessToken: accessToken,
+        });
+        if (refreshTokenresponse.data.statusCode === 200) {
+          Cookies.set(
+            "access_token",
+            refreshTokenresponse.data.data.access_token,
+            {
+              expires: 30,
+              secure: true,
+              sameSite: "strict",
+            }
+          );
+          Cookies.set(
+            "refresh_token",
+            refreshTokenresponse.data.data.refresh_token,
+            {
+              expires: 30,
+              secure: true,
+              sameSite: "strict",
+            }
+          );
+          let postResponse = await api().get(`/post/post-detail/${postId}`, {
+            Authorization: `Bearer ${refreshTokenresponse.data.accessToken}`,
+          });
+          return postResponse.data;
+        } else if (refreshTokenresponse.data.statusCode === 411) {
+          Cookies.remove("access_token");
+          Cookies.remove("refresh_token");
+          postResponse = await api().get(`/post/post-detail/${postId}`);
+          return postResponse.data;
+        } else if (refreshTokenresponse.data.statusCode === 404) {
+          console.log("User not found");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    } else if (postResponseData.statusCode === 401) {
+      Cookies.remove("access_token");
+      Cookies.remove("refresh_token");
+      postResponse = await api().get(`/post/post-detail/${postId}`);
+      return postResponse.data;
+    } else if (postResponseData.statusCode === 404) {
+      window.location.assign("/error?message=Post Bulunamadı!");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};

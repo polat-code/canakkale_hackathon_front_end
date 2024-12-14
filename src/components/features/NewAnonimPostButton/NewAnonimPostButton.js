@@ -1,9 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import "../../../styles/NewAnonimPostButton/NewAnonimPostButton.css";
 import plusIcon from "../../../assets/anonimImages/plus_icon.svg";
-import { useNavigate } from "react-router";
-import { getPostPermission } from "../../../services/PostFetchService";
-import { toast } from "react-toastify";
 
 const NewAnonimPostButton = ({ handleNewAnonymousPost }) => {
   return (

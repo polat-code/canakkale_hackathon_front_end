@@ -15,10 +15,9 @@ import { likePostAPI } from "../../../services/PostFetchService";
 import { ToastContainer } from "react-toastify";
 import { toastError } from "../../../utils/toastNotification/toastNotifications";
 
-const AnonimPost = ({ post }) => {
+const AnonimPost = ({ post, key }) => {
   const [isLiked, setIsLiked] = useState(post.isCurrentUserLikePost);
   const [numOfLikes, setNumOfLikes] = useState(post.numberOfLikes);
-  const [showCompModal, setShowCompModal] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
 
