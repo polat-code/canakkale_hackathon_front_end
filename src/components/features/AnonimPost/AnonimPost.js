@@ -11,9 +11,13 @@ import commentPostIcon from "../../../assets/anonimImages/comment_post_icon.svg"
 import { useNavigate } from "react-router";
 import PostComplimentModal from "../../common/PostComplimentModal/PostComplimentModal";
 import { Modal } from "react-bootstrap";
+import { likePostAPI } from "../../../services/PostFetchService";
+import { ToastContainer } from "react-toastify";
+import { toastError } from "../../../utils/toastNotification/toastNotifications";
 
 const AnonimPost = ({ post }) => {
   const [isLiked, setIsLiked] = useState(post.isCurrentUserLikePost);
+  const [numOfLikes, setNumOfLikes] = useState(post.numberOfLikes);
 
   const [showPhoto, setShowPhoto] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -22,18 +26,29 @@ const AnonimPost = ({ post }) => {
     setShowPhoto(true);
   };
   const navigation = useNavigate();
-  console.log(JSON.stringify(post));
 
   const handleAnonimPostDetail = () => {
     navigation("/anonims/detail?postId=" + post.postId);
   };
 
-  const handleLikeButton = () => {
-    setIsLiked(!isLiked);
+  const handleLikeButton = async () => {
+    const likeResponse = await likePostAPI(post.postId);
+    if (likeResponse.statusCode === 200) {
+      if (isLiked) {
+        setNumOfLikes(numOfLikes - 1);
+      } else {
+        setNumOfLikes(numOfLikes + 1);
+      }
+      setIsLiked(!isLiked);
+    } else {
+      console.log(JSON.stringify(likeResponse));
+      toastError("Bilinmeyen bir hata !");
+    }
   };
 
   return (
     <div className="container">
+      <ToastContainer />
       <section className="mx-auto my-5 w-lg-75 w-100">
         <div className="card">
           <div className="card-body d-flex flex-row">
@@ -117,14 +132,12 @@ const AnonimPost = ({ post }) => {
               onClick={handleLikeButton}
             >
               <img
-                src={
-                  post.isCurrentUserLikePost ? likePostIconActive : likePostIcon
-                }
+                src={isLiked ? likePostIconActive : likePostIcon}
                 alt="like-icon"
                 className="like-icon"
               />
 
-              <span className="ms-2">{post.numberOfLikes}</span>
+              <span className="ms-2">{numOfLikes}</span>
             </div>
 
             {/* Like END */}
