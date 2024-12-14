@@ -3,11 +3,14 @@ import Navbar from "../../components/common/Navbar/Navbar";
 import AnonimPost from "../../components/features/AnonimPost/AnonimPost";
 import NewAnonimPostButton from "../../components/features/NewAnonimPostButton/NewAnonimPostButton";
 import LoadingAnimation from "../../components/common/LoadingAnimation/LoadingAnimation";
-import { getPosts } from "../../services/PostFetchService";
+import { getPostPermission, getPosts } from "../../services/PostFetchService";
+import { toastError } from "../../utils/toastNotification/toastNotifications";
+import NewAnonymousContainer from "../NewAnonymousPostContainer/NewAnonymousContainer";
 
 const AnonimContainer = () => {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isValidPostAddition, setIsValidPostAddition] = useState(false);
   useEffect(() => {
     setIsLoading(true);
 
@@ -26,17 +29,37 @@ const AnonimContainer = () => {
     fetchPosts();
   }, []);
 
+  const handleNewAnonymousPost = async () => {
+    const response = await getPostPermission();
+    if (response.statusCode === 451) {
+      toastError("std uzantılı mail ile giriş yapın");
+    } else if (response.statusCode === 200) {
+      setIsValidPostAddition(true);
+    } else {
+      toastError("Bir hata oluştu.");
+    }
+  };
+
   return (
     <div>
       <Navbar />
-      <NewAnonimPostButton />
-      {isLoading ? (
-        <LoadingAnimation />
+      {isValidPostAddition ? (
+        <NewAnonymousContainer />
       ) : (
         <>
-          {posts.map((post, index) => {
-            return <AnonimPost key={index} post={post} />;
-          })}{" "}
+          <NewAnonimPostButton
+            handleNewAnonymousPost={handleNewAnonymousPost}
+          />
+          {isLoading ? (
+            <LoadingAnimation />
+          ) : (
+            <>
+              {posts &&
+                posts.map((post, index) => {
+                  return <AnonimPost key={index} post={post} />;
+                })}{" "}
+            </>
+          )}
         </>
       )}
     </div>

@@ -6,12 +6,25 @@ const NewAnonimPostForm = () => {
   const [adminNote, setAdminNote] = useState("");
 
   const handlePhotoUpload = (e) => {
-    const file = e.target.files[0];
-    if (photos.length >= 2) {
+    const files = Array.from(e.target.files);
+    if (photos.length + files.length > 2) {
       alert("You can only upload a maximum of 2 photos.");
       return;
     }
-    setPhotos([...photos, URL.createObjectURL(file)]);
+
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotos((prevPhotos) => [...prevPhotos, reader.result]);
+      };
+      reader.onerror = () => {
+        alert("Failed to read file!");
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Reset the file input
+    e.target.value = "";
   };
 
   const handleRemovePhoto = (index) => {
@@ -22,8 +35,29 @@ const NewAnonimPostForm = () => {
     e.preventDefault();
     // Handle form submission logic here
     console.log("Post Description:", postDescription);
-    console.log("Photos:", photos);
+    console.log("Photos (Base64):", photos);
     console.log("Admin Note:", adminNote);
+
+    // Example: You can send the data to your backend as follows:
+    // const formData = {
+    //   postDescription,
+    //   photos, // Array of Base64 strings
+    //   adminNote,
+    // };
+    // fetch('/api/submit-post', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(formData),
+    // })
+    //   .then(response => response.json())
+    //   .then(data => {
+    //     // Handle success
+    //   })
+    //   .catch(error => {
+    //     // Handle error
+    //   });
   };
 
   return (
@@ -33,7 +67,7 @@ const NewAnonimPostForm = () => {
         style={{ width: "100%", maxWidth: "600px" }}
       >
         <h4 className="text-center mb-4">Yeni Anonim Post</h4>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="postDescription" className="form-label">
               Post Detayı{" "}
@@ -61,7 +95,7 @@ const NewAnonimPostForm = () => {
               id="photos"
               onChange={handlePhotoUpload}
               accept="image/*"
-              required
+              multiple
               disabled={photos.length >= 2}
             />
             <div className="mt-3 d-flex justify-content-start">
@@ -116,7 +150,7 @@ const NewAnonimPostForm = () => {
               Uygunsuz Postların değerlendirilmesinde kullanılır.
             </span>
           </div>
-          <button className="btn btn-primary w-100" onClick={handleSubmit}>
+          <button className="btn btn-primary w-100" type="submit">
             Submit
           </button>
         </form>

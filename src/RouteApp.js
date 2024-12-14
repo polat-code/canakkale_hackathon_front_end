@@ -41,10 +41,6 @@ const RouteApp = () => {
         path="/profile/posts-and-advert"
         element={<PostsAndAdvertsContainer />}
       />
-      <Route
-        path="/anonims/new-anonymous-post"
-        element={<NewAnonymousContainer />}
-      />
       <Route path="/anonims/detail" element={<AnonimPostDetailContainer />} />
       <Route
         path="/iyte-car/create-ride"
