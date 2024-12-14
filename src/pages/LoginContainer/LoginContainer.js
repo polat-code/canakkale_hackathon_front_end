@@ -63,12 +63,9 @@ const LoginContainer = () => {
 
   useEffect(() => {
     const validateLogin = async () => {
-      const accessToken = Cookies.get("access_token");
-      if (accessToken) {
-        const isValidUser = await isValidAccessToken();
-        if (isValidUser) {
-          window.location.assign("/anonims");
-        }
+      const isValidUser = await isValidAccessToken();
+      if (isValidUser) {
+        window.location.assign("/anonims");
       }
     };
 

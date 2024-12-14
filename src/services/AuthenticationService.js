@@ -40,6 +40,9 @@ export const login = async (email, password) => {
 };
 export const isValidAccessToken = async () => {
   const accessToken = Cookies.get("access_token");
+  if (!accessToken) {
+    return false;
+  }
   const headers = {};
   headers["Authorization"] = `Bearer ${accessToken}`;
 

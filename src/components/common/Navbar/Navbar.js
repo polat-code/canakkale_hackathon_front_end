@@ -2,44 +2,63 @@ import React, { useEffect, useState } from "react";
 import "../../../styles/Navbar/Navbar.css";
 import { useLocation, useNavigate } from "react-router";
 import iytechli_logo from "../../../assets/navbarImages/iytechli.svg";
+import { isValidAccessToken } from "../../../services/AuthenticationService";
 
 const Navbar = () => {
-  const navigation = useNavigate();
+  const navigate = useNavigate();
   const location = useLocation();
   const [currentPath, setCurrentPath] = useState(location.pathname);
+  const [isLogin, setIsLogin] = useState(false);
 
-  const [isLogin, setIsLogin] = useState(true);
+  useEffect(() => {
+    const validateAccessToken = async () => {
+      try {
+        const isValid = await isValidAccessToken(); // Ensure isValidAccessToken is async
+        if (isValid) {
+          setIsLogin(true);
+        } else {
+          setIsLogin(false);
+        }
+      } catch (error) {
+        console.error("Error validating access token:", error);
+        setIsLogin(false);
+      }
+    };
+
+    validateAccessToken();
+  }, []); // Run once on mount
 
   useEffect(() => {
     setCurrentPath(location.pathname);
-  });
+  }, [location.pathname]); // Update when location.pathname changes
+
   const handleAnonim = () => {
-    navigation("/anonims");
+    navigate("/anonims");
   };
   const handleIyteCar = () => {
-    navigation("/iyte-car");
+    navigate("/iyte-car");
   };
   const handlePlace = () => {
-    navigation("/places");
+    navigate("/places");
   };
   const handleSport = () => {
-    navigation("/sports");
+    navigate("/sports");
   };
   const handleLogin = () => {
-    navigation("/login");
+    navigate("/");
   };
   const handleMyMessages = () => {
-    navigation("/profile/my-messages");
+    navigate("/profile/my-messages");
   };
   const handleMyProfile = () => {
-    navigation("/profile");
+    navigate("/profile");
   };
   const handlePostsAndAdvert = () => {
-    navigation("/profile/posts-and-advert");
+    navigate("/profile/posts-and-advert");
   };
   const handleLogout = () => {
     setIsLogin(false);
-    navigation("/");
+    navigate("/");
   };
 
   return (
@@ -143,25 +162,6 @@ const Navbar = () => {
             {/* Main Navigation 4 END */}
 
             {/* Main Navigation 5 Start */}
-            {isLogin ? (
-              ""
-            ) : (
-              <li className="nav-item nav-link nav-item-size mx-lg-2 py-lg-2">
-                <a
-                  className={`nav-link nav-item-size text-center text-primary ${
-                    currentPath.startsWith("/login") ? "active" : ""
-                  }`}
-                  href="#"
-                  id="login"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleLogin();
-                  }}
-                >
-                  Giriş Yap
-                </a>
-              </li>
-            )}
 
             {/* Main Navigation 5 END */}
 
@@ -246,7 +246,21 @@ const Navbar = () => {
                 </ul>
               </div>
             ) : (
-              ""
+              <li className="nav-item nav-link nav-item-size mx-lg-2 py-lg-2">
+                <a
+                  className={`nav-link nav-item-size text-center text-primary ${
+                    currentPath.startsWith("/login") ? "active" : ""
+                  }`}
+                  href="#"
+                  id="login"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleLogin();
+                  }}
+                >
+                  Giriş Yap
+                </a>
+              </li>
             )}
             {/* Main Navigation 6 END */}
           </ul>

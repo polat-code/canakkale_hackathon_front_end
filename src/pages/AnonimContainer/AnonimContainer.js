@@ -4,8 +4,9 @@ import AnonimPost from "../../components/features/AnonimPost/AnonimPost";
 import NewAnonimPostButton from "../../components/features/NewAnonimPostButton/NewAnonimPostButton";
 import LoadingAnimation from "../../components/common/LoadingAnimation/LoadingAnimation";
 import { getPostPermission, getPosts } from "../../services/PostFetchService";
-import { toastError } from "../../utils/toastNotification/toastNotifications";
 import NewAnonymousContainer from "../NewAnonymousPostContainer/NewAnonymousContainer";
+import { toastError } from "../../utils/toastNotification/toastNotifications";
+import { ToastContainer } from "react-toastify";
 
 const AnonimContainer = () => {
   const [posts, setPosts] = useState([]);
@@ -31,8 +32,10 @@ const AnonimContainer = () => {
 
   const handleNewAnonymousPost = async () => {
     const response = await getPostPermission();
+    console.log(JSON.stringify(response));
     if (response.statusCode === 451) {
       toastError("std uzantılı mail ile giriş yapın");
+      console.log("wdawd");
     } else if (response.statusCode === 200) {
       setIsValidPostAddition(true);
     } else {
@@ -43,6 +46,7 @@ const AnonimContainer = () => {
   return (
     <div>
       <Navbar />
+      <ToastContainer />
       {isValidPostAddition ? (
         <NewAnonymousContainer />
       ) : (
