@@ -1,6 +1,7 @@
 import axios from "axios";
 import { baseURL } from "./ApiConstants";
 import Cookies from "js-cookie";
+import { setCookie } from "./CookieService";
 
 const api = () => {
   return axios.create({
@@ -40,24 +41,15 @@ export const complainPost = async (complain) => {
           accessToken: accessToken,
         });
         if (refreshTokenresponse.data.statusCode === 200) {
-          Cookies.set(
+          setCookie(
             "access_token",
-            refreshTokenresponse.data.data.access_token,
-            {
-              expires: 30,
-              //secure: true,
-              sameSite: "strict",
-            }
+            refreshTokenresponse.data.data.access_token
           );
-          Cookies.set(
+          setCookie(
             "refresh_token",
-            refreshTokenresponse.data.data.refresh_token,
-            {
-              expires: 30,
-              //secure: true,
-              sameSite: "strict",
-            }
+            refreshTokenresponse.data.data.refresh_token
           );
+
           let likeResponseAfterRefresh = await api().post(
             `/post-complain/complain`,
             complain,

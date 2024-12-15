@@ -1,6 +1,7 @@
 import axios from "axios";
 import { baseURL } from "./ApiConstants";
 import Cookies from "js-cookie";
+import { setCookie } from "./CookieService";
 
 const api = () => {
   return axios.create({
@@ -64,24 +65,12 @@ export const isValidAccessToken = async () => {
         accessToken: accessToken,
       });
       if (refreshTokenresponse.data.statusCode === 200) {
-        Cookies.set(
-          "access_token",
-          refreshTokenresponse.data.data.access_token,
-          {
-            expires: 30,
-            //secure: true,
-            sameSite: "strict",
-          }
-        );
-        Cookies.set(
+        setCookie("access_token", refreshTokenresponse.data.data.access_token);
+        setCookie(
           "refresh_token",
-          refreshTokenresponse.data.data.refresh_token,
-          {
-            expires: 30,
-            //secure: true,
-            sameSite: "strict",
-          }
+          refreshTokenresponse.data.data.refresh_token
         );
+
         return true;
       } else if (refreshTokenresponse.data.statusCode === 411) {
         Cookies.remove("access_token");

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { baseURL } from "./ApiConstants";
 import Cookies from "js-cookie";
+import { setCookie } from "./CookieService";
 
 const api = () => {
   return axios.create({
@@ -36,24 +37,15 @@ export const getPosts = async (pageNo, pageSize) => {
           accessToken: accessToken,
         });
         if (refreshTokenresponse.data.statusCode === 200) {
-          Cookies.set(
+          setCookie(
             "access_token",
-            refreshTokenresponse.data.data.access_token,
-            {
-              expires: 30,
-              //secure: true,
-              sameSite: "strict",
-            }
+            refreshTokenresponse.data.data.access_token
           );
-          Cookies.set(
+          setCookie(
             "refresh_token",
-            refreshTokenresponse.data.data.refresh_token,
-            {
-              expires: 30,
-              //secure: true,
-              sameSite: "strict",
-            }
+            refreshTokenresponse.data.data.refresh_token
           );
+
           let postResponse = await api().get(
             `/post/all/${pageNo}/${pageSize}`,
             {
@@ -110,24 +102,15 @@ export const createPost = async (post) => {
           accessToken: accessToken,
         });
         if (refreshTokenresponse.data.statusCode === 200) {
-          Cookies.set(
+          setCookie(
             "access_token",
-            refreshTokenresponse.data.data.access_token,
-            {
-              expires: 30,
-              //secure: true,
-              sameSite: "strict",
-            }
+            refreshTokenresponse.data.data.access_token
           );
-          Cookies.set(
+          setCookie(
             "refresh_token",
-            refreshTokenresponse.data.data.refresh_token,
-            {
-              expires: 30,
-              //secure: true,
-              sameSite: "strict",
-            }
+            refreshTokenresponse.data.data.refresh_token
           );
+
           let permissionResponse = await api().post("/post/create", post, {
             Authorization: `Bearer ${refreshTokenresponse.data.accessToken}`,
           });
@@ -180,24 +163,15 @@ export const getPostPermission = async () => {
           accessToken: accessToken,
         });
         if (refreshTokenresponse.data.statusCode === 200) {
-          Cookies.set(
+          setCookie(
             "access_token",
-            refreshTokenresponse.data.data.access_token,
-            {
-              expires: 30,
-              //secure: true,
-              sameSite: "strict",
-            }
+            refreshTokenresponse.data.data.access_token
           );
-          Cookies.set(
+          setCookie(
             "refresh_token",
-            refreshTokenresponse.data.data.refresh_token,
-            {
-              expires: 30,
-              //secure: true,
-              sameSite: "strict",
-            }
+            refreshTokenresponse.data.data.refresh_token
           );
+
           let permissionResponse = await api().get(`/post/permission`, {
             Authorization: `Bearer ${refreshTokenresponse.data.accessToken}`,
           });
@@ -251,24 +225,15 @@ export const likePostAPI = async (postId) => {
           accessToken: accessToken,
         });
         if (refreshTokenresponse.data.statusCode === 200) {
-          Cookies.set(
+          setCookie(
             "access_token",
-            refreshTokenresponse.data.data.access_token,
-            {
-              expires: 30,
-              //secure: true,
-              sameSite: "strict",
-            }
+            refreshTokenresponse.data.data.access_token
           );
-          Cookies.set(
+          setCookie(
             "refresh_token",
-            refreshTokenresponse.data.data.refresh_token,
-            {
-              expires: 30,
-              //secure: true,
-              sameSite: "strict",
-            }
+            refreshTokenresponse.data.data.refresh_token
           );
+
           let likeResponseAfterRefresh = await api().post(
             `/post/like/${postId}`,
             {},
@@ -323,24 +288,15 @@ export const getPostDetailAPI = async (postId) => {
           accessToken: accessToken,
         });
         if (refreshTokenresponse.data.statusCode === 200) {
-          Cookies.set(
+          setCookie(
             "access_token",
-            refreshTokenresponse.data.data.access_token,
-            {
-              expires: 30,
-              //secure: true,
-              sameSite: "strict",
-            }
+            refreshTokenresponse.data.data.access_token
           );
-          Cookies.set(
+          setCookie(
             "refresh_token",
-            refreshTokenresponse.data.data.refresh_token,
-            {
-              expires: 30,
-              //secure: true,
-              sameSite: "strict",
-            }
+            refreshTokenresponse.data.data.refresh_token
           );
+
           let postResponse = await api().get(`/post/post-detail/${postId}`, {
             Authorization: `Bearer ${refreshTokenresponse.data.accessToken}`,
           });
