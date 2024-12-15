@@ -40,7 +40,7 @@ export const createComment = async (comment) => {
             refreshTokenresponse.data.data.access_token,
             {
               expires: 30,
-              secure: true,
+              //secure: true,
               sameSite: "strict",
             }
           );
@@ -49,7 +49,7 @@ export const createComment = async (comment) => {
             refreshTokenresponse.data.data.refresh_token,
             {
               expires: 30,
-              secure: true,
+              //secure: true,
               sameSite: "strict",
             }
           );

@@ -41,7 +41,7 @@ export const getPosts = async (pageNo, pageSize) => {
             refreshTokenresponse.data.data.access_token,
             {
               expires: 30,
-              secure: true,
+              //secure: true,
               sameSite: "strict",
             }
           );
@@ -50,7 +50,7 @@ export const getPosts = async (pageNo, pageSize) => {
             refreshTokenresponse.data.data.refresh_token,
             {
               expires: 30,
-              secure: true,
+              //secure: true,
               sameSite: "strict",
             }
           );
@@ -115,7 +115,7 @@ export const createPost = async (post) => {
             refreshTokenresponse.data.data.access_token,
             {
               expires: 30,
-              secure: true,
+              //secure: true,
               sameSite: "strict",
             }
           );
@@ -124,7 +124,7 @@ export const createPost = async (post) => {
             refreshTokenresponse.data.data.refresh_token,
             {
               expires: 30,
-              secure: true,
+              //secure: true,
               sameSite: "strict",
             }
           );
@@ -185,7 +185,7 @@ export const getPostPermission = async () => {
             refreshTokenresponse.data.data.access_token,
             {
               expires: 30,
-              secure: true,
+              //secure: true,
               sameSite: "strict",
             }
           );
@@ -194,7 +194,7 @@ export const getPostPermission = async () => {
             refreshTokenresponse.data.data.refresh_token,
             {
               expires: 30,
-              secure: true,
+              //secure: true,
               sameSite: "strict",
             }
           );
@@ -256,7 +256,7 @@ export const likePostAPI = async (postId) => {
             refreshTokenresponse.data.data.access_token,
             {
               expires: 30,
-              secure: true,
+              //secure: true,
               sameSite: "strict",
             }
           );
@@ -265,7 +265,7 @@ export const likePostAPI = async (postId) => {
             refreshTokenresponse.data.data.refresh_token,
             {
               expires: 30,
-              secure: true,
+              //secure: true,
               sameSite: "strict",
             }
           );
@@ -328,7 +328,7 @@ export const getPostDetailAPI = async (postId) => {
             refreshTokenresponse.data.data.access_token,
             {
               expires: 30,
-              secure: true,
+              //secure: true,
               sameSite: "strict",
             }
           );
@@ -337,7 +337,7 @@ export const getPostDetailAPI = async (postId) => {
             refreshTokenresponse.data.data.refresh_token,
             {
               expires: 30,
-              secure: true,
+              //secure: true,
               sameSite: "strict",
             }
           );
