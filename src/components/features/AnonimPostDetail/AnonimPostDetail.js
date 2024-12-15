@@ -11,10 +11,18 @@ import AnonimPostComment from "../AnonimPostComment/AnonimPostComment";
 import CommentInput from "../CommentInput/CommentInput";
 import PostComplimentModal from "../../common/PostComplimentModal/PostComplimentModal";
 import LikeCountModal from "../LikeCountModal/LikeCountModal";
-import { Modal } from "react-bootstrap";
+import { Modal, ToastContainer } from "react-bootstrap";
+import { likePostAPI } from "../../../services/PostFetchService";
+import { toastError } from "../../../utils/toastNotification/toastNotifications";
 
-const AnonimPostDetail = ({ post }) => {
-  const [isLiked, setIsLiked] = useState(true);
+const AnonimPostDetail = ({ post, setPost }) => {
+  const [isLiked, setIsLiked] = useState(
+    post.postResponse.isCurrentUserLikePost
+  );
+  const [numOfLikes, setNumOfLikes] = useState(post.postResponse.numberOfLikes);
+  const [numOfComment, setNumOfComment] = useState(
+    post.postResponse.numberOfComments
+  );
   const [showPhoto, setShowPhoto] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const handlePhotoShow = (image) => {
@@ -22,13 +30,25 @@ const AnonimPostDetail = ({ post }) => {
     setShowPhoto(true);
   };
 
-  const handleLikeButton = () => {
-    setIsLiked(!isLiked);
+  const handleLikeButton = async () => {
+    const likeResponse = await likePostAPI(post.postResponse.postId);
+
+    if (likeResponse.statusCode === 200) {
+      if (isLiked) {
+        setNumOfLikes(numOfLikes - 1);
+      } else {
+        setNumOfLikes(numOfLikes + 1);
+      }
+      setIsLiked(!isLiked);
+    } else {
+      console.log(JSON.stringify(likeResponse));
+      toastError("Bilinmeyen bir hata !");
+    }
   };
-  console.log(post);
 
   return (
     <div className="container">
+      <ToastContainer />
       <section className="mx-auto my-5 w-lg-75 w-100">
         <div className="card">
           <div className="card-body d-flex flex-row">
@@ -40,7 +60,9 @@ const AnonimPostDetail = ({ post }) => {
               alt="avatar"
             />
             <div>
-              <h6 className="card-title font-weight-bold mb-2">Anonim Post</h6>
+              <h6 className="card-title font-weight-bold mb-2">
+                {post.postResponse.postOwnerFullName}
+              </h6>
               <p className="card-text fs-6">
                 <span className="far fa-clock pe-1">
                   {post.postResponse.createdAt}
@@ -64,9 +86,7 @@ const AnonimPostDetail = ({ post }) => {
               className="card-text"
               //onClick={handleAnonimPostDetail}
             >
-              {
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
-              }
+              {post.postResponse.content}
             </p>
           </div>
           {/* Images START */}
@@ -74,11 +94,11 @@ const AnonimPostDetail = ({ post }) => {
           <div className="d-flex flex-column flex-sm-row align-items-center justify-content-around mb-4">
             {post.postResponse.photoList.map((photo, index) => (
               <img
-                src={photo}
+                src={photo.data}
                 alt="post photo"
                 className="rounded img-fluid my-lg-0 my-2"
                 style={{ maxWidth: "280px", maxHeight: "200px" }}
-                onClick={() => handlePhotoShow(image)}
+                onClick={() => handlePhotoShow(photo.data)}
                 key={index}
               />
             ))}
@@ -112,7 +132,7 @@ const AnonimPostDetail = ({ post }) => {
             data-bs-target="#users_like"
           >
             <p className="fs-6 m-4">
-              <span className="fw-bold">12 </span>
+              <span className="fw-bold">{numOfLikes} </span>
               kişi postu beğendi
             </p>
           </a>
@@ -128,7 +148,7 @@ const AnonimPostDetail = ({ post }) => {
             >
               <img alt="" src={isLiked ? likePostIconActive : likePostIcon} />
 
-              <span className="ms-2">11</span>
+              <span className="ms-2">{numOfLikes}</span>
             </div>
 
             {/* Like END */}
@@ -141,7 +161,7 @@ const AnonimPostDetail = ({ post }) => {
             >
               <div className="d-flex justify-content-center">
                 <img src={commentPostIcon} alt="" />
-                <span className="ms-2">6</span>
+                <span className="ms-2">{numOfComment}</span>
               </div>
             </div>
             {/* Comment END */}
@@ -166,14 +186,13 @@ const AnonimPostDetail = ({ post }) => {
           </div>
           {/* Interactions END */}
 
-          <CommentInput />
+          <CommentInput post={post} setPost={setPost} />
           {/* Like Count Module START*/}
           <LikeCountModal />
           {/* Like Count Module END*/}
-
-          <AnonimPostComment />
-          <AnonimPostComment />
-          <AnonimPostComment />
+          {post.commentResponses.map((comment, index) => {
+            return <AnonimPostComment key={index} comment={comment} />;
+          })}
         </div>
       </section>
     </div>

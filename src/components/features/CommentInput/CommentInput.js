@@ -1,24 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
+import { createComment } from "../../../services/PostCommentAPIService";
+import { toastSuccess } from "../../../utils/toastNotification/toastNotifications";
+import { ToastContainer } from "react-bootstrap";
 
-const CommentInput = () => {
+const CommentInput = ({ post, setPost }) => {
+  const [commentContent, setCommentContent] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleMakeComment = async () => {
+    setIsLoading(true);
+    const commentResponse = await createComment({
+      postId: post.postResponse.postId,
+      commentContent,
+    });
+    console.log(commentResponse);
+    if (commentResponse.statusCode === 200) {
+      toastSuccess("Yorum Başarılı");
+      setCommentContent("");
+      setPost((prevPost) => ({
+        ...prevPost,
+        commentResponses: [...prevPost.commentResponses, commentResponse.data],
+        postResponse: {
+          ...prevPost.postResponse,
+          numberOfComments: prevPost.postResponse.numberOfComments + 1,
+        },
+      }));
+    }
+    setIsLoading(false);
+  };
+
   return (
     <div className="mb-3 ms-4 me-5">
+      <ToastContainer />
       <textarea
         className="form-control"
         aria-label="With textarea"
         id="postDetail"
         placeholder="Lütfen düşüncelerinizi yazınız..."
         style={{ height: "120px" }}
+        onChange={(e) => setCommentContent(e.target.value)}
         //onChange={(e) => setCommentContent(e.target.value)}
       ></textarea>
       <div className="d-flex justify-content-end mt-3">
         <button
           className="btn btn-primary"
-          //onClick={handleMakeComment}
-          //value={commentContent}
-          //disabled={isLoading}
+          onClick={handleMakeComment}
+          disabled={isLoading}
         >
-          {/* isLoading ? (
+          {isLoading ? (
             <>
               <span
                 className="spinner-border spinner-border-sm"
@@ -29,8 +58,7 @@ const CommentInput = () => {
             </>
           ) : (
             "Yorum Yap"
-          ) */}
-          Yorum Yap
+          )}
         </button>
       </div>
     </div>

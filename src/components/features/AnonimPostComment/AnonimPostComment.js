@@ -10,9 +10,9 @@ import complimentIconPhoto from "../../../assets/anonimImages/sikayet_et.svg";
 import "../../../styles/AnonimPostDetail/AnonimPostDetail.css";
 import CommentComplimentModal from "../../common/CommentComplimentModal/CommentComplimentModal";
 
-const AnonimPostComment = () => {
-  const [isLiked, setIsLiked] = useState(true);
-  const [isDisliked, setIsDisliked] = useState(false);
+const AnonimPostComment = ({ comment }) => {
+  const [isLiked, setIsLiked] = useState(comment.isUserLikes);
+  const [isDisliked, setIsDisliked] = useState(comment.isUserDislikes);
   const handleCommentDislikeIcon = () => {
     setIsDisliked(!isDisliked);
   };
@@ -26,17 +26,14 @@ const AnonimPostComment = () => {
         <div className="d-flex ms-3">
           <img src={userIconPhoto} alt="" />
           <div className="ms-3 my-2">
-            <span className="time-definition">12sn önce</span>
-            <h6 className="fw-bold message-font-size">Özgürhan Polat</h6>
+            <span className="time-definition">{comment.date}</span>
+            <h6 className="fw-bold message-font-size">
+              {comment.userFullName}
+            </h6>
           </div>
         </div>
 
-        <p className="mx-3">
-          This is a comment This is a comment This is a comment This is a
-          comment This is a comment This is a comment This is a comment This is
-          a comment This is a comment This is a comment This is a comment This
-          is a comment This is a comment
-        </p>
+        <p className="mx-3">{comment.commentContent}</p>
 
         <div className="d-flex flex-row justify-content-around mb-3">
           <div
@@ -47,7 +44,7 @@ const AnonimPostComment = () => {
               src={isLiked ? commentLikeIconPhotoActive : commentLikeIconPhoto}
               alt=""
             />
-            <span className="ms-2">20</span>
+            <span className="ms-2">{comment.numberOfLikes}</span>
           </div>
 
           <div
@@ -63,7 +60,7 @@ const AnonimPostComment = () => {
               alt=""
               className="like-icon"
             />
-            <span className="ms-2">10</span>
+            <span className="ms-2">{comment.numberOfDislikes}</span>
           </div>
 
           <div
