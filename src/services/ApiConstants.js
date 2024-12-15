@@ -1,2 +1,2 @@
-export const baseURL = "http://145.223.97.106:8080/api/v1";
-//JWT_REFRESH_KEY=5a53e4f092071c05042b200047b9ad0b0c8a081040b4c98016e3e3238af50090e123d6aa9adaa7e3a9cc68b82dafEFAC13f780r3654359d6dc2K4d4p59b738179109z JWT_SECRET_KEY=5a53e4f092071c05042b200047b9ad0b0c8a081040b4c98016e3e3238af50090e123d6aa9adaa7e3a9cc68b82dafcafe13f781r6459d6dc2c4d4p59b738179109z MAIL_PASSWORD="lmlu ckaj ffcd pskd" MAIL_USERNAME=iytechli.email@gmail.com java -jar /root/iytechli-backend/out/artifacts/iytechli_backend_v2_jar/iytechli-backend-v2.jar
+//export const baseURL = "http://145.223.97.106:8080/api/v1";
+export const baseURL = "http://localhost:8080/api/v1";
