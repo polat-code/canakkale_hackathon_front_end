@@ -15,6 +15,7 @@ import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { putUserInfo } from "../../redux/userSlice";
 import EmailVerificationContainer from "../EmailVerificationContainer/EmailVerificationContainer";
+import { setCookie } from "../../services/CookieService";
 
 const LoginContainer = () => {
   const navigation = useNavigate();
@@ -27,16 +28,9 @@ const LoginContainer = () => {
     const resp = await login(email, password);
     if (resp && resp.statusCode === 200) {
       const { access_token, refresh_token } = resp.data;
-      Cookies.set("access_token", access_token, {
-        expires: 30,
-        secure: true,
-        sameSite: "strict",
-      });
-      Cookies.set("refresh_token", refresh_token, {
-        expires: 30,
-        secure: true,
-        sameSite: "strict",
-      });
+      setCookie("access_token", access_token);
+      setCookie("refresh_token", refresh_token);
+
       toastSuccess("Başarılı! Yönlendiriliyorsun...");
 
       setTimeout(() => {
