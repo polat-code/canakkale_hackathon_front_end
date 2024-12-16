@@ -115,20 +115,24 @@ const AnonimPost = ({ post, key }) => {
           )}
           {/* Images END */}
           {/* Photo Modal */}
-          <Modal show={showPhoto} onHide={() => setShowPhoto(false)} centered>
-            <Modal.Header closeButton className="no-border-header">
-              <span className="text-danger fw-bold">Fotoğraf Detayı</span>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="d-flex justify-content-center">
-                <img
-                  src={selectedImage}
-                  alt="Fotoğraf"
-                  className="img-fluid w-100 rounded"
-                />
-              </div>
-            </Modal.Body>
-          </Modal>
+          {showPhoto ? (
+            <Modal show={showPhoto} onHide={() => setShowPhoto(false)} centered>
+              <Modal.Header closeButton className="no-border-header">
+                <span className="text-danger fw-bold">Fotoğraf Detayı</span>
+              </Modal.Header>
+              <Modal.Body>
+                <div className="d-flex justify-content-center">
+                  <img
+                    src={selectedImage}
+                    alt="Fotoğraf"
+                    className="img-fluid w-100 rounded"
+                  />
+                </div>
+              </Modal.Body>
+            </Modal>
+          ) : (
+            <></>
+          )}
 
           {/* Photo Modal END */}
 

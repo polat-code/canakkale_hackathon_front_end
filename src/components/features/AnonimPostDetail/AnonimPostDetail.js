@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import image from "../../../assets/anonimImages/post_photo.svg";
 
 import complimentIconPhoto from "../../../assets/anonimImages/sikayet_et.svg";
 import likePostIcon from "../../../assets/anonimImages/like_post_icon.svg";
@@ -11,7 +10,7 @@ import AnonimPostComment from "../AnonimPostComment/AnonimPostComment";
 import CommentInput from "../CommentInput/CommentInput";
 import PostComplimentModal from "../../common/PostComplimentModal/PostComplimentModal";
 import LikeCountModal from "../LikeCountModal/LikeCountModal";
-import { Modal, ToastContainer } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import { likePostAPI } from "../../../services/PostFetchService";
 import { toastError } from "../../../utils/toastNotification/toastNotifications";
 
@@ -24,10 +23,21 @@ const AnonimPostDetail = ({ post, setPost }) => {
     post.postResponse.numberOfComments
   );
   const [showPhoto, setShowPhoto] = useState(false);
+  const [showPostCompModal, setShowPostCompModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  const handleOpenModal = (e) => {
+    e.preventDefault(); // Sayfanın yeniden yüklenmesini engeller
+    setShowPostCompModal(true);
+  };
+
   const handlePhotoShow = (image) => {
     setSelectedImage(image);
     setShowPhoto(true);
+  };
+
+  const handlePostCompCloseModal = () => {
+    setShowPostCompModal(false);
   };
 
   const handleLikeButton = async () => {
@@ -48,7 +58,6 @@ const AnonimPostDetail = ({ post, setPost }) => {
 
   return (
     <div className="container">
-      <ToastContainer />
       <section className="mx-auto my-5 w-lg-75 w-100">
         <div className="card">
           <div className="card-body d-flex flex-row">
@@ -106,21 +115,25 @@ const AnonimPostDetail = ({ post, setPost }) => {
 
           {/* Images END */}
           {/* Photo Modal */}
-          <Modal show={showPhoto} onHide={() => setShowPhoto(false)} centered>
-            <Modal.Header closeButton className="no-border-header">
-              <span className="text-danger fw-bold">Fotoğraf Detayı</span>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="d-flex justify-content-center">
-                <img
-                  src={selectedImage}
-                  alt=""
-                  className="img-fluid w-100 rounded"
-                  centered
-                />
-              </div>
-            </Modal.Body>
-          </Modal>
+          {showPhoto ? (
+            <Modal show={showPhoto} onHide={() => setShowPhoto(false)} centered>
+              <Modal.Header closeButton className="no-border-header">
+                <span className="text-danger fw-bold">Fotoğraf Detayı</span>
+              </Modal.Header>
+              <Modal.Body>
+                <div className="d-flex justify-content-center">
+                  <img
+                    src={selectedImage}
+                    alt=""
+                    className="img-fluid w-100 rounded"
+                    centered
+                  />
+                </div>
+              </Modal.Body>
+            </Modal>
+          ) : (
+            <></>
+          )}
 
           {/* Photo Modal END */}
 
@@ -167,21 +180,29 @@ const AnonimPostDetail = ({ post, setPost }) => {
             {/* Comment END */}
 
             {/* Compliment */}
-            <a
-              href=""
-              className="compliment-link"
-              data-bs-toggle="modal"
-              data-bs-target="#post_compliment_modal"
+            <span
+              variant="link"
+              className="compliment-link cursor-pointer"
+              onClick={handleOpenModal}
             >
               <div className="d-flex justify-content-center">
-                <img src={complimentIconPhoto} alt="" />
+                <img src={complimentIconPhoto} alt="Compliment Icon" />
                 <span className="ms-2">Şikayet Et</span>
               </div>
-            </a>
+            </span>
             {/* Compliment END */}
 
             {/* Compliment Module*/}
-            <PostComplimentModal />
+            {showPostCompModal ? (
+              <PostComplimentModal
+                postId={post.postId}
+                show={showPostCompModal}
+                handleClose={handlePostCompCloseModal}
+              />
+            ) : (
+              <></>
+            )}
+
             {/* Compliment Module END*/}
           </div>
           {/* Interactions END */}

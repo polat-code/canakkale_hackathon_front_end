@@ -21,6 +21,16 @@ const AnonimPostComment = ({ comment }) => {
   const [isDisliked, setIsDisliked] = useState(comment.isUserDislikes);
   const [numOfLikes, setNumOfLikes] = useState(comment.numberOfLikes);
   const [numOfDislikes, setNumOfDislikes] = useState(comment.numberOfDislikes);
+
+  const [showModal, setShowModal] = useState(false);
+
+  const handleOpenModal = (e) => {
+    e.preventDefault(); // Sayfanın yeniden yüklenmesini engeller
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => setShowModal(false);
+
   const handleCommentDislikeIcon = async () => {
     const dislikeResponse = await dislikePostComment(comment.commentId);
     if (dislikeResponse.statusCode === 200) {
@@ -60,7 +70,6 @@ const AnonimPostComment = ({ comment }) => {
   return (
     <div>
       <div className="border-bottom border-top rounded">
-        <ToastContainer />
         <div className="d-flex ms-3">
           <img src={userIconPhoto} alt="" />
           <div className="ms-3 my-2">
@@ -103,11 +112,7 @@ const AnonimPostComment = ({ comment }) => {
             <span className="ms-2">{numOfDislikes}</span>
           </div>
 
-          <div
-            className="compliment-link"
-            data-bs-toggle="modal"
-            data-bs-target="#comment_compliment_modal"
-          >
+          <div className="compliment-link" onClick={handleOpenModal}>
             <div className="d-flex justify-content-center">
               <img src={complimentIconPhoto} alt="" />
               <span className="ms-2">Şikayet Et</span>
@@ -116,7 +121,11 @@ const AnonimPostComment = ({ comment }) => {
         </div>
       </div>
       {/* Comment Compliment Modal START */}
-      <CommentComplimentModal />
+      <CommentComplimentModal
+        commentId={comment && comment.commentId}
+        show={showModal}
+        handleClose={handleCloseModal}
+      />
       {/* Comment Compliment Modal END */}
     </div>
   );
