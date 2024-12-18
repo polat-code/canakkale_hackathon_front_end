@@ -3,6 +3,7 @@ import "../../../styles/Navbar/Navbar.css";
 import { useLocation, useNavigate } from "react-router";
 import iytechli_logo from "../../../assets/navbarImages/iytechli.svg";
 import { isValidAccessToken } from "../../../services/AuthenticationService";
+import Cookies from "js-cookie";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -58,6 +59,9 @@ const Navbar = () => {
   };
   const handleLogout = () => {
     setIsLogin(false);
+    Cookies.remove("access_token");
+    Cookies.remove("refresh_token");
+    // TODO Remove refresh token from DB.
     navigate("/");
   };
 
@@ -102,7 +106,7 @@ const Navbar = () => {
                   handleAnonim();
                 }}
               >
-                Anonim
+                Post
               </a>
             </li>
             {/* Main Navigation 1 END */}

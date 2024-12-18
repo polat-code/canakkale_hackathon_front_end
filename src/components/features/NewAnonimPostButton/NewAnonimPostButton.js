@@ -7,7 +7,7 @@ const NewAnonimPostButton = ({ handleNewAnonymousPost }) => {
     <div className="d-flex justify-content-end w-100 mt-4 pe-lg-5 pe-2">
       <button className="btn btn-primary" onClick={handleNewAnonymousPost}>
         {" "}
-        <img src={plusIcon} alt="" className="icon-green" /> Yeni Anonim Post
+        <img src={plusIcon} alt="" className="icon-green" /> Yeni Post
       </button>
     </div>
   );

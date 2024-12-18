@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { createComment } from "../../../services/PostCommentAPIService";
 import { toastSuccess } from "../../../utils/toastNotification/toastNotifications";
-import { ToastContainer } from "react-bootstrap";
+import { ToastContainer } from "react-toastify";
 
 const CommentInput = ({ post, setPost }) => {
   const [commentContent, setCommentContent] = useState("");
@@ -13,10 +13,7 @@ const CommentInput = ({ post, setPost }) => {
       postId: post.postResponse.postId,
       commentContent,
     });
-    console.log(commentResponse);
     if (commentResponse.statusCode === 200) {
-      toastSuccess("Yorum Başarılı");
-      setCommentContent("");
       setPost((prevPost) => ({
         ...prevPost,
         commentResponses: [...prevPost.commentResponses, commentResponse.data],
@@ -25,6 +22,8 @@ const CommentInput = ({ post, setPost }) => {
           numberOfComments: prevPost.postResponse.numberOfComments + 1,
         },
       }));
+      setCommentContent("");
+      toastSuccess("Yorum Başarılı!", 1400);
     }
     setIsLoading(false);
   };
@@ -39,7 +38,7 @@ const CommentInput = ({ post, setPost }) => {
         placeholder="Lütfen düşüncelerinizi yazınız..."
         style={{ height: "120px" }}
         onChange={(e) => setCommentContent(e.target.value)}
-        //onChange={(e) => setCommentContent(e.target.value)}
+        value={commentContent}
       ></textarea>
       <div className="d-flex justify-content-end mt-3">
         <button

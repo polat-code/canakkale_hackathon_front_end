@@ -37,9 +37,6 @@ const NewAnonimPostForm = ({ handleSubmitNewPost }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission logic here
-    console.log("Post Description:", postDescription);
-    console.log("Photos (Base64):", photos);
-    console.log("Admin Note:", adminNote);
     handleSubmitNewPost({
       content: postDescription,
       photos,
@@ -74,7 +71,7 @@ const NewAnonimPostForm = ({ handleSubmitNewPost }) => {
         className="card p-4 shadow-sm"
         style={{ width: "100%", maxWidth: "600px" }}
       >
-        <h4 className="text-center mb-4">Yeni Anonim Post</h4>
+        <h4 className="text-center mb-4">Yeni Post</h4>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="postDescription" className="form-label">
@@ -152,7 +149,6 @@ const NewAnonimPostForm = ({ handleSubmitNewPost }) => {
               value={adminNote}
               onChange={(e) => setAdminNote(e.target.value)}
               placeholder="Admine Not..."
-              required
             ></textarea>
             <span className="text-danger">
               Uygunsuz Postların değerlendirilmesinde kullanılır.
