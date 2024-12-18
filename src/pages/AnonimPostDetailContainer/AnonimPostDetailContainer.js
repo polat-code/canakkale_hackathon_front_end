@@ -39,7 +39,7 @@ const AnonimPostDetailContainer = () => {
     <div>
       <Navbar />
       {post && post.postResponse ? (
-        <AnonimPostDetail post={post} setPost={setPost} />
+        <AnonimPostDetail post={post} setPost={setPost} postId={postId} />
       ) : (
         <div>No post details available.</div>
       )}

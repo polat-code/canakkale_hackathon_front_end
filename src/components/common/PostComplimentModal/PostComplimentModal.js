@@ -23,7 +23,7 @@ const PostComplimentModal = ({ postId, show, handleClose }) => {
       reportReason,
     });
 
-    if (postComplainResponse.statusCode === 200) {
+    if (postComplainResponse && postComplainResponse.statusCode === 200) {
       toastSuccess("Şikayet Kaydedildi. Kapatılıyor", 1000);
       setDescription("");
       setReportReason("INAPPROPRIATE");

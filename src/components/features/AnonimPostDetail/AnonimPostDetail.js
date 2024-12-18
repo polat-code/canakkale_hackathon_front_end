@@ -14,7 +14,7 @@ import { Modal } from "react-bootstrap";
 import { likePostAPI } from "../../../services/PostFetchService";
 import { toastError } from "../../../utils/toastNotification/toastNotifications";
 
-const AnonimPostDetail = ({ post, setPost }) => {
+const AnonimPostDetail = ({ post, setPost, postId }) => {
   const [isLiked, setIsLiked] = useState(
     post.postResponse.isCurrentUserLikePost
   );
@@ -195,7 +195,7 @@ const AnonimPostDetail = ({ post, setPost }) => {
             {/* Compliment Module*/}
             {showPostCompModal ? (
               <PostComplimentModal
-                postId={post.postId}
+                postId={postId}
                 show={showPostCompModal}
                 handleClose={handlePostCompCloseModal}
               />
