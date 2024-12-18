@@ -202,3 +202,69 @@ export const dislikePostComment = async (commentId) => {
     console.log("Post Permission Error");
   }
 };
+
+export const complainComment = async (complain) => {
+  try {
+    const accessToken = Cookies.get("access_token");
+    const headers = {};
+    if (accessToken) {
+      headers["Authorization"] = `Bearer ${accessToken}`;
+    } else {
+      window.location.assign("/");
+    }
+
+    const complainResponse = await api().post(
+      `/post-comment-complain/create`,
+      complain,
+      {
+        headers,
+      }
+    );
+
+    if (complainResponse.data.statusCode === 200) {
+      return complainResponse.data;
+    } else if (complainResponse.data.statusCode === 498) {
+      // Expired JWT
+      try {
+        const refreshTokenresponse = await api().post("/auth/refresh-token", {
+          refreshToken: Cookies.get("refresh_token"),
+          accessToken: accessToken,
+        });
+        if (refreshTokenresponse.data.statusCode === 200) {
+          setCookie(
+            "access_token",
+            refreshTokenresponse.data.data.access_token
+          );
+          setCookie(
+            "refresh_token",
+            refreshTokenresponse.data.data.refresh_token
+          );
+
+          let likeResponseAfterRefresh = await api().post(
+            `/post-comment-complain/create`,
+            complain,
+            {
+              Authorization: `Bearer ${refreshTokenresponse.data.accessToken}`,
+            }
+          );
+          return likeResponseAfterRefresh.data;
+        } else if (refreshTokenresponse.data.statusCode === 411) {
+          // Invalid Refresh Token
+          Cookies.remove("access_token");
+          Cookies.remove("refresh_token");
+          window.location.assign("/");
+        } else if (refreshTokenresponse.data.statusCode === 404) {
+          console.log("User not found");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    } else if (complainResponse.data.statusCode === 401) {
+      Cookies.remove("access_token");
+      Cookies.remove("refresh_token");
+      window.location.assign("/");
+    }
+  } catch (err) {
+    console.log("Post Permission Error");
+  }
+};

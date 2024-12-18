@@ -6,6 +6,7 @@ import {
   toastError,
   toastSuccess,
 } from "../../../utils/toastNotification/toastNotifications";
+import { complainComment } from "../../../services/PostCommentAPIService";
 
 const CommentComplimentModal = ({ commentId, show, handleClose }) => {
   const [reportReason, setReportReason] = useState("INAPPROPRIATE");
@@ -16,13 +17,12 @@ const CommentComplimentModal = ({ commentId, show, handleClose }) => {
     setIsLoading(true);
     e.preventDefault();
     console.log(description);
-    /*
-    const postComplainResponse = await complainPost({
+
+    const postComplainResponse = await complainComment({
       commentId,
       description,
       reportReason,
     });
-    
 
     if (postComplainResponse.statusCode === 200) {
       toastSuccess("Şikayet Kaydedildi. Kapatılıyor", 1000);
@@ -32,12 +32,11 @@ const CommentComplimentModal = ({ commentId, show, handleClose }) => {
       setTimeout(() => {
         handleClose();
         setIsLoading(false);
-      }, 2500);
+      }, 2000);
     } else {
       toastError("Bir hata oluştu!");
       setIsLoading(false);
     }
-      */
   };
 
   return (
