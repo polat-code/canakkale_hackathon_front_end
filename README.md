@@ -17,3 +17,10 @@ Yapılacaklar
 8. İyteCar ilan detayını gösteren bir sayfa yap.
 
 9. Spor ilanı detayını gösteren bir sayfa yap.
+
+NGINX Setup
+chmod 600 iytechli.crt
+chmod 600 iytechli.key
+
+npm run build
+docker compose up -d
