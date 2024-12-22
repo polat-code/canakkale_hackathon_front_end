@@ -10,9 +10,11 @@
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "js-cookie": "^3.0.5",
-    "react": "^18.3.1",
+    "leaflet": "^1.9.4",
+    "react": "^19.0.0-rc.1",
     "react-bootstrap": "^2.10.4",
-    "react-dom": "^18.3.1",
+    "react-dom": "^19.0.0-rc.1",
+    "react-leaflet": "^5.0.0-rc.2",
     "react-redux": "^9.1.2",
     "react-router": "^6.24.1",
     "react-router-dom": "^6.24.1",
@@ -21,8 +23,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "PORT=443 HTTPS=true SSL_CRT_FILE=iytechli.crt SSL_KEY_FILE=iytechli.key react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "start": "PORT=3000 react-scripts start",
+    "build": "GENERATE_SOURCEMAP=false HTTPS=true SSL_CRT_FILE=iytechli.crt SSL_KEY_FILE=iytechli.key react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -43,5 +45,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.15"
   }
 }

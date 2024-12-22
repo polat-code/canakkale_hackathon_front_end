@@ -18,6 +18,7 @@ import IyteCarCreateRideContainer from "./pages/IyteCarCreateRideContainer/IyteC
 import CreateMatchContainer from "./pages/CreatMatchContainer/CreateMatchContainer";
 import PlaceDetailContainer from "./pages/PlaceDetailContainer/PlaceDetailContainer";
 import ErrorContainer from "./pages/ErrorContainer/ErrorContainer";
+import IyteRingMapContainer from "./pages/IyteRingMapContainer/IyteRingMapContainer";
 const RouteApp = () => {
   return (
     <Routes>
@@ -47,6 +48,7 @@ const RouteApp = () => {
         element={<IyteCarCreateRideContainer />}
       />
       <Route path="sports/new-match" element={<CreateMatchContainer />} />
+      <Route path="/ring" element={<IyteRingMapContainer />} />
       <Route path="*" element={<ErrorContainer />} />
     </Routes>
   );
