@@ -22,7 +22,7 @@ const IyteRingMapContainer = () => {
         toastError("Bir hata oluştu!", 1500);
       }
     };
-
+    fetchRingLocation();
     const intervalId = setInterval(() => {
       fetchRingLocation();
     }, 10000);
