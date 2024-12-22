@@ -1,25 +1,33 @@
 import "leaflet/dist/leaflet.css";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import React from "react";
+import { Icon } from "leaflet";
+import { ToastContainer } from "react-toastify";
 
-const IyteRingMap = () => {
-  const position = [51.505, -0.09];
+const IyteRingMap = ({ position }) => {
+  const customIcon = new Icon({
+    // iconUrl: "https://cdn-icons-png.flaticon.com/512/447/447031.png",
+    iconUrl: require("../../../assets/iyteRingImages/placeholder.png"),
+    iconSize: [38, 38], // size of the icon
+  });
+
   return (
-    <div style={{ height: "70vh", width: "80%" }}>
+    <div
+      className="d-flex flex-column justify-content-center align-items-center w-100"
+      style={{ height: "80vh", width: "80%" }}
+    >
+      <ToastContainer />
+      <h2>Canlı Ring</h2>
       <MapContainer
         center={position}
-        zoom={13}
-        style={{ height: "100%", width: "100%" }}
+        zoom={15}
+        style={{ height: "95%", width: "95%" }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={position}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker>
+        <Marker position={position} icon={customIcon}></Marker>
       </MapContainer>
     </div>
   );
