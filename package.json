@@ -23,8 +23,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "PORT=3000 react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false HTTPS=true SSL_CRT_FILE=iytechli.crt SSL_KEY_FILE=iytechli.key react-scripts build",
+    "start": "PORT=443 HTTPS=true SSL_CRT_FILE=iytechli.crt SSL_KEY_FILE=iytechli.key react-scripts start",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
