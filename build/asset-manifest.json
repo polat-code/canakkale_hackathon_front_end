@@ -1,0 +1,28 @@
+{
+  "files": {
+    "main.css": "/static/css/main.fe54652c.css",
+    "main.js": "/static/js/main.650b11bd.js",
+    "static/js/206.51e73c69.chunk.js": "/static/js/206.51e73c69.chunk.js",
+    "static/media/404_photo.svg": "/static/media/404_photo.19b38e2685b7ce7dcf316d36199e122c.svg",
+    "static/media/placeholder.png": "/static/media/placeholder.5b205cc7aa0d0587a00f.png",
+    "static/media/comment_photo.svg": "/static/media/comment_photo.fd306a4d4cbe87bf145ccee58ef6cdf7.svg",
+    "static/media/user_icon.svg": "/static/media/user_icon.fd306a4d4cbe87bf145ccee58ef6cdf7.svg",
+    "static/media/heard_red.svg": "/static/media/heard_red.60e8b51bc5d49d32894c006c051809d7.svg",
+    "static/media/like_post_icon.svg": "/static/media/like_post_icon.310235a3704c7a3bf08d83147c756ccb.svg",
+    "static/media/anonim_logo.svg": "/static/media/anonim_logo.d915319d2677295d79c6bf74bbfdb832.svg",
+    "index.html": "/index.html",
+    "static/media/comment_modal_icon.svg": "/static/media/comment_modal_icon.3eb3d7adbed5ec16f4c96571605b0728.svg",
+    "static/media/iytechli.svg": "/static/media/iytechli.6fc8a8631f0c9564facbfeaa97a149e7.svg",
+    "static/media/comment_post_icon.svg": "/static/media/comment_post_icon.b2f2c626dacda7e086872132cc5536b5.svg",
+    "static/media/comment_like_icon_active.svg": "/static/media/comment_like_icon_active.f2e7274d2e987a032344549d4d466953.svg",
+    "static/media/comment_dislike_icon_active.svg": "/static/media/comment_dislike_icon_active.7b46d3564c85554a66e2868fd8959eb4.svg",
+    "static/media/comment_like_icon.svg": "/static/media/comment_like_icon.cd160ee8f1480d0a61ab6d1f22bdb16a.svg",
+    "static/media/comment_dislike_icon.svg": "/static/media/comment_dislike_icon.0df933cd73ccb1ba9b4d0595971849d2.svg",
+    "static/media/sikayet_et.svg": "/static/media/sikayet_et.a5e1c52f84034fdbdd6759118472a2d0.svg",
+    "static/media/plus_icon.svg": "/static/media/plus_icon.4c8e687cef6cecb9359e3fe215af11e2.svg"
+  },
+  "entrypoints": [
+    "static/css/main.fe54652c.css",
+    "static/js/main.650b11bd.js"
+  ]
+}
