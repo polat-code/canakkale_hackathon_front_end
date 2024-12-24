@@ -1,14 +1,35 @@
 import React, { useState } from "react";
+import { createMatch } from "../../../services/MatchAPIService";
 
 const CreateMatch = () => {
-  const [sport, setSport] = useState("");
-  const [time, setTime] = useState("");
+  const [sportType, setSportType] = useState("FOOTBALL");
+  const [sportLevel, setSportLevel] = useState("BEGINNER");
+  const [gender, setGender] = useState("MALE");
+  const [date, setDate] = useState("");
+  const [hours, setHours] = useState(0);
   const [location, setLocation] = useState("");
-  const [playersNeeded, setPlayersNeeded] = useState(0);
+  const [playersNeeded, setPlayersNeeded] = useState(1);
+  const [description, setDescription] = useState("");
+  const [telephone, setTelephone] = useState("");
 
-  const handleCreateMatch = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleCreateMatch = async () => {
     // Handle match creation logic
-    // console.log({ sport, time, location, playersNeeded });
+    const response = await createMatch({
+      sportType,
+      sportLevel,
+      gender,
+      date,
+      hours,
+      location,
+      playersNeeded,
+      description,
+      telephone,
+    });
+
+    if (response.statusCode === 200) {
+    }
   };
 
   return (
@@ -19,25 +40,25 @@ const CreateMatch = () => {
           <label className="form-label">Spor</label>
           <select
             className="form-select"
-            value={sport}
-            onChange={(e) => setSport(e.target.value)}
+            value={sportType}
+            onChange={(e) => setSportType(e.target.value)}
           >
-            <option value="Football">Futbol</option>
-            <option value="Basketball">Basketbol</option>
-            <option value="Volleyball">Voleybol</option>
-            <option value="Tennis">Tenis</option>
+            <option value="FOOTBALL">Futbol</option>
+            <option value="BASKETBALL">Basketbol</option>
+            <option value="VOLLEYBALL">Voleybol</option>
+            <option value="TENNIS">Tenis</option>
           </select>
         </div>
         <div className="mb-3">
           <label className="form-label">Oyun Seviyesi</label>
           <select
             className="form-select"
-            //value={sport}
-            //onChange={(e) => setSport(e.target.value)}
+            value={sportLevel}
+            onChange={(e) => setSportLevel(e.target.value)}
           >
-            <option value="Beginner">Beginner</option>
-            <option value="Intermediate">Intermediate</option>
-            <option value="Advanced">Advanced</option>
+            <option value="BEGINNER">Beginner</option>
+            <option value="INTERMEDIATE">Intermediate</option>
+            <option value="ADVANCED">Advanced</option>
           </select>
         </div>
         <div className="mb-3">
@@ -45,8 +66,8 @@ const CreateMatch = () => {
           <input
             type="date"
             className="form-control"
-            //value={time}
-            //onChange={(e) => setTime(e.target.value)}
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
           />
         </div>
         <div className="mb-3">
@@ -54,8 +75,8 @@ const CreateMatch = () => {
           <input
             type="time"
             className="form-control"
-            //value={time}
-            //onChange={(e) => setTime(e.target.value)}
+            value={hours}
+            onChange={(e) => setHours(e.target.value)}
           />
         </div>
         <div className="mb-3">
@@ -63,8 +84,8 @@ const CreateMatch = () => {
           <input
             type="text"
             className="form-control"
-            //value={location}
-            //onChange={(e) => setLocation(e.target.value)}
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
           />
         </div>
         <div className="mb-3">
@@ -72,20 +93,23 @@ const CreateMatch = () => {
           <input
             type="number"
             className="form-control"
-            //value={playersNeeded}
-            //onChange={(e) => setPlayersNeeded(e.target.value)}
+            value={playersNeeded}
+            onChange={(e) => setPlayersNeeded(e.target.value)}
+            onWheel={(e) => e.target.blur()}
+            min="1" // Minimum value
+            max="20" // Maximum value
           />
         </div>
         <div className="mb-3">
           <label className="form-label">Cinsiyet Tercihi</label>
           <select
             className="form-select"
-            //value={sport}
-            //onChange={(e) => setSport(e.target.value)}
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
           >
-            <option value="Male">Erkek</option>
-            <option value="Female">Kız</option>
-            <option value="Any">Farketmez</option>
+            <option value="MALE">Erkek</option>
+            <option value="FEMALE">Kız</option>
+            <option value="ANY">Farketmez</option>
           </select>
         </div>
         <div className="mb-3">
@@ -95,8 +119,8 @@ const CreateMatch = () => {
           <input
             type="tel"
             className="form-control"
-            //value={price}
-            //onChange={(e) => setPrice(e.target.value)}
+            value={telephone}
+            onChange={(e) => setTelephone(e.target.value)}
           />
         </div>
         <div className="mb-3">
@@ -104,9 +128,8 @@ const CreateMatch = () => {
           <textarea
             type="text"
             className="form-control"
-            //value={price}
-            //onChange={(e) => setPrice(e.target.value)}
-            //Don't forget the restriction of the number of character
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           />
         </div>
         <button className="btn btn-primary w-100" onClick={handleCreateMatch}>
