@@ -8,14 +8,13 @@ import LoginContainer from "./pages/LoginContainer/LoginContainer";
 import MyMessagesContainer from "./pages/MyMessagesContainer/MyMessagesContainer";
 import ProfileContainer from "./pages/ProfileContainer/ProfileContainer";
 import PostsAndAdvertsContainer from "./pages/PostsAndAdvertsContainer/PostsAndAdvertsContainer";
-import NewAnonymousContainer from "./pages/NewAnonymousPostContainer/NewAnonymousContainer";
 import AnonimPostDetailContainer from "./pages/AnonimPostDetailContainer/AnonimPostDetailContainer";
 import RegisterContainer from "./pages/RegisterContainer/RegisterContainer";
 import ForgotPasswordContainer from "./pages/ForgotPasswordContainer/ForgotPasswordContainer";
 import OTPCodeEntryContainer from "./pages/OTPCodeEntryContainer/OTPCodeEntryContainer";
 import NewPasswordEntryContainer from "./pages/NewPasswordEntryContainer/NewPasswordEntryContainer";
 import IyteCarCreateRideContainer from "./pages/IyteCarCreateRideContainer/IyteCarCreateRideContainer";
-import CreateMatchContainer from "./pages/CreatMatchContainer/CreateMatchContainer";
+
 import PlaceDetailContainer from "./pages/PlaceDetailContainer/PlaceDetailContainer";
 import ErrorContainer from "./pages/ErrorContainer/ErrorContainer";
 import IyteRingMapContainer from "./pages/IyteRingMapContainer/IyteRingMapContainer";
@@ -47,7 +46,6 @@ const RouteApp = () => {
         path="/iyte-car/create-ride"
         element={<IyteCarCreateRideContainer />}
       />
-      <Route path="sports/new-match" element={<CreateMatchContainer />} />
       <Route path="/ring" element={<IyteRingMapContainer />} />
       <Route path="*" element={<ErrorContainer />} />
     </Routes>

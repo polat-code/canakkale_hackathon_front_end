@@ -13,6 +13,68 @@ const api = () => {
   });
 };
 
+export const getMatches = async (pageNo, pageSize) => {
+  try {
+    const accessToken = Cookies.get("access_token");
+    const headers = {};
+    if (accessToken) {
+      headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+    let matchResponse = await api().get(`/match/all/${pageNo}/${pageSize}`, {
+      headers,
+    });
+
+    //JSON.parse(postResponse);
+    //console.log("postResponse in postfetchservice : " + postResponse);
+    //console.log("postResponse in postfetchservice : " + JSON.stringify(postResponse.data));
+
+    if (matchResponse.data.statusCode === 200) {
+      return matchResponse.data;
+    } else if (matchResponse.data.statusCode === 498) {
+      try {
+        const refreshTokenresponse = await api().post("/auth/refresh-token", {
+          refreshToken: Cookies.get("refresh_token"),
+          accessToken: accessToken,
+        });
+        if (refreshTokenresponse.data.statusCode === 200) {
+          setCookie(
+            "access_token",
+            refreshTokenresponse.data.data.access_token
+          );
+          setCookie(
+            "refresh_token",
+            refreshTokenresponse.data.data.refresh_token
+          );
+
+          let matchResponse = await api().get(
+            `/match/all/${pageNo}/${pageSize}`,
+            {
+              Authorization: `Bearer ${refreshTokenresponse.data.accessToken}`,
+            }
+          );
+          return matchResponse.data;
+        } else if (refreshTokenresponse.data.statusCode === 411) {
+          Cookies.remove("access_token");
+          Cookies.remove("refresh_token");
+          matchResponse = await api().get(`/match/all/${pageNo}/${pageSize}`);
+          return matchResponse.data;
+        } else if (refreshTokenresponse.data.statusCode === 404) {
+          console.log("User not found");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    } else if (matchResponse.data.statusCode === 401) {
+      Cookies.remove("access_token");
+      Cookies.remove("refresh_token");
+      matchResponse = await api().get(`/match/all/${pageNo}/${pageSize}`);
+      return matchResponse.data;
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const createMatch = async (match) => {
   try {
     const accessToken = Cookies.get("access_token");

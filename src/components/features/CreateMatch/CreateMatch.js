@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { createMatch } from "../../../services/MatchAPIService";
+import { ToastContainer } from "react-toastify";
+import {
+  toastError,
+  toastSuccess,
+} from "../../../utils/toastNotification/toastNotifications";
+import { useNavigate } from "react-router";
 
-const CreateMatch = () => {
+const CreateMatch = ({ setIsEnableToCreateMatch }) => {
   const [sportType, setSportType] = useState("FOOTBALL");
   const [sportLevel, setSportLevel] = useState("BEGINNER");
   const [gender, setGender] = useState("MALE");
@@ -13,8 +19,10 @@ const CreateMatch = () => {
   const [telephone, setTelephone] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
+  const navigation = useNavigate();
 
   const handleCreateMatch = async () => {
+    setIsLoading(true);
     // Handle match creation logic
     const response = await createMatch({
       sportType,
@@ -29,11 +37,21 @@ const CreateMatch = () => {
     });
 
     if (response.statusCode === 200) {
+      toastSuccess("İlan Başarılı!", 1200);
+      setTimeout(() => {
+        setIsEnableToCreateMatch(false);
+        window.location.reload();
+        setIsLoading(false);
+      }, 2000);
+    } else {
+      toastError("Hata oluştu!");
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="container mt-5">
+      <ToastContainer />
       <h2 className="text-center mb-4">Maç İlanı Ver</h2>
       <div className="card p-4 shadow-sm">
         <div className="mb-3">
@@ -132,7 +150,11 @@ const CreateMatch = () => {
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
-        <button className="btn btn-primary w-100" onClick={handleCreateMatch}>
+        <button
+          className="btn btn-primary w-100"
+          onClick={handleCreateMatch}
+          disabled={isLoading}
+        >
           Create Match
         </button>
       </div>

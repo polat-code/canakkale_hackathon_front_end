@@ -1,22 +1,12 @@
 import React, { useState } from "react";
 
-const MatchSearch = ({ matches, setMatches }) => {
+const MatchSearch = ({ sports, setSports }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterLevel, setFilterLevel] = useState("");
   const [filterGender, setFilterGender] = useState("");
   const [filterSport, setFilterSport] = useState("");
 
-  const handleSearch = () => {
-    const filteredMatches = matches.filter(
-      (match) =>
-        (match.sport.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          match.location.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        (filterLevel === "" || match.level === filterLevel) &&
-        (filterGender === "" || match.gender === filterGender) &&
-        (filterSport === "" || match.sport === filterSport)
-    );
-    setMatches(filteredMatches);
-  };
+  const handleSearch = () => {};
 
   return (
     <div className="mb-4">
