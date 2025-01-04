@@ -19,7 +19,6 @@ const CreateMatch = ({ setIsEnableToCreateMatch }) => {
   const [telephone, setTelephone] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
-  const navigation = useNavigate();
 
   const handleCreateMatch = async () => {
     setIsLoading(true);
@@ -127,10 +126,18 @@ const CreateMatch = ({ setIsEnableToCreateMatch }) => {
             type="number"
             className="form-control"
             value={playersNeeded}
-            onChange={(e) => setPlayersNeeded(e.target.value)}
-            onWheel={(e) => e.target.blur()}
-            min="1" // Minimum value
-            max="20" // Maximum value
+            onChange={(e) => setPlayersNeeded(e.target.value)} // Let user type freely
+            onBlur={(e) => {
+              // Enforce min/max constraints on blur
+              const value = Math.max(
+                1,
+                Math.min(10, Number(e.target.value) || 1)
+              ); // Default to 1 if empty
+              setPlayersNeeded(value);
+            }}
+            onWheel={(e) => e.target.blur()} // Prevent accidental scroll changes
+            min={1}
+            max={10}
           />
         </div>
         <div className="mb-3">

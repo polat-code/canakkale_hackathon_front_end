@@ -10,16 +10,23 @@ import { ToastContainer } from "react-toastify";
 
 const SportsContainer = () => {
   const [sports, setSports] = useState([]);
-  const pageSize = 9;
+  const pageSize = 3;
   const [pageNo, setPageNo] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isMoreData, setIsMoreData] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [filterLevel, setFilterLevel] = useState("ALL");
   const [filterGender, setFilterGender] = useState("ALL");
   const [filterSport, setFilterSport] = useState("ALL");
   const navigation = useNavigate();
-
   const [isEnableToCreateMatch, setIsEnableToCreateMatch] = useState(false);
 
+  // Filtreler değiştiğinde sayfa numarasını sıfırla
+  useEffect(() => {
+    setPageNo(1);
+    setSports([]);
+  }, [filterLevel, filterGender, filterSport]);
+
+  // Verileri getir
   useEffect(() => {
     const getSportsFromDB = async () => {
       setIsLoading(true);
@@ -30,16 +37,25 @@ const SportsContainer = () => {
         filterGender,
         filterSport
       );
-      console.log(matches);
-      //console.log(matches);
-      setSports(matches.data);
+
+      if (matches?.data?.length > 0) {
+        if (pageNo === 1) {
+          setSports(matches.data);
+        } else {
+          setSports((prevSports) => [...prevSports, ...matches.data]);
+        }
+        setIsMoreData(matches.data.length === pageSize); // Gelen veri tam sayfa değilse daha fazla veri yoktur
+      } else {
+        setIsMoreData(false);
+      }
       setIsLoading(false);
     };
+
     getSportsFromDB();
   }, [pageNo, filterLevel, filterGender, filterSport]);
 
   const handlePageNo = () => {
-    setPageNo(pageNo + 1);
+    setPageNo((prevPageNo) => prevPageNo + 1);
   };
 
   const handleNewMatch = async () => {
@@ -70,6 +86,7 @@ const SportsContainer = () => {
           setFilterGender={setFilterGender}
           filterSport={filterSport}
           setFilterSport={setFilterSport}
+          isMoreData={isMoreData}
         />
       )}
       <ToastContainer />

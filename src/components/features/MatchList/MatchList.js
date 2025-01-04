@@ -14,7 +14,20 @@ const MatchList = ({
   setFilterGender,
   filterSport,
   setFilterSport,
+  isMoreData,
 }) => {
+  const getGender = (genderPreference) => {
+    switch (genderPreference) {
+      case "ANY":
+        return "Farketmez";
+      case "FEMALE":
+        return "Kız";
+      case "MALE":
+        return "Erkek";
+      default:
+        return "Unknown";
+    }
+  };
   return (
     <div className="container mt-3 match-list-container">
       <div className="d-flex justify-content-end">
@@ -24,7 +37,7 @@ const MatchList = ({
         </button>
       </div>
 
-      <h2 className="text-center mb-lg-4 my-3">Find a Match</h2>
+      <h2 className="text-center mb-lg-4 my-3">Spor İlanı Arat</h2>
 
       <MatchSearch
         filterLevel={filterLevel}
@@ -59,16 +72,17 @@ const MatchList = ({
                     {sport.hours}
                   </p>
                   <p className="card-text">
-                    <i className="bi bi-geo-alt"></i> <strong>Location:</strong>{" "}
+                    <i className="bi bi-geo-alt"></i> <strong>Konum:</strong>{" "}
                     {sport.location}
                   </p>
                   <p className="card-text">
                     <i className="bi bi-people"></i>{" "}
-                    <strong>Players Needed:</strong> {sport.playersNeeded}
+                    <strong>Gereken Kişi sayısı:</strong> {sport.playersNeeded}
                   </p>
                   <p className="card-text">
                     <i className="bi bi-gender-ambiguous"></i>{" "}
-                    <strong>Gender Preference:</strong> {sport.genderPreference}
+                    <strong>Cinsiyet Tercihi:</strong>{" "}
+                    {getGender(sport.genderPreference)}
                   </p>
                   <p className="card-text">
                     <i className="bi bi-chat-dots"></i>{" "}
@@ -76,7 +90,7 @@ const MatchList = ({
                   </p>
                   <p className="card-text">
                     <i className="bi bi-chat-dots"></i>{" "}
-                    <strong>Description:</strong> {sport.description}
+                    <strong>Açıklama:</strong> {sport.description}
                   </p>
                   {/* 
                 <button className="btn btn-outline-primary w-100 mt-3">
@@ -86,6 +100,20 @@ const MatchList = ({
               </div>
             </div>
           ))}
+      </div>
+      <div className="d-flex justify-content-center">
+        {isMoreData ? (
+          <button
+            className="btn btn-primary col-lg-3 col-5 mt-3 mb-3"
+            onClick={handlePageNo}
+          >
+            Daha Fazla
+          </button>
+        ) : sports.length > 0 ? (
+          <p>Daha Fazla Spor İlanı yok.</p>
+        ) : (
+          <p>Sonuç bulunamadı.</p> // İlk sorguda veri yoksa
+        )}
       </div>
     </div>
   );
