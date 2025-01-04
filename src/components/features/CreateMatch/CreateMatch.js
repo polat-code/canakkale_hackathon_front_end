@@ -24,34 +24,48 @@ const CreateMatch = ({ setIsEnableToCreateMatch }) => {
   const handleCreateMatch = async () => {
     setIsLoading(true);
     // Handle match creation logic
-    const response = await createMatch({
-      sportType,
-      sportLevel,
-      gender,
-      date,
-      hours,
-      location,
-      playersNeeded,
-      description,
-      telephone,
-    });
+    if (
+      sportType &&
+      sportLevel &&
+      gender &&
+      date &&
+      hours &&
+      location &&
+      playersNeeded &&
+      description &&
+      telephone
+    ) {
+      setIsLoading(true);
+      const response = await createMatch({
+        sportType,
+        sportLevel,
+        gender,
+        date,
+        hours,
+        location,
+        playersNeeded,
+        description,
+        telephone,
+      });
 
-    if (response.statusCode === 200) {
-      toastSuccess("İlan Başarılı!", 1200);
-      setTimeout(() => {
-        setIsEnableToCreateMatch(false);
-        window.location.reload();
+      if (response.statusCode === 200) {
+        toastSuccess("İlan Başarılı!", 1200);
+        setTimeout(() => {
+          setIsEnableToCreateMatch(false);
+          window.location.reload();
+          setIsLoading(false);
+        }, 2000);
+      } else {
+        toastError("Hata oluştu!");
         setIsLoading(false);
-      }, 2000);
+      }
     } else {
-      toastError("Hata oluştu!");
+      toastError("Lütfen bütün alanları doldurun!");
       setIsLoading(false);
     }
   };
-
   return (
     <div className="container mt-5">
-      <ToastContainer />
       <h2 className="text-center mb-4">Maç İlanı Ver</h2>
       <div className="card p-4 shadow-sm">
         <div className="mb-3">
@@ -86,6 +100,7 @@ const CreateMatch = ({ setIsEnableToCreateMatch }) => {
             className="form-control"
             value={date}
             onChange={(e) => setDate(e.target.value)}
+            min={new Date().toISOString().split("T")[0]} // Bugünden önceki tarihler devre dışı
           />
         </div>
         <div className="mb-3">
@@ -150,13 +165,22 @@ const CreateMatch = ({ setIsEnableToCreateMatch }) => {
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
-        <button
-          className="btn btn-primary w-100"
-          onClick={handleCreateMatch}
-          disabled={isLoading}
-        >
-          Create Match
-        </button>
+        <div className="d-flex flex-lg-row flex-column justify-content-around flex-wrap">
+          <button
+            className="btn btn-secondary w-lg-25 w-100 m-lg-0 m-2 m-lg-2"
+            onClick={() => setIsEnableToCreateMatch(false)}
+            disabled={isLoading}
+          >
+            İptal Et
+          </button>
+          <button
+            className="btn btn-primary w-lg-25 w-100 m-lg-0 m-2 m-lg-2"
+            onClick={handleCreateMatch}
+            disabled={isLoading}
+          >
+            Maç Oluştur
+          </button>
+        </div>
       </div>
     </div>
   );

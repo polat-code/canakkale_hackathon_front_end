@@ -3,7 +3,18 @@ import "../../../styles/MatchList/MatchList.css";
 import MatchSearch from "../MatchSearch/MatchSearch";
 import plusIcon from "../../../assets/anonimImages/plus_icon.svg";
 
-const MatchList = ({ handlePageNo, sports, setSports, handleNewMatch }) => {
+const MatchList = ({
+  handlePageNo,
+  sports,
+  setSports,
+  handleNewMatch,
+  filterLevel,
+  setFilterLevel,
+  filterGender,
+  setFilterGender,
+  filterSport,
+  setFilterSport,
+}) => {
   return (
     <div className="container mt-3 match-list-container">
       <div className="d-flex justify-content-end">
@@ -15,7 +26,14 @@ const MatchList = ({ handlePageNo, sports, setSports, handleNewMatch }) => {
 
       <h2 className="text-center mb-lg-4 my-3">Find a Match</h2>
 
-      <MatchSearch sports={sports} setSports={setSports} />
+      <MatchSearch
+        filterLevel={filterLevel}
+        setFilterLevel={setFilterLevel}
+        filterGender={filterGender}
+        setFilterGender={setFilterGender}
+        filterSport={filterSport}
+        setFilterSport={setFilterSport}
+      />
       <div className="row">
         {sports &&
           sports.map((sport, key) => (

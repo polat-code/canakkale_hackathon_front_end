@@ -6,12 +6,16 @@ import LoadingAnimation from "../../components/common/LoadingAnimation/LoadingAn
 import CreateMatch from "../../components/features/CreateMatch/CreateMatch";
 import { isValidAccessToken } from "../../services/AuthenticationService";
 import { useNavigate } from "react-router";
+import { ToastContainer } from "react-toastify";
 
 const SportsContainer = () => {
   const [sports, setSports] = useState([]);
-  const pageSize = 10;
+  const pageSize = 9;
   const [pageNo, setPageNo] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [filterLevel, setFilterLevel] = useState("ALL");
+  const [filterGender, setFilterGender] = useState("ALL");
+  const [filterSport, setFilterSport] = useState("ALL");
   const navigation = useNavigate();
 
   const [isEnableToCreateMatch, setIsEnableToCreateMatch] = useState(false);
@@ -19,14 +23,20 @@ const SportsContainer = () => {
   useEffect(() => {
     const getSportsFromDB = async () => {
       setIsLoading(true);
-      const matches = await getMatches(pageNo, pageSize);
+      const matches = await getMatches(
+        pageNo,
+        pageSize,
+        filterLevel,
+        filterGender,
+        filterSport
+      );
+      console.log(matches);
       //console.log(matches);
       setSports(matches.data);
+      setIsLoading(false);
     };
     getSportsFromDB();
-
-    setIsLoading(false);
-  }, [pageNo]);
+  }, [pageNo, filterLevel, filterGender, filterSport]);
 
   const handlePageNo = () => {
     setPageNo(pageNo + 1);
@@ -54,8 +64,15 @@ const SportsContainer = () => {
           sports={sports}
           setSports={setSports}
           handleNewMatch={handleNewMatch}
+          filterLevel={filterLevel}
+          setFilterLevel={setFilterLevel}
+          filterGender={filterGender}
+          setFilterGender={setFilterGender}
+          filterSport={filterSport}
+          setFilterSport={setFilterSport}
         />
       )}
+      <ToastContainer />
     </div>
   );
 };

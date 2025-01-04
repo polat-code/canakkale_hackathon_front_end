@@ -13,16 +13,25 @@ const api = () => {
   });
 };
 
-export const getMatches = async (pageNo, pageSize) => {
+export const getMatches = async (
+  pageNo,
+  pageSize,
+  filterLevel,
+  filterGender,
+  filterSport
+) => {
   try {
     const accessToken = Cookies.get("access_token");
     const headers = {};
     if (accessToken) {
       headers["Authorization"] = `Bearer ${accessToken}`;
     }
-    let matchResponse = await api().get(`/match/all/${pageNo}/${pageSize}`, {
-      headers,
-    });
+    let matchResponse = await api().get(
+      `/match/all/${pageNo}/${pageSize}/${filterSport}/${filterLevel}/${filterGender}`,
+      {
+        headers,
+      }
+    );
 
     //JSON.parse(postResponse);
     //console.log("postResponse in postfetchservice : " + postResponse);
@@ -56,7 +65,9 @@ export const getMatches = async (pageNo, pageSize) => {
         } else if (refreshTokenresponse.data.statusCode === 411) {
           Cookies.remove("access_token");
           Cookies.remove("refresh_token");
-          matchResponse = await api().get(`/match/all/${pageNo}/${pageSize}`);
+          matchResponse = await api().get(
+            `/match/all/${pageNo}/${pageSize}/${filterSport}/${filterLevel}/${filterGender}`
+          );
           return matchResponse.data;
         } else if (refreshTokenresponse.data.statusCode === 404) {
           console.log("User not found");
