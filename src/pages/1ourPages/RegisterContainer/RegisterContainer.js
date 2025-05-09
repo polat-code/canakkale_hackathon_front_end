@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import Navbar from "../../components/common/Navbar/Navbar";
-import Register from "../../components/features/Register/Register";
-import { register } from "../../services/AuthenticationService";
+import Navbar from "../../../components/common/Navbar/Navbar";
+import Register from "../../../components/features/Register/Register";
+import { register } from "../../../services/AuthenticationService";
 import {
   toastError,
   toastSuccess,
-} from "../../utils/toastNotification/toastNotifications";
+} from "../../../utils/toastNotification/toastNotifications";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
-import { putUserInfo } from "../../redux/userSlice";
-import EmailVerificationContainer from "../EmailVerificationContainer/EmailVerificationContainer";
+import { putUserInfo } from "../../../redux/userSlice";
+import EmailVerificationContainer from "../../EmailVerificationContainer/EmailVerificationContainer";
 
 const RegisterContainer = () => {
   const [isLoading, setIsLoading] = useState(false);

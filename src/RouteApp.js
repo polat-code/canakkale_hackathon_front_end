@@ -4,30 +4,35 @@ import AnonimContainer from "./pages/AnonimContainer/AnonimContainer";
 import IyteCarContainer from "./pages/IyteCarContainer/IyteCarContainer";
 import PlacesContainer from "./pages/PlacesContainer/PlacesContainer";
 import SportsContainer from "./pages/SportsContainer/SportsContainer";
-import LoginContainer from "./pages/LoginContainer/LoginContainer";
+import LoginContainer from "./pages/1ourPages/LoginContainer/LoginContainer";
 import MyMessagesContainer from "./pages/MyMessagesContainer/MyMessagesContainer";
 import ProfileContainer from "./pages/ProfileContainer/ProfileContainer";
 import PostsAndAdvertsContainer from "./pages/PostsAndAdvertsContainer/PostsAndAdvertsContainer";
 import AnonimPostDetailContainer from "./pages/AnonimPostDetailContainer/AnonimPostDetailContainer";
-import RegisterContainer from "./pages/RegisterContainer/RegisterContainer";
+import RegisterContainer from "./pages/1ourPages/RegisterContainer/RegisterContainer";
 import ForgotPasswordContainer from "./pages/ForgotPasswordContainer/ForgotPasswordContainer";
 import OTPCodeEntryContainer from "./pages/OTPCodeEntryContainer/OTPCodeEntryContainer";
 import NewPasswordEntryContainer from "./pages/NewPasswordEntryContainer/NewPasswordEntryContainer";
 import IyteCarCreateRideContainer from "./pages/IyteCarCreateRideContainer/IyteCarCreateRideContainer";
 
 import PlaceDetailContainer from "./pages/PlaceDetailContainer/PlaceDetailContainer";
-import ErrorContainer from "./pages/ErrorContainer/ErrorContainer";
+import ErrorContainer from "./pages/1ourPages/ErrorContainer/ErrorContainer";
 import IyteRingMapContainer from "./pages/IyteRingMapContainer/IyteRingMapContainer";
+import MainPageContainer from "./pages/1ourPages/MainPageContainer/MainPageContainer";
 const RouteApp = () => {
   return (
     <Routes>
-      <Route path="/anonims" element={<AnonimContainer />} />
+      <Route path="/" element={<LoginContainer />} />
+      <Route path="/register" element={<RegisterContainer />} />
+      <Route path="/main" element={<MainPageContainer />} />
+
+      <Route path="*" element={<ErrorContainer />} />
+      {/*
+       <Route path="/anonims" element={<AnonimContainer />} />
       <Route path="/iyte-car" element={<IyteCarContainer />} />
       <Route path="/places" element={<PlacesContainer />} />
       <Route path="/places/detail" element={<PlaceDetailContainer />} />
       <Route path="/sports" element={<SportsContainer />} />
-      <Route path="/" element={<LoginContainer />} />
-      <Route path="/register" element={<RegisterContainer />} />
       <Route path="/forgot-password" element={<ForgotPasswordContainer />} />
       <Route path="/forgot-password/otp" element={<OTPCodeEntryContainer />} />
       <Route
@@ -46,8 +51,7 @@ const RouteApp = () => {
         path="/iyte-car/create-ride"
         element={<IyteCarCreateRideContainer />}
       />
-      <Route path="/ring" element={<IyteRingMapContainer />} />
-      <Route path="*" element={<ErrorContainer />} />
+      <Route path="/ring" element={<IyteRingMapContainer />} /> */}
     </Routes>
   );
 };

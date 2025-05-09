@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Button, Image } from "react-bootstrap";
 import { useNavigate, useSearchParams } from "react-router-dom"; // React Router kullanıyorsanız
-import errorImage from "../../assets/errorImages/404_photo.svg";
+import errorImage from "../../../assets/errorImages/404_photo.svg";
 
 export const ErrorContainer = () => {
   const navigate = useNavigate();
