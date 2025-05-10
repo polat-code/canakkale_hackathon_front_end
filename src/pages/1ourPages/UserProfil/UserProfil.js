@@ -10,15 +10,11 @@ const UserProfil = () => {
   // State for form data
   const [formData, setFormData] = useState({
     firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
     bio: '',
     location: '',
     timezone: 'Europe/Istanbul',
     language: 'tr',
     emailNotifications: true,
-    marketingEmails: false
   });
 
   const [loading, setLoading] = useState(false);
@@ -38,15 +34,11 @@ const UserProfil = () => {
         setTimeout(() => {
           setFormData({
             firstName: 'John',
-            lastName: 'Doe',
-            email: 'john.doe@example.com',
-            phone: '+90 555 123 4567',
             bio: 'Software developer passionate about web technologies',
             location: 'Çanakkale, Turkey',
             timezone: 'Europe/Istanbul',
             language: 'tr',
             emailNotifications: true,
-            marketingEmails: false
           });
           setLoading(false);
         }, 500);

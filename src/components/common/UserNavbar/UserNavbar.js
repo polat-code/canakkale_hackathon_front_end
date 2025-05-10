@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './UserNavbar.css';
+import Cookies from 'js-cookie'; // Import js-cookie to handle cookies
+import { baseURL } from '../../../services/ApiConstants'; // Import baseURL from ApiConstants
 
 const UserNavbar = () => {
   const [userData, setUserData] = useState(null);
@@ -12,12 +14,42 @@ const UserNavbar = () => {
     const fetchUserData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('/api/user/profile');
-        setUserData(response.data);
-        setError(null);
+        
+        // Get access token from cookies
+        const accessToken = Cookies.get('access_token');
+        
+        if (!accessToken) {
+          setError('Authentication token not found. Please login again.');
+          setLoading(false);
+          return;
+        }
+        
+        // Make authenticated API call to get user details
+        const response = await axios.get(
+          `${baseURL}/auth/detail`,
+          {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+        // data retunrs empty string
+        console.log('User data response:', response);
+        // Check if response is successful and contains data
+        if (response.data && response.data.success) {
+          setUserData(response.data.data);
+          setError(null);
+        } else {
+          throw new Error('Invalid response format');
+        }
       } catch (err) {
-        setError('Failed to fetch user data');
-        console.error('Error fetching user data:', err);
+        if (err.response && err.response.status === 401) {
+          setError('Your session has expired. Please login again.');
+        } else {
+          setError('Failed to fetch user data');
+          console.error('Error fetching user data:', err);
+        }
       } finally {
         setLoading(false);
       }
@@ -26,13 +58,21 @@ const UserNavbar = () => {
     fetchUserData();
   }, []);
 
-  // Function to make custom requests
-  const makeRequest = async (endpoint, method = 'GET', data = null) => {
+  // Function to make authenticated requests
+  const makeAuthenticatedRequest = async (endpoint, method = 'GET', data = null) => {
     try {
+      // Get access token from cookies
+      const accessToken = Cookies.get('access_token');
+      
+      if (!accessToken) {
+        throw new Error('Authentication token not found');
+      }
+      
       const config = {
         method,
-        url: `/api${endpoint}`,
+        url: `${baseURL}${endpoint}`,
         headers: {
+          'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
       };
@@ -51,7 +91,9 @@ const UserNavbar = () => {
 
   const handleLogout = async () => {
     try {
-      await makeRequest('/auth/logout', 'POST');
+      // Clear cookies
+      Cookies.remove('access_token');
+      // Redirect to login page
       window.location.href = '/login';
     } catch (err) {
       console.error('Logout failed:', err);
@@ -88,9 +130,9 @@ const UserNavbar = () => {
           <span>Error: {error}</span>
         ) : userData ? (
           <div className="user-info">
-            <span className="username">{userData.name}</span>
+            <span className="username">{userData.name || userData.username || "User"}</span>
             <img 
-              src={userData.avatar || '/default-avatar.png'} 
+              src={userData.avatarUrl || '/default-avatar.png'} 
               alt="User avatar" 
               className="user-avatar"
             />

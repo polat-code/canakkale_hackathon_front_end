@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './IzinIste.css';
 import UserNavbar from '../../../components/common/UserNavbar/UserNavbar';
-
+import { baseURL } from '../../../services/ApiConstants'; // Import baseURL from ApiConstants
+import Cookies from 'js-cookie';
+// istek ne olursa ol
 const TimeOffRequest = () => {
   const [formData, setFormData] = useState({
-    startDate: '',
-    endDate: '',
-    reason: ''
+    from: '',
+    to: '',
+    description: ''
   });
 
   const [loading, setLoading] = useState(false);
@@ -25,10 +27,10 @@ const TimeOffRequest = () => {
 
   // Calculate the number of days requested
   const calculateDays = () => {
-    if (!formData.startDate || !formData.endDate) return 0;
+    if (!formData.from || !formData.to) return 0;
     
-    const start = new Date(formData.startDate);
-    const end = new Date(formData.endDate);
+    const start = new Date(formData.from);
+    const end = new Date(formData.to);
     
     // Return 0 if dates are invalid or end is before start
     if (isNaN(start) || isNaN(end) || end < start) return 0;
@@ -44,15 +46,16 @@ const TimeOffRequest = () => {
   const validateForm = () => {
     const errors = {};
     
-    if (!formData.startDate) errors.startDate = "Start date is required";
-    if (!formData.endDate) errors.endDate = "End date is required";
-    if (formData.startDate && formData.endDate) {
-      const start = new Date(formData.startDate);
-      const end = new Date(formData.endDate);
+    if (!formData.from) errors.from = "Start date is required";
+    if (!formData.to) errors.to = "End date is required";
+    if (formData.from && formData.to) {
+      const start = new Date(formData.from);
+      const end = new Date(formData.to);
       if (end < start) errors.dateRange = "End date cannot be before start date";
     }
-    if (!formData.reason.trim()) errors.reason = "Reason is required";
-    else if (formData.reason.length < 10) errors.reason = "Reason must be at least 10 characters";
+    // Changed minimum character requirement from 10 to 5
+    if (!formData.description?.trim()) errors.description = "Reason is required";
+    else if (formData.description.length < 5) errors.description = "Reason must be at least 5 characters";
     
     return errors;
   };
@@ -73,20 +76,36 @@ const TimeOffRequest = () => {
     setSuccess(false);
 
     try {
-      // In a real application, send the request to your API
-      // await axios.post('/api/time-off-requests', formData);
+      // Get access token from cookies
+      const accessToken = Cookies.get('access_token');
       
-      // For demo, simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (!accessToken) {
+        setError('Authentication token not found. Please login again.');
+        setLoading(false);
+        return;
+      }
       
+      // Make API call with token in header
+      await axios.post(
+        `${baseURL}/requested-day-of-permission`, 
+        formData, 
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      // Set success state
       setSuccess(true);
       console.log('Time off request submitted:', formData);
       
       // Reset form after successful submission
       setFormData({
-        startDate: '',
-        endDate: '',
-        reason: ''
+        from: '',
+        to: '',
+        description: ''
       });
       
       // Hide success message after 4 seconds
@@ -94,8 +113,12 @@ const TimeOffRequest = () => {
         setSuccess(false);
       }, 4000);
     } catch (err) {
-      setError('Failed to submit request. Please try again.');
-      console.error('Error submitting time off request:', err);
+      if (err.response && err.response.status === 401) {
+        setError('Your session has expired. Please login again.');
+      } else {
+        setError('Failed to submit request. Please try again.');
+        console.error('Error submitting time off request:', err);
+      }
     } finally {
       setLoading(false);
     }
@@ -123,12 +146,12 @@ const TimeOffRequest = () => {
         <form onSubmit={handleSubmit}>
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="startDate">Start Date *</label>
+              <label htmlFor="from">Start Date *</label>
               <input
                 type="date"
-                id="startDate"
-                name="startDate"
-                value={formData.startDate}
+                id="from"
+                name="from"
+                value={formData.from}
                 onChange={handleChange}
                 min={new Date().toISOString().split('T')[0]} // Today as minimum date
                 required
@@ -136,37 +159,41 @@ const TimeOffRequest = () => {
             </div>
             
             <div className="form-group">
-              <label htmlFor="endDate">End Date *</label>
+              <label htmlFor="to">End Date *</label>
               <input
                 type="date"
-                id="endDate"
-                name="endDate"
-                value={formData.endDate}
+                id="to"
+                name="to"
+                value={formData.to}
                 onChange={handleChange}
-                min={formData.startDate || new Date().toISOString().split('T')[0]}
+                min={formData.from || new Date().toISOString().split('T')[0]}
                 required
               />
             </div>
           </div>
 
-          {formData.startDate && formData.endDate && new Date(formData.endDate) >= new Date(formData.startDate) && (
+          {formData.from && formData.to && new Date(formData.to) >= new Date(formData.from) && (
             <div className="days-summary">
               Total days requested: <span className="days-count">{calculateDays()}</span>
             </div>
           )}
           
           <div className="form-group">
-            <label htmlFor="reason">Reason for Time Off *</label>
+            <label htmlFor="description">Description for Time Off *</label>
             <textarea
-              id="reason"
-              name="reason"
+              id="description"
+              name="description"
               rows="5"
-              value={formData.reason}
+              value={formData.description || ''}
               onChange={handleChange}
               placeholder="Please explain the reason for your time off request"
               required
+              maxLength="500" // Added explicit max length of 500 characters
             ></textarea>
-            <small>Minimum 10 characters. Provide any additional details that might be relevant.</small>
+            <small>Minimum 5 characters. Maximum 500 characters. Provide any additional details that might be relevant.</small>
+            <div className="character-counter">
+              {formData.description?.length || 0}/500 characters
+            </div>
           </div>
           
           <div className="form-notice">

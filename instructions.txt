@@ -1,26 +1,20 @@
 Hardcodelanacak şeyler
 
-1) Çalıştığı süre 180 gününü doldurmuş mu? 
 
+1) Resmi tatiller ve pazar günlerini Frontendde seçtirme. Resmi tatiller 23 Nisan (23 Nisan 2024), 1 Mayıs (1 Mayıs 2024), 19 Mayıs (19Mayıs 2024), 15 Temmuz (15 Temmuz 2024), 30 Ağustos (30 Ağustos 2024), 29 Ekim (29Ekim 2024), 1 Ocak 2025
 
-2) Resmi tatiller ve pazar günlerini Frontendde seçtirme. Resmi tatiller 23 Nisan (23 Nisan 2024), 1 Mayıs (1 Mayıs 2024), 19 Mayıs (19Mayıs 2024), 15 Temmuz (15 Temmuz 2024), 30 Ağustos (30 Ağustos 2024), 29 Ekim (29Ekim 2024), 1 Ocak 2025
-
-3)  Resmi tatil ile hafta sonu arasında kalan tek günde izin alınırsa, 1 gün otomatik uzatılır.
+2)  Resmi tatil ile hafta sonu arasında kalan tek günde izin alınırsa, 1 gün otomatik uzatılır.
 Örn: 28 Ekim'de izin alan çalışan, 29 Ekim (resmi tatil) nedeniyle 28 Ekim-2 Kasım (5 gün)
 izin kullanmak zorundadır. (2024 Takvimine göre 28 Ekim yarım gündür ancak veri setinde
 tam gün olarak baz alınmıştır. Katılımcılar bu gibi yarım gün olan durumları tam gün olarak
 ele alınız. Soru işareti olmaması adına bilgi verilmektedir)
 
-4) istenen izin kalan izinden fazla mı? alabileceği maximum günü göster frontendde
+3) İzin yasaklı günlere mi denk geliyor? Projelerin bitişinden 2 hafta öncesi ve sonrası yani tarihler olarak 18 Haziran - 2 Temmuz 2024, 8 Eylül - 22 Eylül 2024, 3 Aralık - 17 Aralık 2024
 
-5) Acil durum izni mi istemiş mi? 1. derece aile yakınları hastahaneye mi kaldırılmış? Kendisi mi hastahaneye kaldırılmış
+4) Performans değerlendirmesi içerisinde mi? öyleyse eğer acil durum izni istemediyse izin verme. Performans değerlendirme tarihi 1 Aralık 2024 - 15 Ocak 2025
 
-6) İzin yasaklı günlere mi denk geliyor? Projelerin bitişinden 2 hafta öncesi ve sonrası yani tarihler olarak 18 Haziran - 2 Temmuz 2024, 8 Eylül - 22 Eylül 2024, 3 Aralık - 17 Aralık 2024
+5) Departman kotasını tekrar kontrol et. Eğer boş yer yoksa izin verme. Aynı departmanda aynı anda izinli çalışan sayısı %20'yi geçemez. (Örn: 10 kişilik departmanda maksimum 2 kişi).
 
-7) Performans değerlendirmesi içerisinde mi? öyleyse eğer acil durum izni istemediyse izin verme. Performans değerlendirme tarihi 1 Aralık 2024 - 15 Ocak 2025
+6) Yaz kotasını kontrol et. Yaz kotası:  1 Haziran - 31 Ağustos 2024 arası her çalışan maksimum 6 gün izin kullanabilir.
 
-8) Departman kotasını tekrar kontrol et. Eğer boş yer yoksa izin verme. Aynı departmanda aynı anda izinli çalışan sayısı %20'yi geçemez. (Örn: 10 kişilik departmanda maksimum 2 kişi).
-
-9) Yaz kotasını kontrol et. Yaz kotası:  1 Haziran - 31 Ağustos 2024 arası her çalışan maksimum 6 gün izin kullanabilir.
-
-10) Doğum günü izni bir günden fazla mı? Şirket doğum günü olan çalışanlara yıl içerisinde en fazla 1 gün kullanabilecekleri izin hakkı tanımaktadır
+7) Doğum günü izni bir günden fazla mı? Şirket doğum günü olan çalışanlara yıl içerisinde en fazla 1 gün kullanabilecekleri izin hakkı tanımaktadır
