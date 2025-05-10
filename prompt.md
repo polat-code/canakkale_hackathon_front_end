@@ -13,14 +13,14 @@ t## Girdi Değişkenleri
 
 ## Kurallar
 
-1. Aynı **pozisyondan** en fazla **2 kişi** aynı anda izinli olabilir.
-2. Aynı **departmandan**, o tarih aralığında en fazla toplam çalışan sayısının **%20’si** izinli olabilir.
-3. Departman bazlı izin sınırı `${departman.maxGun}` ile belirlenir.
-4. Aşağıdaki **öncelik sırasına** göre değerlendirme yap:
-   - Daha **yüksek deneyime sahip** olanlara öncelik tanınır.
+1. Başvuru metninde **acil durum** belirtilmişse bu başvurular önceliklidir.Gerekirse başka tarihler değiştirilebilir.
+2. Aynı **pozisyondan** en fazla **2 kişi** aynı anda izinli olabilir.
+3. Aynı **departmandan**, o tarih aralığında en fazla toplam çalışan sayısının **%20’si** izinli olabilir.
+4. Departman bazlı izin sınırı `${departman.maxGun}` ile belirlenir.
+5. Aşağıdaki **öncelik sırasına** göre değerlendirme yap:
    - **Tarihi değiştiremeyen** başvurular önceliklidir.
    - Başvuru metninde **acil durum** belirtilmişse bu başvurular önceliklidir.
-5. Eğer talep edilen tarih uygun değilse:
+6. Eğer talep edilen tarih uygun değilse:
    - **İzin reddedilmeli** ve kullanıcıya **uygun alternatif tarih önerilmeli**.
    - Önerilen tarih departman ve pozisyon limitlerini aşmamalıdır.
 

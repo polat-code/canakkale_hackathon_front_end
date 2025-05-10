@@ -3,34 +3,57 @@ import axios from 'axios';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
-  const [pendingRequests, setPendingRequests] = useState([]);
+  const [requests, setRequests] = useState([]);
+  const [filteredRequests, setFilteredRequests] = useState([]);
+  const [statusFilter, setStatusFilter] = useState('pending');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [aiAssistActive, setAiAssistActive] = useState(false);
   const [aiProcessing, setAiProcessing] = useState(false);
   const [aiSuggestions, setAiSuggestions] = useState({});
+  
+  // Undo functionality
+  const [recentAction, setRecentAction] = useState(null);
+  const [undoTimeout, setUndoTimeout] = useState(null);
 
   useEffect(() => {
-    fetchPendingRequests();
+    fetchAllRequests();
   }, []);
 
-  // Fetch all pending requests
-  const fetchPendingRequests = async () => {
+  useEffect(() => {
+    // Filter requests when status filter or requests array changes
+    if (requests.length > 0) {
+      if (statusFilter === 'all') {
+        setFilteredRequests(requests);
+      } else {
+        setFilteredRequests(requests.filter(req => req.status === statusFilter));
+      }
+    }
+  }, [statusFilter, requests]);
+
+  // Fetch all requests (pending, approved, rejected)
+  const fetchAllRequests = async () => {
     setLoading(true);
     try {
       // In a real application, fetch from your API
-      // const response = await axios.get('/api/admin/pending-requests');
-      // setPendingRequests(response.data);
+      // const response = await axios.get('/api/admin/all-requests');
+      // setRequests(response.data);
       
       // Mock data for development
       await new Promise(resolve => setTimeout(resolve, 800));
-      setPendingRequests(mockPendingRequests);
+      setRequests(mockAllRequests);
+      setFilteredRequests(mockAllRequests.filter(req => req.status === statusFilter));
     } catch (err) {
-      console.error('Error fetching pending requests:', err);
-      setError('Failed to load pending requests. Please try again.');
+      console.error('Error fetching requests:', err);
+      setError('Failed to load requests. Please try again.');
     } finally {
       setLoading(false);
     }
+  };
+
+  // Handle status filter change
+  const handleFilterChange = (status) => {
+    setStatusFilter(status);
   };
 
   // Handle AI assist button click
@@ -40,7 +63,7 @@ const AdminDashboard = () => {
     
     try {
       // In a real application, send requests to your AI service
-      // const response = await axios.post('/api/ai/analyze-requests', { requests: pendingRequests });
+      // const response = await axios.post('/api/ai/analyze-requests', { requests: filteredRequests });
       // setAiSuggestions(response.data.suggestions);
       
       // Mock AI processing
@@ -48,15 +71,17 @@ const AdminDashboard = () => {
       
       // Mock AI response
       const mockSuggestions = {};
-      pendingRequests.forEach(request => {
-        const randomDecision = Math.random() > 0.3; // 70% approve, 30% decline
-        mockSuggestions[request.id] = {
-          recommendation: randomDecision ? 'approve' : 'decline',
-          confidence: Math.floor(Math.random() * 30) + 70, // 70-99% confidence
-          reasoning: randomDecision 
-            ? getRandomApproveReason(request) 
-            : getRandomDeclineReason(request)
-        };
+      filteredRequests.forEach(request => {
+        if (request.status === 'pending') {
+          const randomDecision = Math.random() > 0.3; // 70% approve, 30% decline
+          mockSuggestions[request.id] = {
+            recommendation: randomDecision ? 'approve' : 'decline',
+            confidence: Math.floor(Math.random() * 30) + 70, // 70-99% confidence
+            reasoning: randomDecision 
+              ? getRandomApproveReason(request) 
+              : getRandomDeclineReason(request)
+          };
+        }
       });
       setAiSuggestions(mockSuggestions);
     } catch (err) {
@@ -68,17 +93,52 @@ const AdminDashboard = () => {
     }
   };
 
+  // Clear any pending undo timeout
+  const clearUndoTimeout = () => {
+    if (undoTimeout) {
+      clearTimeout(undoTimeout);
+      setUndoTimeout(null);
+    }
+  };
+
   // Handle request approval
   const handleApprove = async (requestId) => {
+    // Clear any existing undo action
+    clearUndoTimeout();
+    
     try {
-      // In a real application, send approval to your API
-      // await axios.post(`/api/admin/requests/${requestId}/approve`);
+      // Find the request to update
+      const requestToUpdate = requests.find(req => req.id === requestId);
+      if (!requestToUpdate) return;
       
-      // Mock successful approval
-      console.log(`Approved request ${requestId}`);
+      // Save previous state for undo
+      const previousState = { ...requestToUpdate };
+      setRecentAction({
+        type: 'approve',
+        requestId,
+        previousState
+      });
       
-      // Remove from pending list
-      setPendingRequests(pendingRequests.filter(req => req.id !== requestId));
+      // Update the request status in our state
+      const updatedRequests = requests.map(req => 
+        req.id === requestId 
+          ? { ...req, status: 'approved', responseDate: new Date().toISOString() } 
+          : req
+      );
+      setRequests(updatedRequests);
+      
+      // Set timeout for undo window (5 seconds)
+      const timeout = setTimeout(() => {
+        setRecentAction(null);
+        
+        // In a real application, send approval to your API after undo window
+        // await axios.post(`/api/admin/requests/${requestId}/approve`);
+        console.log(`Approval confirmed for request ${requestId}`);
+        
+      }, 5000);
+      
+      setUndoTimeout(timeout);
+      
     } catch (err) {
       console.error('Error approving request:', err);
       alert('Failed to approve request. Please try again.');
@@ -87,19 +147,64 @@ const AdminDashboard = () => {
 
   // Handle request rejection
   const handleDecline = async (requestId) => {
+    // Clear any existing undo action
+    clearUndoTimeout();
+    
     try {
-      // In a real application, send rejection to your API
-      // await axios.post(`/api/admin/requests/${requestId}/decline`);
+      // Find the request to update
+      const requestToUpdate = requests.find(req => req.id === requestId);
+      if (!requestToUpdate) return;
       
-      // Mock successful decline
-      console.log(`Declined request ${requestId}`);
+      // Save previous state for undo
+      const previousState = { ...requestToUpdate };
+      setRecentAction({
+        type: 'decline',
+        requestId,
+        previousState
+      });
       
-      // Remove from pending list
-      setPendingRequests(pendingRequests.filter(req => req.id !== requestId));
+      // Update the request status in our state
+      const updatedRequests = requests.map(req => 
+        req.id === requestId 
+          ? { ...req, status: 'rejected', responseDate: new Date().toISOString() } 
+          : req
+      );
+      setRequests(updatedRequests);
+      
+      // Set timeout for undo window (5 seconds)
+      const timeout = setTimeout(() => {
+        setRecentAction(null);
+        
+        // In a real application, send rejection to your API after undo window
+        // await axios.post(`/api/admin/requests/${requestId}/decline`);
+        console.log(`Rejection confirmed for request ${requestId}`);
+        
+      }, 5000);
+      
+      setUndoTimeout(timeout);
+      
     } catch (err) {
       console.error('Error declining request:', err);
       alert('Failed to decline request. Please try again.');
     }
+  };
+
+  // Handle undo action
+  const handleUndo = () => {
+    if (!recentAction) return;
+    
+    clearUndoTimeout();
+    
+    // Restore the previous state of the request
+    const updatedRequests = requests.map(req => 
+      req.id === recentAction.requestId 
+        ? { ...recentAction.previousState }
+        : req
+    );
+    
+    setRequests(updatedRequests);
+    console.log(`Undid ${recentAction.type} action for request ${recentAction.requestId}`);
+    setRecentAction(null);
   };
 
   // Format date for display
@@ -109,10 +214,14 @@ const AdminDashboard = () => {
   };
 
   // Helper for request row class based on AI suggestion
-  const getRequestRowClass = (requestId) => {
-    if (!aiAssistActive || !aiSuggestions[requestId]) return '';
+  const getRequestRowClass = (request) => {
+    if (request.status !== 'pending') {
+      return `status-${request.status}`;
+    }
     
-    return aiSuggestions[requestId].recommendation === 'approve' 
+    if (!aiAssistActive || !aiSuggestions[request.id]) return '';
+    
+    return aiSuggestions[request.id].recommendation === 'approve' 
       ? 'ai-suggest-approve' 
       : 'ai-suggest-decline';
   };
@@ -125,19 +234,24 @@ const AdminDashboard = () => {
     return 'Low';
   };
 
+  // Get count of requests by status
+  const getStatusCount = (status) => {
+    return requests.filter(req => req.status === status).length;
+  };
+
   return (
     <div className="admin-dashboard">
       <div className="dashboard-header">
         <div className="header-title">
           <h1>Admin Dashboard</h1>
-          <p className="subtitle">Manage pending time off requests</p>
+          <p className="subtitle">Manage time off requests</p>
         </div>
         
         <div className="header-actions">
           <button 
             className={`ai-assist-btn ${aiAssistActive ? 'active' : ''} ${aiProcessing ? 'loading' : ''}`}
             onClick={handleAskAI}
-            disabled={aiProcessing || pendingRequests.length === 0}
+            disabled={aiProcessing || filteredRequests.filter(req => req.status === 'pending').length === 0}
           >
             {aiProcessing ? (
               <>
@@ -159,7 +273,35 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {aiAssistActive && (
+      {/* Status filter tabs */}
+      <div className="status-filter">
+        <button 
+          className={`filter-tab ${statusFilter === 'all' ? 'active' : ''}`} 
+          onClick={() => handleFilterChange('all')}
+        >
+          All Requests <span className="count">{requests.length}</span>
+        </button>
+        <button 
+          className={`filter-tab ${statusFilter === 'pending' ? 'active' : ''}`} 
+          onClick={() => handleFilterChange('pending')}
+        >
+          Pending <span className="count">{getStatusCount('pending')}</span>
+        </button>
+        <button 
+          className={`filter-tab ${statusFilter === 'approved' ? 'active' : ''}`} 
+          onClick={() => handleFilterChange('approved')}
+        >
+          Approved <span className="count">{getStatusCount('approved')}</span>
+        </button>
+        <button 
+          className={`filter-tab ${statusFilter === 'rejected' ? 'active' : ''}`} 
+          onClick={() => handleFilterChange('rejected')}
+        >
+          Rejected <span className="count">{getStatusCount('rejected')}</span>
+        </button>
+      </div>
+
+      {aiAssistActive && statusFilter === 'pending' && (
         <div className="ai-assist-banner">
           <div className="ai-info">
             <span className="ai-active-icon">🤖</span>
@@ -176,27 +318,44 @@ const AdminDashboard = () => {
         </div>
       )}
 
+      {/* Undo notification */}
+      {recentAction && (
+        <div className="undo-notification">
+          <div className="undo-message">
+            <span className="undo-icon">✓</span>
+            Request {recentAction.type === 'approve' ? 'approved' : 'declined'}
+          </div>
+          <button className="undo-btn" onClick={handleUndo}>
+            Undo
+          </button>
+        </div>
+      )}
+
       <div className="dashboard-content">
         {loading ? (
           <div className="loading-state">
             <span className="large spinner"></span>
-            <p>Loading pending requests...</p>
+            <p>Loading requests...</p>
           </div>
         ) : error ? (
           <div className="error-state">
             <p className="error-message">{error}</p>
             <button 
               className="retry-btn"
-              onClick={fetchPendingRequests}
+              onClick={fetchAllRequests}
             >
               Retry
             </button>
           </div>
-        ) : pendingRequests.length === 0 ? (
+        ) : filteredRequests.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-icon">✓</div>
-            <h2>All caught up!</h2>
-            <p>There are no pending requests to review.</p>
+            <div className="empty-icon">{statusFilter === 'pending' ? '✓' : '📝'}</div>
+            <h2>{statusFilter === 'pending' ? 'All caught up!' : 'No requests found'}</h2>
+            <p>
+              {statusFilter === 'all' 
+                ? "There are no time off requests in the system." 
+                : `There are no ${statusFilter} requests to display.`}
+            </p>
           </div>
         ) : (
           <div className="table-container">
@@ -207,15 +366,16 @@ const AdminDashboard = () => {
                   <th>Date Range</th>
                   <th>Duration</th>
                   <th>Reason</th>
-                  <th>Requested On</th>
+                  <th>Request Date</th>
+                  {statusFilter !== 'pending' && <th>Response Date</th>}
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {pendingRequests.map(request => (
+                {filteredRequests.map(request => (
                   <tr 
                     key={request.id} 
-                    className={getRequestRowClass(request.id)}
+                    className={getRequestRowClass(request)}
                   >
                     {/* Requester */}
                     <td className="requester-cell">
@@ -254,27 +414,40 @@ const AdminDashboard = () => {
                       {formatDate(request.requestedOn)}
                     </td>
 
+                    {/* Response Date (for approved/rejected only) */}
+                    {statusFilter !== 'pending' && (
+                      <td className="response-date-cell">
+                        {request.responseDate ? formatDate(request.responseDate) : '-'}
+                      </td>
+                    )}
+
                     {/* Actions */}
                     <td className="actions-cell">
-                      <div className="request-actions">
-                        <button 
-                          className="action-btn approve-btn"
-                          onClick={() => handleApprove(request.id)}
-                          aria-label="Approve request"
-                        >
-                          Approve
-                        </button>
-                        <button 
-                          className="action-btn decline-btn"
-                          onClick={() => handleDecline(request.id)}
-                          aria-label="Decline request"
-                        >
-                          Decline
-                        </button>
-                      </div>
+                      {request.status === 'pending' ? (
+                        <div className="request-actions">
+                          <button 
+                            className="action-btn approve-btn"
+                            onClick={() => handleApprove(request.id)}
+                            aria-label="Approve request"
+                          >
+                            Approve
+                          </button>
+                          <button 
+                            className="action-btn decline-btn"
+                            onClick={() => handleDecline(request.id)}
+                            aria-label="Decline request"
+                          >
+                            Decline
+                          </button>
+                        </div>
+                      ) : (
+                        <span className={`status-badge ${request.status}`}>
+                          {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                        </span>
+                      )}
 
                       {/* AI Suggestion Tooltip */}
-                      {aiAssistActive && aiSuggestions[request.id] && (
+                      {aiAssistActive && aiSuggestions[request.id] && request.status === 'pending' && (
                         <div className="ai-suggestion-tooltip">
                           <div className="tooltip-header">
                             <span>AI Recommendation: <strong>
@@ -326,8 +499,9 @@ const getRandomDeclineReason = (request) => {
   return declineReasons[Math.floor(Math.random() * declineReasons.length)];
 };
 
-// Mock data for development
-const mockPendingRequests = [
+// Mock data for development - including all statuses
+const mockAllRequests = [
+  // Pending requests
   {
     id: 'REQ-001',
     requesterName: 'Ahmet Yılmaz',
@@ -337,6 +511,8 @@ const mockPendingRequests = [
     duration: 5,
     reason: 'Annual family vacation to Antalya',
     requestedOn: '2025-05-20T09:30:00Z',
+    status: 'pending',
+    responseDate: null
   },
   {
     id: 'REQ-002',
@@ -347,6 +523,8 @@ const mockPendingRequests = [
     duration: 1,
     reason: 'Medical appointment',
     requestedOn: '2025-05-30T14:22:00Z',
+    status: 'pending',
+    responseDate: null
   },
   {
     id: 'REQ-003',
@@ -357,7 +535,11 @@ const mockPendingRequests = [
     duration: 5,
     reason: 'Wedding anniversary trip to Bodrum',
     requestedOn: '2025-05-15T11:45:00Z',
+    status: 'pending',
+    responseDate: null
   },
+  
+  // Approved requests
   {
     id: 'REQ-004',
     requesterName: 'Zeynep Şahin',
@@ -367,26 +549,58 @@ const mockPendingRequests = [
     duration: 15,
     reason: 'Summer vacation with family',
     requestedOn: '2025-05-05T08:15:00Z',
+    status: 'approved',
+    responseDate: '2025-05-07T10:12:00Z',
   },
   {
     id: 'REQ-005',
-    requesterName: 'Can Özkan',
-    requesterDepartment: 'Engineering',
-    startDate: '2025-06-05',
-    endDate: '2025-06-05',
-    duration: 1,
-    reason: 'Personal matter',
-    requestedOn: '2025-06-01T16:10:00Z',
+    requesterName: 'Ali Öztürk',
+    requesterDepartment: 'Finance',
+    startDate: '2025-09-10',
+    endDate: '2025-09-17',
+    duration: 8,
+    reason: 'Family wedding in Cyprus',
+    requestedOn: '2025-05-01T13:45:00Z',
+    status: 'approved',
+    responseDate: '2025-05-02T09:20:00Z',
   },
   {
     id: 'REQ-006',
-    requesterName: 'Elif Yıldız',
-    requesterDepartment: 'Finance',
-    startDate: '2025-07-20',
-    endDate: '2025-07-24',
-    duration: 5,
-    reason: 'Family event in İzmir',
-    requestedOn: '2025-05-25T09:00:00Z',
+    requesterName: 'Deniz Yıldırım',
+    requesterDepartment: 'Engineering',
+    startDate: '2025-06-05',
+    endDate: '2025-06-08',
+    duration: 4,
+    reason: 'Long weekend getaway to Bodrum',
+    requestedOn: '2025-04-25T11:30:00Z',
+    status: 'approved',
+    responseDate: '2025-04-26T14:15:00Z',
+  },
+  
+  // Rejected requests
+  {
+    id: 'REQ-007',
+    requesterName: 'Can Özkan',
+    requesterDepartment: 'Engineering',
+    startDate: '2025-06-01',
+    endDate: '2025-06-10',
+    duration: 10,
+    reason: 'Extended family trip',
+    requestedOn: '2025-05-29T16:10:00Z', // Very short notice
+    status: 'rejected',
+    responseDate: '2025-05-30T08:45:00Z',
+  },
+  {
+    id: 'REQ-008',
+    requesterName: 'Merve Aksoy',
+    requesterDepartment: 'Sales',
+    startDate: '2025-07-15',
+    endDate: '2025-07-25',
+    duration: 11,
+    reason: 'Summer vacation',
+    requestedOn: '2025-05-20T10:05:00Z',
+    status: 'rejected',
+    responseDate: '2025-05-22T11:30:00Z',
   }
 ];
 
