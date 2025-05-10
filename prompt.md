@@ -1,4 +1,4 @@
-## Girdi Değişkenleri
+t## Girdi Değişkenleri
 
 - **Kullanıcı ID:** `${user.id}`
 - **Departman ID:** `${departman.id}`
@@ -39,3 +39,4 @@ Her kullanıcı için çıktıyı aşağıdaki JSON formatında üret:
   "neden_1": "kısa açıklama",
   "neden_2": "kısa açıklama"
 }
+```
