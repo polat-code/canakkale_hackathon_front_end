@@ -1,0 +1,369 @@
+.time-off-request-list-container {
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  margin: 0;
+  padding: 2rem;
+  box-sizing: border-box;
+  background-color: #f7f8fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.page-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.page-description {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.request-list-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.filter-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: #555;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-btn:hover {
+  border-color: #bbb;
+  background-color: #f9f9f9;
+}
+
+.filter-btn.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.new-request-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.new-request-btn:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.request-list-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  width: 100%;
+}
+
+.request-list-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 3fr 1fr 0.8fr;
+  padding: 15px 20px;
+  background-color: #f5f7fa;
+  border-bottom: 1px solid #e5e8ec;
+  font-weight: 600;
+  color: #495057;
+}
+
+.request-list-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 3fr 1fr 0.8fr;
+  padding: 15px 20px;
+  border-bottom: 1px solid #e5e8ec;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.request-list-item:last-child {
+  border-bottom: none;
+}
+
+.request-list-item:hover {
+  background-color: #f8f9fa;
+}
+
+.request-date {
+  display: flex;
+  flex-direction: column;
+}
+
+.date-range {
+  font-weight: 500;
+  color: #333;
+}
+
+.request-date-meta {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-top: 4px;
+}
+
+.status-date {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-top: 4px;
+}
+
+.request-duration {
+  color: #495057;
+  font-weight: 500;
+}
+
+.reason-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 400px;
+  color: #333;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.status-badge.pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-badge.approved {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-badge.rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status-badge.cancelled {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+.request-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.action-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.view-btn {
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+.view-btn:hover {
+  background-color: #ced4da;
+}
+
+.cancel-btn {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.cancel-btn:hover {
+  background-color: #ffcdd2;
+}
+
+.view-icon, .cancel-icon {
+  font-style: normal;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 16px;
+  border-radius: 6px;
+  margin: 20px 0;
+  text-align: center;
+  border-left: 4px solid #dc3545;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-icon {
+  display: inline-block;
+  margin-right: 10px;
+  font-style: normal;
+  font-size: 20px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.empty-state p {
+  color: #666;
+  margin-bottom: 1.5rem;
+  max-width: 400px;
+}
+
+.empty-action-btn {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.empty-action-btn:hover {
+  background-color: #0069d9;
+  transform: translateY(-2px);
+}
+
+/* Media queries for responsive design */
+@media (max-width: 992px) {
+  .request-list-header, .request-list-item {
+    grid-template-columns: 2fr 1fr 2fr 1fr 0.8fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .request-list-header {
+    display: none; /* Hide headers on small screens */
+  }
+  
+  .request-list-item {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 15px;
+  }
+  
+  .request-list-item > div {
+    padding: 5px 0;
+  }
+  
+  .request-date {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+  }
+  
+  .request-date-meta {
+    margin-top: 0;
+  }
+  
+  .request-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .request-actions {
+    justify-content: flex-start;
+  }
+  
+  .reason-text {
+    max-width: 100%;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 576px) {
+  .time-off-request-list-container {
+    padding: 1rem;
+  }
+  
+  .request-list-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filter-controls {
+    order: 2;
+    justify-content: center;
+  }
+  
+  .new-request-btn {
+    order: 1;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .page-title {
+    font-size: 1.75rem;
+  }
+}

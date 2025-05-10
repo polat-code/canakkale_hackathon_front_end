@@ -1,0 +1,140 @@
+.user-navbar {
+  display: flex;
+  flex-direction: row; /* Explicitly set to row to ensure horizontal layout */
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  height: 60px;
+  width: 100%;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-brand a {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+  white-space: nowrap;
+}
+
+.navbar-menu {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.navbar-menu ul {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 15px;
+}
+
+.navbar-menu li {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.navbar-menu a {
+  text-decoration: none;
+  color: #555;
+  font-weight: 500;
+  transition: color 0.3s;
+  padding: 10px 15px;
+  display: block;
+}
+
+.navbar-menu a:hover {
+  color: #007bff;
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.username {
+  font-weight: 500;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.logout-btn {
+  background-color: transparent;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.logout-btn:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.auth-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.login-btn, .register-btn {
+  padding: 6px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.login-btn {
+  background-color: transparent;
+  border: 1px solid #007bff;
+  color: #007bff;
+}
+
+.login-btn:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.register-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+.register-btn:hover {
+  background-color: #0069d9;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .user-navbar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  
+  .navbar-menu ul {
+    padding: 0 10px;
+  }
+}
