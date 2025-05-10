@@ -19,20 +19,32 @@ import { setCookie } from "../../../services/CookieService";
 
 const LoginContainer = () => {
   const navigation = useNavigate();
+  const dispatch = useDispatch();
   const [isEmailVerification, setIsEmailVerification] = useState(false);
   const [isLoginButtonDisabled, setIsLoginButtonDisabled] = useState(false);
+  const [userType, setUserType] = useState("user"); // Default type is user
 
   const handleLoginContainer = async (email, password) => {
     setIsLoginButtonDisabled(true);
     const resp = await login(email, password);
+    
     if (resp && resp.statusCode === 200) {
-      const { accessToken } = resp.data;
+      const { accessToken, userRole } = resp.data;
       setCookie("access_token", accessToken);
-
+      setCookie("user_role", userRole || userType); // Store user role in cookie
+      
+      const role = userRole || userType;
+      dispatch(putUserInfo({ role })); // Store role in Redux state
+      
       toastSuccess("Başarılı! Yönlendiriliyorsun...");
 
+      // Redirect based on role
       setTimeout(() => {
-        navigation("/main");
+        if (role === "admin") {
+          navigation("/admin");
+        } else {
+          navigation("/user");
+        }
       }, 1800);
     } else if (resp && resp.statusCode === 411) {
       toastInfo("Email Onaylama! Yönlendiriliyorsun...");
@@ -50,16 +62,27 @@ const LoginContainer = () => {
     setIsLoginButtonDisabled(false);
   };
 
+  // For demo/development purposes - allows selecting role in UI
+  const handleUserTypeChange = (type) => {
+    setUserType(type);
+  };
+
   useEffect(() => {
     const validateLogin = async () => {
       const isValidUser = await isValidAccessToken();
       if (isValidUser) {
-        window.location.assign("/main");
+        const userRole = Cookies.get("user_role");
+        if (userRole === "admin") {
+          navigation("/admin");
+        } else {
+          navigation("/user");
+        }
       }
     };
 
     validateLogin();
-  }, []);
+  }, [navigation]);
+
   return (
     <div>
       <Navbar />
@@ -71,6 +94,8 @@ const LoginContainer = () => {
         <Login
           handleLoginContainer={handleLoginContainer}
           isLoginButtonDisabled={isLoginButtonDisabled}
+          userType={userType}
+          handleUserTypeChange={handleUserTypeChange}
         />
       )}
     </div>

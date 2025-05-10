@@ -14,7 +14,12 @@ import ForgotPasswordContainer from "./pages/ForgotPasswordContainer/ForgotPassw
 import OTPCodeEntryContainer from "./pages/OTPCodeEntryContainer/OTPCodeEntryContainer";
 import NewPasswordEntryContainer from "./pages/NewPasswordEntryContainer/NewPasswordEntryContainer";
 import IyteCarCreateRideContainer from "./pages/IyteCarCreateRideContainer/IyteCarCreateRideContainer";
-
+import UserProfile from "./pages/1ourPages/UserProfil/UserProfil";
+import AdminDashboard from "./pages/1ourPages/AdminDashboard/AdminDashboard";
+import UserDashboard from "./pages/1ourPages/UserDashboard/UserDashboard";
+import IzinIstegiContainer from "./pages/1ourPages/IzinIste/IzinIste";
+import TimeOffRequestList from "./pages/1ourPages/IzinTakip/TimeOffRequestList";
+import ProtectedRoute from "./components/common/ProtectedRoute/ProtectedRoute";
 import PlaceDetailContainer from "./pages/PlaceDetailContainer/PlaceDetailContainer";
 import ErrorContainer from "./pages/1ourPages/ErrorContainer/ErrorContainer";
 import IyteRingMapContainer from "./pages/IyteRingMapContainer/IyteRingMapContainer";
@@ -27,6 +32,12 @@ const RouteApp = () => {
       <Route path="/main" element={<MainPageContainer />} />
 
       <Route path="*" element={<ErrorContainer />} />
+      <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/user" element={<UserDashboard />} />
+      <Route path="/login" element={<LoginContainer />} />
+      <Route path="/user/profil" element={<UserProfile />} />
+      <Route path="/user/iziniste" element={<IzinIstegiContainer />} />
+      <Route path="/user/izinlerim" element={<TimeOffRequestList />} />
       {/*
        <Route path="/anonims" element={<AnonimContainer />} />
       <Route path="/iyte-car" element={<IyteCarContainer />} />
