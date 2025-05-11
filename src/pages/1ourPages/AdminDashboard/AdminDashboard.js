@@ -3,6 +3,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { baseURL } from '../../../services/ApiConstants';
 import './AdminDashboard.css';
+import AdminNavbar from '../../../components/common/AdminNavbar/AdminNavbar';
 
 const AdminDashboard = () => {
   const [requests, setRequests] = useState([]);
@@ -33,6 +34,43 @@ const AdminDashboard = () => {
       }
     }
   }, [statusFilter, requests]);
+
+  // Format alternative date ranges from AI recommendations
+  const formatAlternativeDateRange = (dateRange) => {
+    if (!dateRange) return null;
+
+    // If it's already in the format we want (dd.mm.yyyy-dd.mm.yyyy), return it
+    const dateRangeRegex = /^\d{1,2}\.\d{1,2}\.\d{4}-\d{1,2}\.\d{1,2}\.\d{4}$/;
+    if (dateRangeRegex.test(dateRange)) {
+      return dateRange;
+    }
+
+    // Try to handle other formats
+    try {
+      // If it contains a hyphen, assume it's a date range
+      if (dateRange.includes('-')) {
+        const [startStr, endStr] = dateRange.split('-');
+        const startDate = parseDate(startStr.trim());
+        const endDate = parseDate(endStr.trim());
+        
+        if (startDate && endDate) {
+          const formatToDisplay = (date) => {
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}.${month}.${year}`;
+          };
+          
+          return `${formatToDisplay(startDate)}-${formatToDisplay(endDate)}`;
+        }
+      }
+      
+      return dateRange; // Return as is if we can't parse it
+    } catch (err) {
+      console.error('Error formatting alternative date range:', err);
+      return dateRange; // Return original string if parsing fails
+    }
+  };
 
   // Properly parse date strings in various formats
   const parseDate = (dateString) => {
@@ -137,13 +175,13 @@ const AdminDashboard = () => {
         userId: user.id,
         requesterName: user.name,
         requesterDepartment: user.department,
-        startDate: startDate,
-        endDate: endDate,
+        startDate: new Date(startDate),  // Convert to Date object
+        endDate: new Date(endDate),      // Convert to Date object
         duration: duration,
         reason: reasons[Math.floor(Math.random() * reasons.length)],
-        requestedOn: requestDate,
+        requestedOn: new Date(requestDate), // Convert to Date object
         status: status,
-        responseDate: status !== 'pending' ? getRandomDate(15) : null
+        responseDate: status !== 'pending' ? new Date(getRandomDate(15)) : null
       });
     }
     
@@ -179,13 +217,31 @@ const AdminDashboard = () => {
         console.log('Admin dashboard requests:', response.data);
         
         const formattedRequests = response.data.data.map(req => {
-          // Extract user information safely
-          const userId = req.userId || req.user?.id || null;
-          const firstName = req.user?.firstName || '';
-          const lastName = req.user?.lastName || '';
-          const requesterName = firstName || lastName ? 
-            `${firstName} ${lastName}`.trim() : 
-            'Unknown User';
+          // Extract user information safely with improved handling
+          const userId = req.userId || (req.user && req.user.id) || null;
+          
+          // Handle various possible name field formats from API
+          let requesterName = 'Unknown User';
+          
+          if (req.user) {
+            // Check for full name field first
+            if (req.user.fullName) {
+              requesterName = req.user.fullName;
+            } else if (req.user.full_name) {
+              requesterName = req.user.full_name;
+            } else if (req.user.name && typeof req.user.name === 'string') {
+              requesterName = req.user.name;
+            }
+            // If no full name field, try to combine first/last names
+            else {
+              const firstName = req.user.firstName || req.user.first_name || '';
+              const lastName = req.user.lastName || req.user.last_name || req.user.surname || '';
+              
+              if (firstName || lastName) {
+                requesterName = `${firstName} ${lastName}`.trim();
+              }
+            }
+          }
           
           // Parse dates correctly
           const startDate = parseDate(req.from) || new Date();
@@ -197,7 +253,7 @@ const AdminDashboard = () => {
             id: req.id,
             userId: userId,
             requesterName: requesterName,
-            requesterDepartment: req.user?.department || 'Unknown Department',
+            requesterDepartment: req.user?.department || req.department || 'Unknown Department',
             startDate: startDate,
             endDate: endDate,
             duration: calculateDuration(startDate, endDate),
@@ -318,8 +374,7 @@ const AdminDashboard = () => {
               reasons: [
                 suggestion.neden_1,
                 suggestion.neden_2
-              ].filter(Boolean), // Remove any null/undefined reasons
-              confidence: 85
+              ].filter(Boolean) // Remove any null/undefined reasons
             };
           }
         });
@@ -417,7 +472,7 @@ const AdminDashboard = () => {
           isApprove
             ? approveReasons[Math.floor(Math.random() * approveReasons.length)]
             : declineReasons[Math.floor(Math.random() * declineReasons.length)]
-        ].filter(Boolean), // Remove any null/undefined reasons
+        ].filter(Boolean) // Remove any null/undefined reasons
       };
     });
     
@@ -490,7 +545,7 @@ const AdminDashboard = () => {
         // Send approval to API after undo window
         try {
           await axios.post(
-            `${baseURL}/requested-day-of-permission/${requestId}/approve`,
+            `${baseURL}/requested-day-of-permission/$behave.`,
             {},
             {
               headers: {
@@ -634,14 +689,6 @@ const AdminDashboard = () => {
       : 'ai-suggest-decline';
   };
 
-  // Helper for confidence display
-  const getConfidenceLabel = (confidence) => {
-    if (confidence >= 90) return 'Very High';
-    if (confidence >= 80) return 'High';
-    if (confidence >= 70) return 'Moderate';
-    return 'Low';
-  };
-
   // Get count of requests by status
   const getStatusCount = (status) => {
     return requests.filter(req => req.status === status).length;
@@ -658,6 +705,7 @@ const AdminDashboard = () => {
       
       <div className="dashboard-header">
         <div className="header-title">
+          <AdminNavbar />
           <h1>Admin Dashboard</h1>
           <p className="subtitle">Manage time off requests</p>
         </div>
@@ -796,7 +844,7 @@ const AdminDashboard = () => {
                     <td className="requester-cell">
                       <div className="requester-info">
                         <div className="requester-avatar">
-                          {request.requesterName.charAt(0).toUpperCase()}
+                          {request.requesterName && request.requesterName.charAt(0).toUpperCase()}
                         </div>
                         <div className="requester-details">
                           <div className="requester-name">{request.requesterName}</div>
@@ -837,43 +885,51 @@ const AdminDashboard = () => {
                     )}
 
                     {/* Actions */}
-                    <td className="actions-cell">
-                      {request.status === 'pending' ? (
-                        <div className="request-actions">
-                          <button 
-                            className="action-btn approve-btn"
-                            onClick={() => handleApprove(request.id)}
-                            aria-label="Approve request"
-                          >
-                            Approve
-                          </button>
-                          <button 
-                            className="action-btn decline-btn"
-                            onClick={() => handleDecline(request.id)}
-                            aria-label="Decline request"
-                          >
-                            Decline
-                          </button>
-                        </div>
-                      ) : (
-                        <span className={`status-badge ${request.status}`}>
-                          {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
-                        </span>
-                      )}
+<td className="actions-cell">
+  {request.status === 'pending' ? (
+    <div className="request-actions" style={{ display: 'flex', gap: '8px' }}>
+      <button 
+        className="action-btn approve-btn"
+        onClick={() => handleApprove(request.id)}
+        aria-label="Approve request"
+        style={{ 
+          minWidth: '80px',
+          height: '36px',
+          padding: '0 12px',
+          borderRadius: '4px',
+          boxSizing: 'border-box'
+        }}
+      >
+        Approve
+      </button>
+      <button 
+        className="action-btn decline-btn"
+        onClick={() => handleDecline(request.id)}
+        aria-label="Decline request"
+        style={{ 
+          minWidth: '80px',
+          height: '36px',
+          padding: '0 12px',
+          borderRadius: '4px',
+          boxSizing: 'border-box'
+        }}
+      >
+        Decline
+      </button>
+    </div>
+  ) : (
+    <span className={`status-badge ${request.status}`}>
+      {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+    </span>
+  )}
 
-                      {/* AI Suggestion Tooltip - Updated for the new format */}
+                      {/* AI Suggestion Tooltip - Updated to use formatAlternativeDateRange */}
                       {aiAssistActive && aiSuggestions[request.id] && request.status === 'pending' && (
                         <div className="ai-suggestion-tooltip">
                           <div className="tooltip-header">
                             <span>AI Recommendation: <strong>
                               {aiSuggestions[request.id].recommendation === 'approve' ? 'Approve' : 'Decline'}
                             </strong></span>
-                            {aiSuggestions[request.id].confidence && (
-                              <span className="confidence">
-                                Confidence: {getConfidenceLabel(aiSuggestions[request.id].confidence)} 
-                                ({aiSuggestions[request.id].confidence}%)
-                              </span>
-                            )}
                           </div>
                           <div className="tooltip-content">
                             {/* Detailed description */}
@@ -883,7 +939,7 @@ const AdminDashboard = () => {
                             {/* Alternative date range if available */}
                             {aiSuggestions[request.id].alternativeDate && (
                               <div className="alternative-date">
-                                <strong>Alternative date range:</strong> {aiSuggestions[request.id].alternativeDate}
+                                <strong>Alternative date range:</strong> {formatAlternativeDateRange(aiSuggestions[request.id].alternativeDate)}
                               </div>
                             )}
                             

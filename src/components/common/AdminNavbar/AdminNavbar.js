@@ -87,7 +87,7 @@ const AdminNavbar = () => {
             </li>
             <li className="admin-nav-item">
               <Link 
-                to="/admin/leave-management" 
+                to="/admin" 
                 className={`admin-nav-link ${isActive('/admin/leave-management') ? 'active' : ''}`}
               >
                 <i className="leave-icon nav-icon">📅</i>
