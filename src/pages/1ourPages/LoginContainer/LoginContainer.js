@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../../../components/common/Navbar/Navbar";
 import Login from "../../../components/features/Login/Login";
 import Cookies from "js-cookie";
 import {
@@ -85,7 +84,6 @@ const LoginContainer = () => {
 
   return (
     <div>
-      <Navbar />
       {isEmailVerification ? (
         <EmailVerificationContainer
           setIsEmailVerification={setIsEmailVerification}

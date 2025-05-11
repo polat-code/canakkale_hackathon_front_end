@@ -14,7 +14,6 @@ const AdminDashboard = () => {
   const [aiAssistActive, setAiAssistActive] = useState(false);
   const [aiProcessing, setAiProcessing] = useState(false);
   const [aiSuggestions, setAiSuggestions] = useState({});
-  const [usingDummyData, setUsingDummyData] = useState(false);
   
   // Undo functionality
   const [recentAction, setRecentAction] = useState(null);
@@ -96,98 +95,6 @@ const AdminDashboard = () => {
     return isNaN(date.getTime()) ? null : date;
   };
 
-  // Generate dummy data for demo/fallback
-  const generateDummyRequests = () => {
-    // Create dates within last 30 days for requests
-    const getRandomDate = (daysAgo = 30) => {
-      const date = new Date();
-      date.setDate(date.getDate() - Math.floor(Math.random() * daysAgo));
-      return date.toISOString();
-    };
-    
-    // Generate future date for time off periods
-    const getFutureDate = (daysFromNow = 30) => {
-      const date = new Date();
-      date.setDate(date.getDate() + Math.floor(Math.random() * daysFromNow) + 7); // At least 7 days from now
-      return date.toISOString();
-    };
-    
-    // Generate duration between 1-14 days
-    const getRandomDuration = () => Math.floor(Math.random() * 14) + 1;
-    
-    // Create end date based on start date and duration
-    const getEndDate = (startDate, duration) => {
-      const date = new Date(startDate);
-      date.setDate(date.getDate() + duration - 1); // -1 because the start day counts
-      return date.toISOString();
-    };
-    
-    // Dummy user info
-    const users = [
-      { id: '1', name: 'Ahmet Yılmaz', department: 'Engineering' },
-      { id: '2', name: 'Ayşe Kaya', department: 'Customer Support' },
-      { id: '3', name: 'Mehmet Demir', department: 'Marketing' },
-      { id: '4', name: 'Zeynep Çelik', department: 'Finance' },
-      { id: '5', name: 'Can Öztürk', department: 'Product' },
-      { id: '6', name: 'Elif Şahin', department: 'Engineering' },
-      { id: '7', name: 'Burak Yıldız', department: 'Human Resources' }
-    ];
-    
-    // Time off reasons
-    const reasons = [
-      'Annual leave',
-      'Family emergency',
-      'Doctor appointment',
-      'Personal time',
-      'Wedding',
-      'Home renovation',
-      'Moving to new apartment'
-    ];
-    
-    // Generate random status
-    const getRandomStatus = () => {
-      const statuses = ['pending', 'approved', 'rejected'];
-      const weights = [0.6, 0.3, 0.1]; // 60% pending, 30% approved, 10% rejected
-      const random = Math.random();
-      
-      let sum = 0;
-      for (let i = 0; i < statuses.length; i++) {
-        sum += weights[i];
-        if (random < sum) return statuses[i];
-      }
-      return 'pending';
-    };
-    
-    // Generate 15-20 requests
-    const count = Math.floor(Math.random() * 6) + 15;
-    const dummyRequests = [];
-    
-    for (let i = 0; i < count; i++) {
-      const user = users[Math.floor(Math.random() * users.length)];
-      const requestDate = getRandomDate(30);
-      const duration = getRandomDuration();
-      const startDate = getFutureDate(60);
-      const endDate = getEndDate(startDate, duration);
-      const status = getRandomStatus();
-      
-      dummyRequests.push({
-        id: `dummy-${i + 1}`,
-        userId: user.id,
-        requesterName: user.name,
-        requesterDepartment: user.department,
-        startDate: new Date(startDate),  // Convert to Date object
-        endDate: new Date(endDate),      // Convert to Date object
-        duration: duration,
-        reason: reasons[Math.floor(Math.random() * reasons.length)],
-        requestedOn: new Date(requestDate), // Convert to Date object
-        status: status,
-        responseDate: status !== 'pending' ? new Date(getRandomDate(15)) : null
-      });
-    }
-    
-    return dummyRequests;
-  };
-
   // Fetch all requests (pending, approved, rejected)
   const fetchAllRequests = async () => {
     setLoading(true);
@@ -225,8 +132,8 @@ const AdminDashboard = () => {
           
           if (req.user) {
             // Check for full name field first
-            if (req.user.fullName) {
-              requesterName = req.user.fullName;
+            if (req.fullName) {
+              requesterName = req.fullName;
             } else if (req.user.full_name) {
               requesterName = req.user.full_name;
             } else if (req.user.name && typeof req.user.name === 'string') {
@@ -248,7 +155,7 @@ const AdminDashboard = () => {
           const endDate = parseDate(req.to) || new Date(startDate.getTime() + 24*60*60*1000);
           const requestedOn = parseDate(req.requestedOn) || new Date();
           const responseDate = req.responseDate ? parseDate(req.responseDate) : null;
-          
+          console.log(response.data)
           return {
             id: req.id,
             userId: userId,
@@ -268,25 +175,18 @@ const AdminDashboard = () => {
         setFilteredRequests(formattedRequests.filter(req => 
           statusFilter === 'all' ? true : req.status === statusFilter
         ));
-        setUsingDummyData(false);
       } else {
         throw new Error('Invalid response format');
       }
     } catch (err) {
       console.error('Error fetching admin requests:', err);
-      
-      // Use dummy data as fallback
-      const dummyData = generateDummyRequests();
-      setRequests(dummyData);
-      setFilteredRequests(dummyData.filter(req => 
-        statusFilter === 'all' ? true : req.status === statusFilter
-      ));
-      setUsingDummyData(true);
+      setRequests([]);
+      setFilteredRequests([]);
       
       if (err.response && err.response.status === 401) {
-        setError('Your session has expired. Please login again. Using dummy data for demo.');
+        setError('Your session has expired. Please login again.');
       } else {
-        setError('Failed to load from server. Using dummy data for demo purposes.');
+        setError('Failed to load requests from server.');
       }
     } finally {
       setLoading(false);
@@ -323,6 +223,12 @@ const AdminDashboard = () => {
     setStatusFilter(status);
   };
 
+  function getDayDifference(date1, date2) {
+  const diffInMs = Math.abs(date2 - date1);
+  const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+  return diffInDays;
+}
+
   // Handle AI assist button click
   const handleAskAI = async () => {
     setAiProcessing(true);
@@ -342,11 +248,70 @@ const AdminDashboard = () => {
       if (pendingRequests.length === 0) {
         throw new Error('No pending requests to analyze');
       }
+     
+      // Format request data for the AI
+      const requestData = pendingRequests.map(req => ({
+        id: req.id,
+        userId: req.userId,
+        name: req.requesterName,
+        pozition: req.pozition,
+        maxAllowed: req.maxAllowed,
+        department: req.requesterDepartment,
+        startDate: formatDate(req.startDate),
+        endDate: formatDate(req.endDate),
+        duration: req.duration,
+        reason: req.reason
+      }));
+
+      let sureler = getDayDifference(requestData.startDate, requestData.endDate); 
       
-      // Make API call to AI endpoint
+      // Create prompt with request data
+      const prompt = `t## Girdi Değişkenleri
+
+- **Kullanıcı ID:** ${requestData.id}
+- **Departman ID:** ${requestData.userId}
+- **Pozisyon ID:** ${requestData.pozition}
+- **İzin Talep Tarihi:** ${sureler}
+- **İzin Gerekçesi:** ${requestData.reason}
+- **Deneyim (gün):** ${requestData.duration}
+- **Departman Maksimum İzinli Sayısı:** ${requestData.maxAllowed}
+- **Tarih Esnekliği:** ${requestData.tarihEsnekliği}
+---
+
+## Kurallar
+
+1. Başvuru metninde **acil durum** belirtilmişse bu başvurular önceliklidir.Gerekirse başka tarihler değiştirilebilir.
+2. Aynı **pozisyondan** en fazla **2 kişi** aynı anda izinli olabilir.
+3. Aynı **departmandan**, o tarih aralığında en fazla toplam çalışan sayısının **%20’si** izinli olabilir.
+4. Departman bazlı izin sınırı ${requestData.maxGun} ile belirlenir.
+5. Aşağıdaki **öncelik sırasına** göre değerlendirme yap:
+   - **Tarihi değiştiremeyen** başvurular önceliklidir.
+   - Başvuru metninde **acil durum** belirtilmişse bu başvurular önceliklidir.
+6. Eğer talep edilen tarih uygun değilse:
+   - **İzin reddedilmeli** ve kullanıcıya **uygun alternatif tarih önerilmeli**.
+   - Önerilen tarih departman ve pozisyon limitlerini aşmamalıdır.
+
+---
+
+## Çıktı Formatı (JSON)
+
+Her kullanıcı için çıktıyı aşağıdaki JSON formatında üret:
+
+json
+{
+  "kullanici_id": "1",
+  "izin_durumu": "onaylandı" | "red",
+  "aciklama": "İzin kararı gerekçesi burada yer alır.",
+  "alternatif_tarih_araligi": "DD-MM-YYYY-DD-MM-YY" | null,
+  "neden_1": "kısa açıklama",
+  "neden_2": "kısa açıklama"
+}
+`;
+      
+      // Send requests to AI service for analysis
       const response = await axios.post(
-        `${baseURL}/ai/analyze-request`, 
-        { requests: pendingRequests.map(req => ({ id: req.id, userId: req.userId })) },
+        `http://localhost:3131/openai`, 
+        { prompt },
         {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
@@ -355,22 +320,24 @@ const AdminDashboard = () => {
         }
       );
       
+      // Parse the AI completion response
+      const aiResults = JSON.parse(response.data.choices[0].text);
+      
       // Process the AI response and update suggestions
-      if (Array.isArray(response.data)) {
+      if (Array.isArray(aiResults)) {
         const suggestions = {};
         
-        response.data.forEach(suggestion => {
-          // Find the request by user ID - ensure string comparison
+        aiResults.forEach(suggestion => {
+          // Find the request by ID
           const matchedRequest = requests.find(req => 
-            String(req.userId) === String(suggestion.kullanici_id)
+            String(req.id) === String(suggestion.kullanici_id)
           );
           
           if (matchedRequest) {
             suggestions[matchedRequest.id] = {
-              // Check specifically for "onaylandı" - any other value (including "red") means decline
               recommendation: suggestion.izin_durumu === "onaylandı" ? 'approve' : 'decline',
               description: suggestion.aciklama,
-              alternativeDate: suggestion.alternatif_tarih,
+              alternativeDate: suggestion.alternatif_tarih_araligi,
               reasons: [
                 suggestion.neden_1,
                 suggestion.neden_2
@@ -385,98 +352,11 @@ const AdminDashboard = () => {
       }
     } catch (err) {
       console.error('Error getting AI suggestions:', err);
-      
-      // Generate dummy AI suggestions for all pending requests
-      const dummyAiSuggestions = generateDummyAiSuggestions();
-      setAiSuggestions(dummyAiSuggestions);
-      
-      // Only show alert if it's not just because there are no pending requests
-      if (err.message !== 'No pending requests to analyze') {
-        console.log('Using dummy AI suggestions for demo');
-      }
+      setAiAssistActive(false);
+      alert('Failed to get AI recommendations: ' + err.message);
     } finally {
       setAiProcessing(false);
     }
-  };
-  
-  // Generate dummy AI suggestions for demo/fallback
-  const generateDummyAiSuggestions = () => {
-    const pendingRequests = requests.filter(req => req.status === 'pending');
-    const suggestions = {};
-    
-    const approveReasons = [
-      'Deneyimi yüksek',
-      'Tarih esnekliği var',
-      'Pozisyon ve departman kotası uygun',
-      'Departman kapasitesi yeterli',
-      'Kritik proje sürecinde değil',
-      'Yerine vekalet edecek personel mevcut'
-    ];
-    
-    const declineReasons = [
-      'Pozisyon kotası dolu',
-      'Departman kapasitesi kritik seviyede',
-      'Kritik proje sürecinde',
-      'Tarih esnekliği yok ve acil durum belirtilmemiş',
-      'Acil durum izinleri için kontenjan tutulmalı',
-      'Yerine vekalet edecek personel bulunamadı'
-    ];
-    
-    const approveDescriptions = [
-      'Yüksek deneyime ve tarih değişikliği yapamama durumuna sahip. Departman ve pozisyon kotası aşılmıyor.',
-      'Departman ve pozisyon kotasında boşluk var. Deneyimi ortalama düzeyde ve tarih esnekliği olduğu için kabul edildi.',
-      'Departman kapasitesi yüksek, kritik projelerde yer almıyor. İzin onaylanabilir.'
-    ];
-    
-    const declineDescriptions = [
-      'Pozisyon kotası 2 kişi ile dolmuş durumda. Yaz kotasında 5 gün izin istenmiş ve tarih esnekliği yok. Sağlık gibi acil durum da belirtilmemiş.',
-      'Departman kapasitesi düşük, yerine vekalet edecek personel yok. İzin ertelenebilir.',
-      'Kritik proje takvimi nedeniyle departman kapasitesi korunmalı, alternatif tarih önerildi.'
-    ];
-    
-    // Generate alternative date range (e.g. "19.08.2024-23.08.2024")
-    const getAltDateRange = () => {
-      // Generate start date 1-3 weeks in the future
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() + 7 + Math.floor(Math.random() * 14));
-      
-      // Generate end date 3-7 days later
-      const endDate = new Date(startDate);
-      endDate.setDate(endDate.getDate() + 3 + Math.floor(Math.random() * 5));
-      
-      // Format as dd.mm.yyyy-dd.mm.yyyy
-      const formatDate = (date) => {
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}.${month}.${year}`;
-      };
-      
-      return `${formatDate(startDate)}-${formatDate(endDate)}`;
-    };
-    
-    pendingRequests.forEach(request => {
-      // 70% chance of approval recommendation
-      const isApprove = Math.random() > 0.3;
-      
-      suggestions[request.id] = {
-        recommendation: isApprove ? 'approve' : 'decline',
-        description: isApprove 
-          ? approveDescriptions[Math.floor(Math.random() * approveDescriptions.length)]
-          : declineDescriptions[Math.floor(Math.random() * declineDescriptions.length)],
-        alternativeDate: isApprove ? null : getAltDateRange(),
-        reasons: [
-          isApprove 
-            ? approveReasons[Math.floor(Math.random() * approveReasons.length)]
-            : declineReasons[Math.floor(Math.random() * declineReasons.length)],
-          isApprove
-            ? approveReasons[Math.floor(Math.random() * approveReasons.length)]
-            : declineReasons[Math.floor(Math.random() * declineReasons.length)]
-        ].filter(Boolean) // Remove any null/undefined reasons
-      };
-    });
-    
-    return suggestions;
   };
   
   // Format alternative date to dd.mm.yyyy
@@ -521,16 +401,6 @@ const AdminDashboard = () => {
       );
       setRequests(updatedRequests);
       
-      // If using dummy data, don't try to call the API
-      if (usingDummyData) {
-        const timeout = setTimeout(() => {
-          setRecentAction(null);
-          console.log('Using dummy data - approval action would be sent to API');
-        }, 5000);
-        setUndoTimeout(timeout);
-        return;
-      }
-      
       // Set timeout for undo window (5 seconds)
       const timeout = setTimeout(async () => {
         setRecentAction(null);
@@ -545,7 +415,7 @@ const AdminDashboard = () => {
         // Send approval to API after undo window
         try {
           await axios.post(
-            `${baseURL}/requested-day-of-permission/$behave.`,
+            `${baseURL}/requested-day-of-permission/${requestId}/approve`,
             {},
             {
               headers: {
@@ -594,16 +464,6 @@ const AdminDashboard = () => {
           : req
       );
       setRequests(updatedRequests);
-      
-      // If using dummy data, don't try to call the API
-      if (usingDummyData) {
-        const timeout = setTimeout(() => {
-          setRecentAction(null);
-          console.log('Using dummy data - decline action would be sent to API');
-        }, 5000);
-        setUndoTimeout(timeout);
-        return;
-      }
       
       // Set timeout for undo window (5 seconds)
       const timeout = setTimeout(async () => {
@@ -696,16 +556,10 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-dashboard">
-      {usingDummyData && (
-        <div className="dummy-data-alert">
-          <span className="alert-icon">⚠️</span>
-          <span>Using dummy data for demonstration purposes. Backend connection failed or unavailable.</span>
-        </div>
-      )}
-      
+     <AdminNavbar />
       <div className="dashboard-header">
         <div className="header-title">
-          <AdminNavbar />
+         
           <h1>Admin Dashboard</h1>
           <p className="subtitle">Manage time off requests</p>
         </div>
@@ -885,45 +739,45 @@ const AdminDashboard = () => {
                     )}
 
                     {/* Actions */}
-<td className="actions-cell">
-  {request.status === 'pending' ? (
-    <div className="request-actions" style={{ display: 'flex', gap: '8px' }}>
-      <button 
-        className="action-btn approve-btn"
-        onClick={() => handleApprove(request.id)}
-        aria-label="Approve request"
-        style={{ 
-          minWidth: '80px',
-          height: '36px',
-          padding: '0 12px',
-          borderRadius: '4px',
-          boxSizing: 'border-box'
-        }}
-      >
-        Approve
-      </button>
-      <button 
-        className="action-btn decline-btn"
-        onClick={() => handleDecline(request.id)}
-        aria-label="Decline request"
-        style={{ 
-          minWidth: '80px',
-          height: '36px',
-          padding: '0 12px',
-          borderRadius: '4px',
-          boxSizing: 'border-box'
-        }}
-      >
-        Decline
-      </button>
-    </div>
-  ) : (
-    <span className={`status-badge ${request.status}`}>
-      {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
-    </span>
-  )}
+                    <td className="actions-cell">
+                      {request.status === 'pending' ? (
+                        <div className="request-actions" style={{ display: 'flex', gap: '8px' }}>
+                          <button 
+                            className="action-btn approve-btn"
+                            onClick={() => handleApprove(request.id)}
+                            aria-label="Approve request"
+                            style={{ 
+                              minWidth: '80px',
+                              height: '36px',
+                              padding: '0 12px',
+                              borderRadius: '4px',
+                              boxSizing: 'border-box'
+                            }}
+                          >
+                            Approve
+                          </button>
+                          <button 
+                            className="action-btn decline-btn"
+                            onClick={() => handleDecline(request.id)}
+                            aria-label="Decline request"
+                            style={{ 
+                              minWidth: '80px',
+                              height: '36px',
+                              padding: '0 12px',
+                              borderRadius: '4px',
+                              boxSizing: 'border-box'
+                            }}
+                          >
+                            Decline
+                          </button>
+                        </div>
+                      ) : (
+                        <span className={`status-badge ${request.status}`}>
+                          {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                        </span>
+                      )}
 
-                      {/* AI Suggestion Tooltip - Updated to use formatAlternativeDateRange */}
+                      {/* AI Suggestion Tooltip */}
                       {aiAssistActive && aiSuggestions[request.id] && request.status === 'pending' && (
                         <div className="ai-suggestion-tooltip">
                           <div className="tooltip-header">

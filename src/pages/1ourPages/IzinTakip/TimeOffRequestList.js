@@ -33,7 +33,7 @@ const TimeOffRequestList = () => {
 
       // Make API call with token in header
       const response = await axios.get(
-        `${baseURL}/requested-day-of-permission/all`,
+        `${baseURL}/requested-day-of-permission/all-user`,
         {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
@@ -237,7 +237,6 @@ const TimeOffRequestList = () => {
                   {formatStatusText(request.permissionStatus)}
                 </span>
               </div>
-              {/* Removed request-actions div */}
             </div>
           ))}
         </div>
