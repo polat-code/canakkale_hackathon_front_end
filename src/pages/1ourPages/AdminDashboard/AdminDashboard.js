@@ -352,13 +352,13 @@ Her istek icin:
     "kullanici_id": "1",
     "izin_durumu": "onaylandı",
     "aciklama": "Yaz kotası doldu, acil durum değil.",
-    "alternatif_tarih": null
+    "alternatif_tarih": 18-06-2024–20-06-2024
   },
   {
     "kullanici_id": "2",
     "izin_durumu": "red",
     "aciklama": "Doğum günü izni, sadece 1 gün kullanılabilir.",
-    "alternatif_tarih": null
+    "alternatif_tarih": "20-06-2024–20-06-2024"
   }
 ]
 
@@ -505,8 +505,11 @@ setAiSuggestions(suggestions);
         // Send approval to API after undo window
         try {
           await axios.post(
-            `${baseURL}/requested-day-of-permission/${requestId}/approve`,
-            {},
+            `${baseURL}/requested-day-of-permission/behave`,
+            {
+              requestedDayOfPermissionId: requestId,
+              status: 'ALLOWED'
+            },
             {
               headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -569,8 +572,11 @@ setAiSuggestions(suggestions);
         // Send rejection to API after undo window
         try {
           await axios.post(
-            `${baseURL}/requested-day-of-permission/${requestId}/deny`,
-            {},
+            `${baseURL}/requested-day-of-permission/behave`,
+            {
+              requestedDayOfPermissionId: requestId,
+              status: 'DENY'
+            },
             {
               headers: {
                 'Authorization': `Bearer ${accessToken}`,
