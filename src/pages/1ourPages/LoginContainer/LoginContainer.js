@@ -31,7 +31,8 @@ const LoginContainer = () => {
       const { accessToken, userRole } = resp.data;
       setCookie("access_token", accessToken);
       setCookie("user_role", userRole || userType); // Store user role in cookie
-      
+
+
       const role = userRole || userType;
       dispatch(putUserInfo({ role })); // Store role in Redux state
       
@@ -39,7 +40,7 @@ const LoginContainer = () => {
 
       // Redirect based on role
       setTimeout(() => {
-        if (role === "admin") {
+        if (role === "ADMIN") {
           navigation("/admin");
         } else {
           navigation("/user");

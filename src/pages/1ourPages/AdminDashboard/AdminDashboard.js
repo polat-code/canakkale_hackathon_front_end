@@ -121,34 +121,12 @@ const AdminDashboard = () => {
 
       // Check if response is successful and contains data
       if (response.data && response.data.success && Array.isArray(response.data.data)) {
-        console.log('Admin dashboard requests:', response.data);
         
         const formattedRequests = response.data.data.map(req => {
           // Extract user information safely with improved handling
           const userId = req.userId || (req.user && req.user.id) || null;
           
-          // Handle various possible name field formats from API
-          let requesterName = 'Unknown User';
           
-          if (req.user) {
-            // Check for full name field first
-            if (req.fullName) {
-              requesterName = req.fullName;
-            } else if (req.user.full_name) {
-              requesterName = req.user.full_name;
-            } else if (req.user.name && typeof req.user.name === 'string') {
-              requesterName = req.user.name;
-            }
-            // If no full name field, try to combine first/last names
-            else {
-              const firstName = req.user.firstName || req.user.first_name || '';
-              const lastName = req.user.lastName || req.user.last_name || req.user.surname || '';
-              
-              if (firstName || lastName) {
-                requesterName = `${firstName} ${lastName}`.trim();
-              }
-            }
-          }
           
           // Parse dates correctly
           const startDate = parseDate(req.from) || new Date();
@@ -159,7 +137,7 @@ const AdminDashboard = () => {
           return {
             id: req.id,
             userId: userId,
-            requesterName: requesterName,
+            requesterName: req.userName || req.fullName || 'Unknown User',
             requesterDepartment: req.user?.department || req.department || 'Unknown Department',
             startDate: startDate,
             endDate: endDate,
@@ -229,135 +207,247 @@ const AdminDashboard = () => {
   return diffInDays;
 }
 
-  // Handle AI assist button click
-  const handleAskAI = async () => {
-    setAiProcessing(true);
-    setAiAssistActive(true);
-    
-    try {
-      // Get access token from cookies
-      const accessToken = Cookies.get('access_token');
-      
-      if (!accessToken) {
-        throw new Error('Authentication token not found');
-      }
+ const OFFICIAL_HOLIDAYS = [
+  '2024-01-01',
+  '2024-04-23',
+  '2024-05-01',
+  '2024-05-19',
+  '2024-07-15',
+  '2024-08-30',
+  '2024-10-29',
+  '2025-01-01'
+].map(d => new Date(d));
 
-      // Get pending requests for AI analysis
-      const pendingRequests = requests.filter(req => req.status === 'pending');
-      
-      if (pendingRequests.length === 0) {
-        throw new Error('No pending requests to analyze');
-      }
-     
-      // Format request data for the AI
-      const requestData = pendingRequests.map(req => ({
+const FORBIDDEN_PERIODS = [
+  { start: new Date('2024-06-18'), end: new Date('2024-07-02') },
+  { start: new Date('2024-09-08'), end: new Date('2024-09-22') },
+  { start: new Date('2024-12-03'), end: new Date('2024-12-17') }
+];
+
+const PERFORMANCE_WINDOW = { start: new Date('2024-12-01'), end: new Date('2025-01-15') };
+const SUMMER_WINDOW = { start: new Date('2024-06-01'), end: new Date('2024-08-31') };
+const SUMMER_MAX_DAYS = 6;
+
+function isWeekend(date) {
+  return date.getDay() === 0; // Sunday
+}
+function isHoliday(date) {
+  return OFFICIAL_HOLIDAYS.some(h => 
+    h.getFullYear() === date.getFullYear() &&
+    h.getMonth() === date.getMonth() &&
+    h.getDate() === date.getDate()
+  );
+}
+function overlapsPeriod(reqStart, reqEnd, { start, end }) {
+  return reqStart <= end && reqEnd >= start;
+}
+function extendBridgeDays(start, end) {
+  // if exactly one single working day between holiday and weekend, extend by 1
+  // e.g. if end is a working day and next day is holiday, or ...
+  let next = new Date(end);
+  next.setDate(next.getDate() + 1);
+  if (isHoliday(next) && !isWeekend(end) && (end - start) / (1000*60*60*24) < 2) {
+    // extend end by one
+    return new Date(end.setDate(end.getDate() + 1));
+  }
+  return end;
+}
+
+const handleAskAI = async () => {
+  setAiProcessing(true);
+  setAiAssistActive(true);
+
+  try {
+    const accessToken = Cookies.get('access_token');
+    if (!accessToken) throw new Error('Authentication token not found');
+
+    // 1) get only pending
+    const pending = requests.filter(r => r.status === 'pending');
+    if (pending.length === 0) throw new Error('No pending requests to analyze');
+
+    // 2) prepare each request
+    const requestData = pending.map(req => {
+      const start = new Date(req.startDate);
+      const rawEnd = new Date(req.endDate);
+      const bridgedEnd = extendBridgeDays(start, rawEnd);
+      const duration = getDayDifference(formatDate(start), formatDate(bridgedEnd));
+
+      // detect birthday leave
+      const isBirthdayLeave = /doğum günü/i.test(req.reason);
+
+      return {
         id: req.id,
         userId: req.userId,
-        name: req.requesterName,
-        pozition: req.pozition,
-        maxAllowed: req.maxAllowed,
+        name: req.fullName,
+        position: req.position,
         department: req.requesterDepartment,
-        startDate: formatDate(req.startDate),
-        endDate: formatDate(req.endDate),
-        duration: req.duration,
-        reason: req.reason
-      }));
+        startDate: formatDate(start),
+        endDate: formatDate(bridgedEnd),
+        duration,
+        reason: req.reason,
+        isEmergency: /acil durum/i.test(req.reason),
+        isBirthdayLeave,
+        summerUsedDays: req.summerUsedDays || 0,            // you must supply this
+        deptSize: req.departmentSize,                      // total headcount
+        deptOnLeave: req.currentOnLeaveCount,              // concurrent on leave
+        maxAllowed: req.maxAllowed
+      };
+    });
 
-      let sureler = getDayDifference(requestData.startDate, requestData.endDate); 
-      
-      // Create prompt with request data
-      const prompt = `t## Girdi Değişkenleri
+    // 3) build prompt with new rules
+    const rules = `
+1. **Resmi tatiller** ve **Pazar** günleri izin günleri arasına katılamaz. 
+2. Resmi tatil ile hafta sonu arasında tek gün ara bırakan izinler +1 gün **otomatik** uzatılır.
+3. Aşağıdaki “izin yasaklı” dönemlere denk gelen başvurular **reddedilir**:
+   - 18.06.2024–02.07.2024  
+   - 08.09.2024–22.09.2024  
+   - 03.12.2024–17.12.2024  
+4. Performans değerlendirme dönemi **01.12.2024–15.01.2025** içindeki başvurular **acil olmadıkça** reddedilir.
+5. Aynı departmanda eşzamanlı izinli sayısı **%20**’yi geçemez.
+6. **Yaz kotası** (01.06–31.08.2024): bir çalışanın maksimum **${SUMMER_MAX_DAYS} gün** kullanımı.  
+   - Geçen kullanım: **\${summerUsedDays}**  
+7. Doğum günü izni, **en fazla 1 gün** olabilir.
+`;
 
-- **Kullanıcı ID:** ${requestData.id}
-- **Departman ID:** ${requestData.userId}
-- **Pozisyon ID:** ${requestData.pozition}
-- **İzin Talep Tarihi:** ${sureler}
-- **İzin Gerekçesi:** ${requestData.reason}
-- **Deneyim (gün):** ${requestData.duration}
-- **Departman Maksimum İzinli Sayısı:** ${requestData.maxAllowed}
-- **Tarih Esnekliği:** ${requestData.tarihEsnekliği}
+    const prompt = `
+## Girdi Değişkenleri (her satır separate request)
+
+${requestData.map(r => `- **kullanici_id:** ${r.id}
+  - userId: ${r.userId}
+  - pozisyon: ${r.position}
+  - departman: ${r.department}
+  - izin_tarihi: ${r.startDate}–${r.endDate}
+  - sure (gün): ${r.duration}
+  - neden: ${r.reason}
+  - acil_durum: ${r.isEmergency ? 'Evet' : 'Hayır'}
+  - dogum_gunu_izni: ${r.isBirthdayLeave ? 'Evet' : 'Hayır'}
+  - yazi_kotasi_gun: ${r.summerUsedDays}
+  - departman_buyuklugu: ${r.deptSize}
+  - su_an_izinli: ${r.deptOnLeave}
+`).join('\n')}
+
 ---
 
 ## Kurallar
 
-1. Başvuru metninde **acil durum** belirtilmişse bu başvurular önceliklidir.Gerekirse başka tarihler değiştirilebilir.
-2. Aynı **pozisyondan** en fazla **2 kişi** aynı anda izinli olabilir.
-3. Aynı **departmandan**, o tarih aralığında en fazla toplam çalışan sayısının **%20’si** izinli olabilir.
-4. Departman bazlı izin sınırı ${requestData.maxGun} ile belirlenir.
-5. Aşağıdaki **öncelik sırasına** göre değerlendirme yap:
-   - **Tarihi değiştiremeyen** başvurular önceliklidir.
-   - Başvuru metninde **acil durum** belirtilmişse bu başvurular önceliklidir.
-6. Eğer talep edilen tarih uygun değilse:
-   - **İzin reddedilmeli** ve kullanıcıya **uygun alternatif tarih önerilmeli**.
-   - Önerilen tarih departman ve pozisyon limitlerini aşmamalıdır.
+${rules}
 
 ---
 
-## Çıktı Formatı (JSON)
+## Çıktı Formatı (JSON Array)
 
-Her kullanıcı için çıktıyı aşağıdaki JSON formatında üret:
-
-json
+Her istek icin:
+[
 {
   "kullanici_id": "1",
   "izin_durumu": "onaylandı" | "red",
-  "aciklama": "İzin kararı gerekçesi burada yer alır.",
-  "alternatif_tarih_araligi": "DD-MM-YYYY-DD-MM-YY" | null,
-  "neden_1": "kısa açıklama",
-  "neden_2": "kısa açıklama"
+  "aciklama": "Karar gerekçesi",
+  "alternatif_tarih": "DD-MM-YYYY–DD-MM-YYYY" | null
 }
+]
+
+## Çıktı Örneği
+[
+  {
+    "kullanici_id": "1",
+    "izin_durumu": "onaylandı",
+    "aciklama": "Yaz kotası doldu, acil durum değil.",
+    "alternatif_tarih": null
+  },
+  {
+    "kullanici_id": "2",
+    "izin_durumu": "red",
+    "aciklama": "Doğum günü izni, sadece 1 gün kullanılabilir.",
+    "alternatif_tarih": null
+  }
+]
+
 `;
-      
-      // Send requests to AI service for analysis
-      const response = await axios.post(
-        `http://localhost:3131/openai`, 
-        { prompt },
-        {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-          }
+
+    // 4) send to AI
+        const { data } = await axios.post(
+      'http://localhost:3131/openai',
+      { prompt }, // This is the correct format - object with prompt property
+      {
+        headers: {
+          'Content-Type': 'application/json'
         }
-      );
-      
-      // Parse the AI completion response
-      const aiResults = JSON.parse(response.data.choices[0].text);
-      
-      // Process the AI response and update suggestions
-      if (Array.isArray(aiResults)) {
-        const suggestions = {};
-        
-        aiResults.forEach(suggestion => {
-          // Find the request by ID
-          const matchedRequest = requests.find(req => 
-            String(req.id) === String(suggestion.kullanici_id)
-          );
-          
-          if (matchedRequest) {
-            suggestions[matchedRequest.id] = {
-              recommendation: suggestion.izin_durumu === "onaylandı" ? 'approve' : 'decline',
-              description: suggestion.aciklama,
-              alternativeDate: suggestion.alternatif_tarih_araligi,
-              reasons: [
-                suggestion.neden_1,
-                suggestion.neden_2
-              ].filter(Boolean) // Remove any null/undefined reasons
-            };
-          }
-        });
-        
-        setAiSuggestions(suggestions);
-      } else {
-        throw new Error('Invalid AI response format');
       }
-    } catch (err) {
-      console.error('Error getting AI suggestions:', err);
-      setAiAssistActive(false);
-      alert('Failed to get AI recommendations: ' + err.message);
-    } finally {
-      setAiProcessing(false);
+    );
+let aiResults;
+if (data.choices && data.choices[0]) {
+  // Extract content based on API version
+  const content = data.choices[0].text || // Old completions API
+                (data.choices[0].message && data.choices[0].message.content); // New chat API
+  
+  if (!content) {
+    throw new Error('Could not extract content from AI response');
+  }
+  
+  console.log('Full AI response:', content); // Log full response for debugging
+  
+  // Try multiple approaches to extract JSON
+  try {
+    // First attempt: direct JSON parsing
+    try {
+      aiResults = JSON.parse(content);
+    } catch (directParseError) {
+      // Second attempt: Clean and try to extract JSON using regex
+      console.log('Direct parsing failed, trying regex extraction');
+      
+      // Clean common issues - remove markdown code blocks, fix quotes
+      const cleanedContent = content
+        .replace(/```json/g, '')
+        .replace(/```/g, '')
+        .trim();
+      
+      // Try to find any JSON array or object
+      const jsonMatch = cleanedContent.match(/(\[[\s\S]*\]|\{[\s\S]*\})/);
+      if (jsonMatch) {
+        try {
+          aiResults = JSON.parse(jsonMatch[0]);
+        } catch (parseErr) {
+          throw new Error('Found JSON-like content but couldn\'t parse it');
+        }
+      } else {
+        throw new Error('No valid JSON pattern found in response');
+      }
     }
+  } catch (jsonError) {
+    console.error('Failed to parse JSON:', jsonError);
+    console.log('Raw content:', content);
+    throw new Error('Could not parse AI response as JSON');
+  }
+} else {
+  throw new Error('Invalid AI response structure');
+}
+
+// Ensure we have an array of results
+if (!Array.isArray(aiResults)) {
+  // If we got a single object, convert to array
+  aiResults = [aiResults];
+}
+
+// Map AI results to state
+const suggestions = {};
+aiResults.forEach(s => {
+  suggestions[s.kullanici_id] = {
+    recommendation: s.izin_durumu === 'onaylandı' ? 'approve' : 'decline',
+    description: s.aciklama,
+    alternativeDate: s.alternatif_tarih,
   };
+});
+
+setAiSuggestions(suggestions);
+
+  } catch (err) {
+    console.error('Error getting AI suggestions:', err);
+    setAiAssistActive(false);
+    alert('Failed to get AI recommendations: ' + err.message);
+  } finally {
+    setAiProcessing(false);
+  }
+};
   
   // Format alternative date to dd.mm.yyyy
   const formatAltDate = (date) => {
