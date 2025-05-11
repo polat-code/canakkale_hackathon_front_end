@@ -343,6 +343,8 @@ Her istek icin:
   "izin_durumu": "onaylandı" | "red",
   "aciklama": "Karar gerekçesi",
   "alternatif_tarih": "DD-MM-YYYY–DD-MM-YYYY" | null
+  "etkenMadde1": "Açıklama" | null,
+  "etkenMadde2": "Açıklama " | null
 }
 ]
 
@@ -352,13 +354,17 @@ Her istek icin:
     "kullanici_id": "1",
     "izin_durumu": "onaylandı",
     "aciklama": "Yaz kotası doldu, acil durum değil.",
-    "alternatif_tarih": 18-06-2024–20-06-2024
+    "alternatif_tarih": 18-06-2024–20-06-2024,
+    "etkenMadde1": "Açıklama",
+    "etkenMadde2": "Açıklama"
   },
   {
     "kullanici_id": "2",
     "izin_durumu": "red",
     "aciklama": "Doğum günü izni, sadece 1 gün kullanılabilir.",
-    "alternatif_tarih": "20-06-2024–20-06-2024"
+    "alternatif_tarih": "20-06-2024–20-06-2024",
+    "etkenMadde1": "Açıklama",
+    "etkenMadde2": "Açıklama"
   }
 ]
 
@@ -435,6 +441,10 @@ aiResults.forEach(s => {
     recommendation: s.izin_durumu === 'onaylandı' ? 'approve' : 'decline',
     description: s.aciklama,
     alternativeDate: s.alternatif_tarih,
+    factors: [
+      s.etkenMadde1,
+      s.etkenMadde2
+    ].filter(Boolean) // Filter out any undefined or null values
   };
 });
 
@@ -894,11 +904,13 @@ setAiSuggestions(suggestions);
                             )}
                             
                             {/* Reasons list */}
+                            {/* Reasons list */}
                             <div className="reasons-list">
                               <div className="reason-label">Key factors:</div>
+                              
                               <ul>
-                                {aiSuggestions[request.id].reasons && aiSuggestions[request.id].reasons.map((reason, idx) => (
-                                  <li key={idx}>{reason}</li>
+                                {aiSuggestions[request.id].factors && aiSuggestions[request.id].factors.map((factor, idx) => (
+                                  <li key={idx}>{factor}</li>
                                 ))}
                               </ul>
                             </div>
