@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './UserNavbar.css';
-import Cookies from 'js-cookie'; // Import js-cookie to handle cookies
-import { baseURL } from '../../../services/ApiConstants'; // Import baseURL from ApiConstants
+import Cookies from 'js-cookie';
+import { baseURL } from '../../../services/ApiConstants';
 
 const UserNavbar = () => {
   const [userData, setUserData] = useState(null);
@@ -26,7 +26,7 @@ const UserNavbar = () => {
         
         // Make authenticated API call to get user details
         const response = await axios.get(
-          `${baseURL}/auth/detail`,
+          `${baseURL}/user/detail`,
           {
             headers: {
               'Authorization': `Bearer ${accessToken}`,
@@ -38,7 +38,7 @@ const UserNavbar = () => {
         console.log('User data response:', response);
         // Check if response is successful and contains data
         if (response.data && response.data.success) {
-          setUserData(response.data.data);
+          setUserData(response.data.fullName);
           setError(null);
         } else {
           throw new Error('Invalid response format');
@@ -93,6 +93,7 @@ const UserNavbar = () => {
     try {
       // Clear cookies
       Cookies.remove('access_token');
+      Cookies.remove('user_role');
       // Redirect to login page
       window.location.href = '/login';
     } catch (err) {
@@ -103,7 +104,7 @@ const UserNavbar = () => {
   return (
     <nav className="user-navbar">
       <div className="navbar-brand">
-        <a href="/">Izin isteme sistemi</a>
+        <a href="/user/izinlerim">Izin isteme sistemi</a>
       </div>
       
       <div className="navbar-menu">
@@ -113,12 +114,6 @@ const UserNavbar = () => {
           </li>
           <li className="nav-item">
             <a href="/user/izinlerim">Izinlerim</a>
-          </li>
-          <li className="nav-item">
-            <a href="/user/profil">Profil</a>
-          </li>
-          <li className="nav-item">
-            <a href="/user/ayarlar">Ayarlar</a>
           </li>
         </ul>
       </div>
@@ -130,12 +125,7 @@ const UserNavbar = () => {
           <span>Error: {error}</span>
         ) : userData ? (
           <div className="user-info">
-            <span className="username">{userData.name || userData.username || "User"}</span>
-            <img 
-              src={userData.avatarUrl || '/default-avatar.png'} 
-              alt="User avatar" 
-              className="user-avatar"
-            />
+            <span className="username">{userData || "User"}</span>
             <button onClick={handleLogout} className="logout-btn">
               Logout
             </button>
@@ -143,7 +133,6 @@ const UserNavbar = () => {
         ) : (
           <div className="auth-buttons">
             <a href="/login" className="login-btn">Login</a>
-            <a href="/register" className="register-btn">Register</a>
           </div>
         )}
       </div>

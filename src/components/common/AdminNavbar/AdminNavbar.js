@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './AdminNavbar.css';
+import { removeCookie } from '../../../services/CookieService';
 
 const AdminNavbar = () => {
   const [adminData, setAdminData] = useState(null);
@@ -49,11 +50,11 @@ const AdminNavbar = () => {
     setMenuOpen(!menuOpen);
   };
 
-  // Handle logout
   const handleLogout = async () => {
     try {
-      // In a real application, make API call to logout
-      // await axios.post('/api/auth/logout');
+      removeCookie('access_token');
+      removeCookie('user_role');
+      
       console.log('Admin logged out');
       // Redirect to login page
       window.location.href = '/login';

@@ -1,4 +1,4 @@
-t## Girdi Değişkenleri
+## Girdi Değişkenleri
 
 - **Kullanıcı ID:** `${user.id}`
 - **Departman ID:** `${departman.id}`
@@ -22,7 +22,8 @@ t## Girdi Değişkenleri
    - Başvuru metninde **acil durum** belirtilmişse bu başvurular önceliklidir.
 6. Eğer talep edilen tarih uygun değilse:
    - **İzin reddedilmeli** ve kullanıcıya **uygun alternatif tarih önerilmeli**.
-   - Önerilen tarih departman ve pozisyon limitlerini aşmamalıdır.
+   - Önerilen tarih departman ve pozisyon limitlerini sonrasında önceki kuralları aşmamalıdır.
+
 
 ---
 

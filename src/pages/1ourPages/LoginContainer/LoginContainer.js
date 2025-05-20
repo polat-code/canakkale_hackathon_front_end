@@ -43,7 +43,7 @@ const LoginContainer = () => {
         if (role === "ADMIN") {
           navigation("/admin");
         } else {
-          navigation("/user");
+          navigation("/user/izinlerim");
         }
       }, 1800);
     } else if (resp && resp.statusCode === 411) {

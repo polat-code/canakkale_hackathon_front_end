@@ -218,6 +218,9 @@ const AdminDashboard = () => {
   '2025-01-01'
 ].map(d => new Date(d));
 
+
+
+
 const FORBIDDEN_PERIODS = [
   { start: new Date('2024-06-18'), end: new Date('2024-07-02') },
   { start: new Date('2024-09-08'), end: new Date('2024-09-22') },
@@ -307,13 +310,24 @@ const handleAskAI = async () => {
 6. **Yaz kotası** (01.06–31.08.2024): bir çalışanın maksimum **${SUMMER_MAX_DAYS} gün** kullanımı.  
    - Geçen kullanım: **\${summerUsedDays}**  
 7. Doğum günü izni, **en fazla 1 gün** olabilir.
+8. Aynı departmandan O zaman aralığında **en fazla 2 kişi** izinli olabilir. Önerdiğin izinlerde başka insanların izin durumlarını etkilememelidir.
+9. İzin başvurusu, çalışan kişilerin izin durumlarını etkileyecek şekilde değerlendirilir.
+10. İzin başvurusunun onaylanması için bir çalışanın en az **6 Ay** çalışmış olması gerekir.
+11. İzinleri onaylarken veya reddederken önceden verdiğin bilgileri dikkate al.
+12. Verdiğin yanıtlara göre aynı departmandan 2 kişiyi **aynı zamanda** tatil izni verme.
+13. Köprü izinlere dikkat et.
+14. Verilen her ID için cevap vermelisin.
+15. Birisine önerdiğin izin tarihleri, başka bir çalışanın izin tarihlerini etkilememelidir.
+
+
+Not: Köprü izin, resmi tatil ile hafta sonu arasında tek gün ara bırakan izinlerdir. Örneğin, 18-20 Haziran tarihleri arasında izin talep eden bir çalışanın izni, 18-19 Haziran tarihlerini kapsar ve 20 Haziran tarihi resmi tatil olduğu için köprü izni olarak kabul edilir. Bu durumda, 20 Haziran tarihi de izinli sayılır.
 `;
 
     const prompt = `
 ## Girdi Değişkenleri (her satır separate request)
 
-${requestData.map(r => `- **kullanici_id:** ${r.id}
-  - userId: ${r.userId}
+${requestData.map(r => `- **İzin Id:** ${r.id}
+  - Id: ${r.userId}
   - pozisyon: ${r.position}
   - departman: ${r.department}
   - izin_tarihi: ${r.startDate}–${r.endDate}
@@ -324,6 +338,7 @@ ${requestData.map(r => `- **kullanici_id:** ${r.id}
   - yazi_kotasi_gun: ${r.summerUsedDays}
   - departman_buyuklugu: ${r.deptSize}
   - su_an_izinli: ${r.deptOnLeave}
+
 `).join('\n')}
 
 ---
@@ -369,63 +384,96 @@ Her istek icin:
 ]
 
 `;
+// 4) send to AI
+const { data } = await axios.post(
+  'http://localhost:3131/gemini', // Update to your AI server endpoint
+  { prompt }, // This is the correct format - object with prompt property
+  {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+);
 
-    // 4) send to AI
-        const { data } = await axios.post(
-      'http://localhost:3131/openai',
-      { prompt }, // This is the correct format - object with prompt property
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
 let aiResults;
+console.log('AI response structure:', data);
+
+// Handle different API response structures
 if (data.choices && data.choices[0]) {
-  // Extract content based on API version
-  const content = data.choices[0].text || // Old completions API
-                (data.choices[0].message && data.choices[0].message.content); // New chat API
+  // OpenAI API structure
+  const content = data.choices[0].text || 
+                (data.choices[0].message && data.choices[0].message.content);
   
   if (!content) {
-    throw new Error('Could not extract content from AI response');
+    throw new Error('Could not extract content from OpenAI response');
   }
   
-  console.log('Full AI response:', content); // Log full response for debugging
+  console.log('OpenAI response content:', content);
+  aiResults = tryParseJson(content);
   
-  // Try multiple approaches to extract JSON
-  try {
-    // First attempt: direct JSON parsing
-    try {
-      aiResults = JSON.parse(content);
-    } catch (directParseError) {
-      // Second attempt: Clean and try to extract JSON using regex
-      console.log('Direct parsing failed, trying regex extraction');
-      
-      // Clean common issues - remove markdown code blocks, fix quotes
-      const cleanedContent = content
-        .replace(/```json/g, '')
-        .replace(/```/g, '')
-        .trim();
-      
-      // Try to find any JSON array or object
-      const jsonMatch = cleanedContent.match(/(\[[\s\S]*\]|\{[\s\S]*\})/);
-      if (jsonMatch) {
-        try {
-          aiResults = JSON.parse(jsonMatch[0]);
-        } catch (parseErr) {
-          throw new Error('Found JSON-like content but couldn\'t parse it');
-        }
-      } else {
-        throw new Error('No valid JSON pattern found in response');
-      }
+} else if (data.candidates && data.candidates[0]) {
+  // Gemini API structure - use the custom text field we added in our API
+  if (data.text) {
+    // First try the simplified text field
+    console.log('Using simplified text field from Gemini response');
+    aiResults = tryParseJson(data.text);
+  } else if (data.candidates[0].content && data.candidates[0].content.parts) {
+    // Extract from the parts array
+    const textContent = data.candidates[0].content.parts[0]?.text;
+    
+    if (textContent) {
+      console.log('Gemini response content:', textContent);
+      aiResults = tryParseJson(textContent);
+    } else {
+      throw new Error('Could not extract text content from Gemini response');
     }
-  } catch (jsonError) {
-    console.error('Failed to parse JSON:', jsonError);
-    console.log('Raw content:', content);
-    throw new Error('Could not parse AI response as JSON');
+  } else {
+    throw new Error('Invalid Gemini response structure');
   }
 } else {
-  throw new Error('Invalid AI response structure');
+  throw new Error('Unrecognized AI response structure');
+}
+
+// Helper function to try various JSON parsing approaches
+function tryParseJson(content) {
+  // First attempt: direct JSON parsing
+  try {
+    return JSON.parse(content);
+  } catch (directParseError) {
+    console.log('Direct parsing failed, trying regex extraction');
+    
+    // Look for content between ```json and ``` markers first
+    const jsonBlockRegex = /```json\s*([\s\S]*?)\s*```/;
+    const jsonBlockMatch = content.match(jsonBlockRegex);
+    
+    if (jsonBlockMatch && jsonBlockMatch[1]) {
+      try {
+        const jsonFromCodeBlock = jsonBlockMatch[1].trim();
+        console.log('Found JSON in code block:', jsonFromCodeBlock.substring(0, 50) + '...');
+        return JSON.parse(jsonFromCodeBlock);
+      } catch (blockParseError) {
+        console.log('Failed to parse JSON from code block');
+      }
+    }
+    
+    // Fall back to existing approach - clean and extract any JSON-like content
+    const cleanedContent = content
+      .replace(/```json/g, '')
+      .replace(/```/g, '')
+      .trim();
+    
+    // Try to find any JSON array or object
+    const jsonMatch = cleanedContent.match(/(\[[\s\S]*\]|\{[\s\S]*\})/);
+    if (jsonMatch) {
+      try {
+        return JSON.parse(jsonMatch[0]);
+      } catch (parseErr) {
+        throw new Error('Found JSON-like content but couldn\'t parse it');
+      }
+    } else {
+      throw new Error('No valid JSON pattern found in response');
+    }
+  }
 }
 
 // Ensure we have an array of results
